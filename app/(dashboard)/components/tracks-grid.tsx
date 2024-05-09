@@ -2,37 +2,47 @@ import React from "react"
 import Selector from "./selector"
 import TracksRow from "./tracks-row"
 import prisma from "@/lib/db"
+import { addDays, differenceInDays, isSameDay, startOfWeek } from "date-fns"
 
-const activities = [
-  { name: "act1" },
-  { name: "act2" },
-  { name: "act3" },
-  { name: "act4" },
-  { name: "act5" },
-  { name: "act6" },
-  { name: "act7" },
-]
-
-const from = new Date("2024-05-05")
-const to = new Date("2024-05-12")
-
-async function TracksGrid() {
-  const where = {
-    date: {
-      gte: from,
-      lte: to,
-    },
-  }
+async function TracksGrid({ from, to }: { from: Date; to: Date }) {
   const activitiesIds = (
     await prisma.track.groupBy({
       by: "activityId",
-      where,
+      where: {
+        date: {
+          gte: from,
+          lte: to,
+        },
+      },
     })
   ).map((element) => element.activityId)
 
-  console.log(activitiesIds)
+  //todo: trzeba to gdzieś wyrzucić do zewnętrznego pliku
+  const getTracksByActivityId = async (
+    activityId: string,
+    from: Date,
+    to: Date
+  ) => {
+    const days = differenceInDays(to, from)
 
-  const tracks = await prisma.track.findMany({ where })
+    const dates = Array.from(Array(days).keys()).map((shift) =>
+      addDays(from, shift)
+    )
+
+    const tracks = await prisma.track.findMany({
+      where: {
+        activityId,
+        date: {
+          gte: from,
+          lte: to,
+        },
+      },
+    })
+
+    return dates.map(
+      (date) => tracks.find((track) => isSameDay(track.date, date)) || null
+    )
+  }
 
   const activities = await prisma.activity.findMany({
     where: { id: { in: activitiesIds } },
@@ -40,16 +50,16 @@ async function TracksGrid() {
 
   return (
     <>
-      {activities.map((activity) => (
-        <>
-          <Selector data={activities} />
-          <TracksRow
-            trackData={tracks.filter(
-              (track) => track.activityId === activity.id
-            )}
-          />
-        </>
-      ))}
+      {Promise.all(
+        activities.map(async (activity) => (
+          <>
+            <Selector data={activities} />
+            <TracksRow
+              trackData={await getTracksByActivityId(activity.id, from, to)}
+            />
+          </>
+        ))
+      )}
     </>
   )
 }

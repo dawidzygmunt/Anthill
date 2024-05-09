@@ -3,5 +3,6 @@ export interface ActivitiesProps {
 }
 
 export interface TracksProps {
+  id: string
   minutes: number
 }

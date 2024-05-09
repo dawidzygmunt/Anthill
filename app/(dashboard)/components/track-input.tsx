@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
+import { Track } from "@prisma/client"
 
 const FormSchema = z.object({
   trackInput: z.string().min(1, {
@@ -21,16 +22,16 @@ const FormSchema = z.object({
 })
 
 interface TrackInputProps {
-  value: number
+  track: Track | null
 }
 
-const TrackInput = ({ value }: TrackInputProps) => {
+const TrackInput = ({ track }: TrackInputProps) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {},
   })
 
-  form.setValue("trackInput", value.toString())
+  form.setValue("trackInput", (track?.date?.toISOString() || "").toString())
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     toast({

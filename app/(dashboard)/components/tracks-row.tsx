@@ -1,12 +1,13 @@
 import { TracksProps } from "@/lib/types"
 import TrackInput from "./track-input"
+import { Track } from "@prisma/client"
 
-const TracksRow = ({ trackData }: { trackData: TracksProps[] }) => {
+const TracksRow = ({ trackData }: { trackData: (Track | null)[] }) => {
   return (
     <>
       {trackData.map((track, index) => (
         <div key={index} className="text-center py-1 px-2">
-          <TrackInput value={track.minutes} />
+          <TrackInput track={track} />
         </div>
       ))}
     </>
