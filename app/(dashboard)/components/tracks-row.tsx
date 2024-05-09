@@ -54,12 +54,12 @@ const TracksRow = ({
           <Form {...form}>
             <form onBlur={form.handleSubmit(onSubmit)} className="space-y-6 justify-start">
               <FormField
-                // control={form.control}
+                control={form.control}
                 name="trackInput"
-                render={({ }) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="" value={ } />
+                      <Input placeholder="" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
