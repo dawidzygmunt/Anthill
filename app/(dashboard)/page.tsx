@@ -1,5 +1,6 @@
 import ActivityRow from "./components/activity-row";
 import Selector from "./components/selector";
+
 import WeekRow from "./components/week-row";
 
 
@@ -24,9 +25,9 @@ export default function Home() {
   ]
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="grid grid-cols-8 gap-5">
-        <div></div>
+    <main className="flex min-h-screen flex-col items-center justify-between p-24 mr-60">
+      <div className="grid grid-cols-9 gap-5">
+        <div className="col-span-2"></div>
         <WeekRow days={days} />
 
         <Selector />

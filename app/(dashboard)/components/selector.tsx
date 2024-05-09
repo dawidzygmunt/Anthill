@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-// import { toast } from "@/components/ui/use-toast"
+import { toast } from "@/components/ui/use-toast"
 
 
 
@@ -32,7 +32,7 @@ const FormSchema = z.object({
     .email(),
 })
 
-export function SelectForm() {
+export function ActivitySelector() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
@@ -54,16 +54,15 @@ export function SelectForm() {
       message: "Username must be at least 2 characters.",
     }),
   })
-  const Selector = () => {
-    return (
+  return (
+    <div className="col-span-2">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-[200px] space-y-6">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -76,18 +75,14 @@ export function SelectForm() {
                     <SelectItem value="m@support.com">m@support.com</SelectItem>
                   </SelectContent>
                 </Select>
-                <FormDescription>
-                  You can manage email addresses in your{" "}
-                  <Link href="/examples/forms">email settings</Link>.
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
         </form>
       </Form>
-    )
-  }
+    </div>
+  )
 }
-export default Selector
+
+export default ActivitySelector
