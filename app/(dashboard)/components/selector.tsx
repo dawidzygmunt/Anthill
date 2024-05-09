@@ -21,6 +21,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
+import { ActivitiesProps } from "@/lib/types"
+import { activitiesMock } from "@/data/mocking data"
 
 
 
@@ -32,7 +34,9 @@ const FormSchema = z.object({
     .email(),
 })
 
-export function ActivitySelector() {
+export function ActivitySelector({
+  data
+}: { data: ActivitiesProps[] }) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
@@ -48,12 +52,6 @@ export function ActivitySelector() {
     })
   }
 
-
-  const formSchema = z.object({
-    username: z.string().min(2, {
-      message: "Username must be at least 2 characters.",
-    }),
-  })
   return (
     <div className="col-span-2">
       <Form {...form}>
@@ -66,13 +64,14 @@ export function ActivitySelector() {
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a verified email to display" />
+                      <SelectValue placeholder="Select your activity" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="m@example.com">m@example.com</SelectItem>
-                    <SelectItem value="m@google.com">m@google.com</SelectItem>
-                    <SelectItem value="m@support.com">m@support.com</SelectItem>
+                    {activitiesMock?.map((activity, index) => (
+                      <SelectItem key={index} value={activity.name}>{activity.name}</SelectItem>
+                    ))}
+                    <SelectItem className="font-bold" value="new">Add new +</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

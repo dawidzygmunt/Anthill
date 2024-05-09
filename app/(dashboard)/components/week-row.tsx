@@ -7,8 +7,8 @@ const WeekRow = ({
 }) => {
   return (
     <>
-      {days.map((day) => (
-        <div>{day}</div>
+      {days.map((day, index) => (
+        <div key={index} className='text-center'>{day}</div>
       ))}
     </>
   )

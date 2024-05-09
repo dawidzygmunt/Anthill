@@ -1,3 +1,7 @@
 export interface ActivitiesProps {
-  time: string;
+  name: string;
+}
+
+export interface TracksProps {
+  time: number;
 }
