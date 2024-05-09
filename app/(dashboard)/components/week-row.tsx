@@ -1,10 +1,16 @@
 import React from 'react'
 
-const WeekRow = () => {
+const WeekRow = ({
+  days
+}: {
+  days: string[]
+}) => {
   return (
-    <div>
-
-    </div>
+    <>
+      {days.map((day) => (
+        <div>{day}</div>
+      ))}
+    </>
   )
 }
 
