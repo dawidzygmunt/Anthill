@@ -1,11 +1,17 @@
 import WeekRow from "./components/week-row"
 
 import TracksGrid from "./components/tracks-grid"
-import { addDays, differenceInDays, startOfWeek } from "date-fns"
+import { addDays, differenceInDays, startOfWeek, isValid } from "date-fns"
 
-//
-export default function Home() {
-  const from = startOfWeek(new Date(), { weekStartsOn: 1 })
+interface HomeProps {
+  searchParams: { from: string }
+}
+
+export default function Home({ searchParams }: HomeProps) {
+  const paramDate = new Date(searchParams.from)
+  const from = isValid(paramDate)
+    ? paramDate
+    : startOfWeek(new Date(), { weekStartsOn: 1 })
   const to = addDays(from, 7)
 
   const days = differenceInDays(to, from)
