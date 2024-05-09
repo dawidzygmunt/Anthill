@@ -1,11 +1,11 @@
-import TracksRow from "./components/tracks-row";
-import Selector from "./components/selector";
+import TracksRow from "./components/tracks-row"
+import Selector from "./components/selector"
 
-import WeekRow from "./components/week-row";
-import { tracks } from "@/data/mocking data";
-import SideBar from "@/components/sidebar";
+import WeekRow from "./components/week-row"
+import { tracks } from "@/data/mocking data"
+import SideBar from "@/components/sidebar"
 
-
+//
 export default function Home() {
   const days = [
     "2024-05-09",
@@ -14,7 +14,7 @@ export default function Home() {
     "2024-05-06",
     "2024-05-05",
     "2024-05-04",
-    "2024-05-03"
+    "2024-05-03",
   ]
 
   const activities = [
@@ -38,6 +38,5 @@ export default function Home() {
         <TracksRow trackData={tracks} />
       </div>
     </main>
-
-  );
+  )
 }

@@ -20,7 +20,7 @@ import { toast } from "@/components/ui/use-toast"
 
 
 const FormSchema = z.object({
-  trackInput: z.number().min(1, {
+  trackInput1: z.number().min(1, {
     message: "Username must be at least 2 characters.",
   }),
 })
@@ -55,7 +55,7 @@ const TracksRow = ({
             <form onBlur={form.handleSubmit(onSubmit)} className="space-y-6 justify-start">
               <FormField
                 control={form.control}
-                name="trackInput"
+                name={`trackInput${index}`}
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
