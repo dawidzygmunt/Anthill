@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Navbar />
+      {/* <Nanpvbar /> */}
       <body className={inter.className}>{children}</body>
     </html>
   )

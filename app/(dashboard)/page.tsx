@@ -13,6 +13,13 @@ export default function Home() {
     "2024-05-04",
     "2024-05-03",
   ]
+  const today = new Date()
+  const startOfWeek = new Date(today)
+  const endOfWeek = new Date(today)
+  const diff =
+    today.getDate() - today.getDate() + (today.getDate() === 0 ? -6 : 1)
+  startOfWeek.setDate(diff)
+  endOfWeek.setDate(startOfWeek.getDate() + 6)
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
