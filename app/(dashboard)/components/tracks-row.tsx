@@ -1,5 +1,5 @@
 import { TracksProps } from "@/lib/types"
-import TrackInput from "./trackInput"
+import TrackInput from "./track-input"
 
 const TracksRow = ({ trackData }: { trackData: TracksProps[] }) => {
   return (
