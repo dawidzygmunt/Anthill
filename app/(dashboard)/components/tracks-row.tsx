@@ -6,7 +6,7 @@ const TracksRow = ({ trackData }: { trackData: TracksProps[] }) => {
     <>
       {trackData.map((track, index) => (
         <div key={index} className="text-center py-1 px-2">
-          <TrackInput />
+          <TrackInput value={track.minutes} />
         </div>
       ))}
     </>

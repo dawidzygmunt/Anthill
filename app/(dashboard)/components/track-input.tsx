@@ -15,16 +15,22 @@ import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 
 const FormSchema = z.object({
-  trackInput: z.number().min(1, {
+  trackInput: z.string().min(1, {
     message: "Username must be at least 2 characters.",
   }),
 })
 
-const TrackInput = () => {
+interface TrackInputProps {
+  value: number
+}
+
+const TrackInput = ({ value }: TrackInputProps) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {},
   })
+
+  form.setValue("trackInput", value.toString())
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     toast({
