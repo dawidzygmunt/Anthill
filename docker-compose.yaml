@@ -10,16 +10,5 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - 5432:5432
-  next:
-    image: anthill-v2
-    build:
-      context: .
-      dockerfile: Dockerfile
-    pull_policy: never
-    ports:
-      - 8080:3000
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/antnest?schema=public
-
 volumes:
   postgres:
