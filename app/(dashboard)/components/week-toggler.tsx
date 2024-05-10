@@ -24,7 +24,6 @@ const WeekToggler: React.FC<WeekToggler> = ({ from: date }) => {
         <Link href={`/?${searchParamsNext}`}>
           <Button className="mx-2 w-2/3">{">"}</Button>
         </Link>
-        <span className="col-span-2">{date.toDateString()}</span>
       </div>
     </>
   )

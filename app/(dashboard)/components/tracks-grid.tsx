@@ -52,12 +52,14 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
     where: { id: { in: activitiesIds } },
   })
 
+  const allActivities = await prisma.activity.findMany()
+
   return (
     <>
       {Promise.all(
         activities.map(async (activity) => (
           <>
-            <Selector activity={activity} data={activities} />
+            <Selector activity={activity} data={allActivities} />
             <TracksRow
               trackData={await getTracksByActivityId(activity.id, from, to)}
             />
