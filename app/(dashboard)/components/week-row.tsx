@@ -1,14 +1,12 @@
-import React from 'react'
+import React from "react"
 
-const WeekRow = ({
-  days
-}: {
-  days: string[]
-}) => {
+const WeekRow = ({ days }: { days: string[] }) => {
   return (
     <>
       {days.map((day, index) => (
-        <div key={index} className='text-center'>{day}</div>
+        <div key={index} className="t">
+          {day}
+        </div>
       ))}
     </>
   )
