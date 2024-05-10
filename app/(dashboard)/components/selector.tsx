@@ -21,27 +21,29 @@ import { Activity } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+interface Props {
+  activities: Activity[]
+  activityId: string
+  onChange?: (activityId: string) => void
+}
+
 const FormSchema = z.object({
   picker: z.string(),
 })
 
-export function ActivitySelector({
-  data,
-  activity,
-}: {
-  data: Activity[]
-  activity: Activity
-}) {
+export function ActivitySelector({ activities, activityId, onChange }: Props) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmit(activities: z.infer<typeof FormSchema>) {
     toast({
       title: "You submitted the following values:",
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+          <code className="text-white">
+            {JSON.stringify(activities, null, 2)}
+          </code>
         </pre>
       ),
     })
@@ -59,14 +61,20 @@ export function ActivitySelector({
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <Select onValueChange={field.onChange} value={activity.id}>
+                <Select
+                  onValueChange={(value) => {
+                    if (onChange) onChange(value)
+                    field.onChange(value)
+                  }}
+                  value={activityId}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select your activity" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {data?.map((activity, index) => (
+                    {activities?.map((activity, index) => (
                       <SelectItem key={index} value={activity.id}>
                         {activity.name}
                       </SelectItem>
