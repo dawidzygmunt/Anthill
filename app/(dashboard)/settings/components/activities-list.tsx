@@ -9,6 +9,7 @@ import { useState } from "react"
 import { ActivitiesProps } from "@/lib/types"
 import { PostActivities } from "@/actions/post-activities"
 import toast from "react-hot-toast"
+import { DeleteActivity } from "@/actions/delete-activity"
 
 export const ActivitiesList = ({ data }: { data: Activity[] }) => {
   const [activities, setActivities] = useState(data)
@@ -20,6 +21,15 @@ export const ActivitiesList = ({ data }: { data: Activity[] }) => {
       toast.success("Activity added")
     } catch (error) {
       toast.error("Internal error")
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await DeleteActivity(id)
+    } catch (error) {
+      toast.error("Error")
+      console.log(error)
     }
   }
 
@@ -38,7 +48,11 @@ export const ActivitiesList = ({ data }: { data: Activity[] }) => {
                 <Edit size={15} />
               </Button>
             </Link>
-            <Button className="ml-2" variant="destructive">
+            <Button
+              className="ml-2"
+              onClick={() => handleDelete(activity.id)}
+              variant="destructive"
+            >
               <Trash2 size={15} />
             </Button>
           </div>
