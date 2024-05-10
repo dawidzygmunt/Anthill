@@ -16,6 +16,7 @@ import { Track } from "@prisma/client"
 import { useEffect } from "react"
 
 import handleTrackChange from "../utils/handleTrackChange"
+import { useRouter } from "next/navigation"
 
 const FormSchema = z.object({
   trackInput: z.string(),
@@ -39,6 +40,8 @@ const TrackInput = ({ track }: Props) => {
     },
   })
 
+  const router = useRouter()
+
   useEffect(() => {
     form.setValue("trackInput", track.minutes?.toString() ?? "")
   }, [track])
@@ -52,6 +55,7 @@ const TrackInput = ({ track }: Props) => {
     if ("error" in result)
       return form.setValue("trackInput", track.minutes?.toString() ?? "")
     form.setValue("trackInput", result.minutes.toString())
+    router.refresh()
   }
   return (
     <>
