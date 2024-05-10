@@ -11,7 +11,7 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
       where: {
         date: {
           gte: from,
-          lte: to,
+          lt: to,
         },
       },
     })
@@ -34,7 +34,7 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
         activityId,
         date: {
           gte: from,
-          lte: to,
+          lt: to,
         },
       },
     })
