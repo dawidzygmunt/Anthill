@@ -4,21 +4,19 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { GetActivities } from "@/actions/get-activities"
 import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
-import { ActivitiesProps } from "@/lib/types"
-import { activitiesMock } from "@/data/mocking data"
 import { Edit, Trash2 } from "lucide-react"
+import { EditModal } from "./components/edit-modal"
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -37,15 +35,19 @@ function onSubmit(data: z.infer<typeof FormSchema>) {
   })
 }
 
-const Settings = () => {
+const Settings = async () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       username: "",
     },
   })
+
+  const activitiesList = await GetActivities()
+
   return (
     <main className="flex min-h-screen flex-col items-center p-24">
+      <EditModal />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex">
           <FormField
@@ -70,7 +72,7 @@ const Settings = () => {
         </form>
       </Form>
       <div className="flex flex-col">
-        {activitiesMock?.map((activity, index) => (
+        {activitiesList?.map((activity, index) => (
           <div
             key={index}
             className="px-3 pl-5 py-2 bg-[#e5e3e3] m-3 w-[400px] rounded-sm flex justify-between items-center"
