@@ -15,21 +15,23 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
-import { activitiesMock } from "@/data/mocking data"
 import { ActivitiesProps } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Activity } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 const FormSchema = z.object({
-  email: z
-    .string({
-      required_error: "Please select an email to display.",
-    })
-    .email(),
+  picker: z.string(),
 })
 
-export function ActivitySelector({ data }: { data: ActivitiesProps[] }) {
+export function ActivitySelector({
+  data,
+  activity,
+}: {
+  data: Activity[]
+  activity: Activity
+}) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
@@ -53,13 +55,13 @@ export function ActivitySelector({ data }: { data: ActivitiesProps[] }) {
           className="w-[200px] space-y-6"
         >
           <FormField
+            name="picker"
             control={form.control}
-            name="email"
             render={({ field }) => (
               <FormItem>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  defaultValue={activity.id}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -67,8 +69,8 @@ export function ActivitySelector({ data }: { data: ActivitiesProps[] }) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {activitiesMock?.map((activity, index) => (
-                      <SelectItem key={index} value={activity.name}>
+                    {data?.map((activity, index) => (
+                      <SelectItem key={index} value={activity.id}>
                         {activity.name}
                       </SelectItem>
                     ))}

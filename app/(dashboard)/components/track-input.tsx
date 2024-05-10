@@ -21,8 +21,14 @@ const FormSchema = z.object({
   }),
 })
 
+export interface EmptyTrack {
+  activityId: string
+  date: Date
+  minutes?: number
+}
+
 interface TrackInputProps {
-  track: Track | null
+  track: Track | EmptyTrack
 }
 
 const TrackInput = ({ track }: TrackInputProps) => {
@@ -31,7 +37,7 @@ const TrackInput = ({ track }: TrackInputProps) => {
     defaultValues: {},
   })
 
-  form.setValue("trackInput", (track?.date?.toISOString() || "").toString())
+  form.setValue("trackInput", (track.minutes || "").toString())
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     toast({

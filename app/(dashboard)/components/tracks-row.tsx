@@ -1,8 +1,8 @@
 import { TracksProps } from "@/lib/types"
-import TrackInput from "./track-input"
+import TrackInput, { EmptyTrack } from "./track-input"
 import { Track } from "@prisma/client"
 
-const TracksRow = ({ trackData }: { trackData: (Track | null)[] }) => {
+const TracksRow = ({ trackData }: { trackData: (Track | EmptyTrack)[] }) => {
   return (
     <>
       {trackData.map((track, index) => (
