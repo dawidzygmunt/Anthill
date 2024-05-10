@@ -1,9 +1,9 @@
-// import { MainNavbar } from "./main-nav"
+import { MainNavbar } from "./main-nav"
 
 const Navbar = () => {
   return (
     <div className="bg-[fcfcf2] shadow-md w-full font-bols p-5">
-      {/* <MainNavbar /> */}
+      <MainNavbar />
     </div>
   )
 }
