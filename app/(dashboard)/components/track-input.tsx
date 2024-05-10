@@ -17,6 +17,7 @@ import { useEffect } from "react"
 
 import handleTrackChange from "../utils/handleTrackChange"
 import revalidateTracks from "../utils/revalidateTracks"
+import deleteTrack from "../utils/deleteTrack"
 
 const FormSchema = z.object({
   trackInput: z.string(),
@@ -45,6 +46,14 @@ const TrackInput = ({ track }: Props) => {
   }, [track])
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    if ("id" in track && data.trackInput === "") {
+      const result = await deleteTrack(track.id)
+      if ("error" in result) {
+        return form.setValue("trackInput", track.minutes?.toString() ?? "")
+      }
+      return revalidateTracks()
+    }
+
     const result = await handleTrackChange(
       track.activityId,
       track.date,
