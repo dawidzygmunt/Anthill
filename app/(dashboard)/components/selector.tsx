@@ -59,10 +59,7 @@ export function ActivitySelector({
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={activity.id}
-                >
+                <Select onValueChange={field.onChange} value={activity.id}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select your activity" />
