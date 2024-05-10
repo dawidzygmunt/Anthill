@@ -16,6 +16,7 @@ import { Track } from "@prisma/client"
 import { useEffect } from "react"
 
 import handleTrackChange from "../utils/handleTrackChange"
+import revalidateTracks from "../utils/revalidateTracks"
 
 const FormSchema = z.object({
   trackInput: z.string(),
@@ -52,6 +53,7 @@ const TrackInput = ({ track }: Props) => {
     if ("error" in result)
       return form.setValue("trackInput", track.minutes?.toString() ?? "")
     form.setValue("trackInput", result.minutes.toString())
+    revalidateTracks()
   }
   return (
     <>

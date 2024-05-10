@@ -27,7 +27,13 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
           </>
         ))
       )}
-      <NewTracksRow allActivities={allActivities} from={from} to={to} />
+      <NewTracksRow
+        opened={activities.length === 0}
+        key={activities.length}
+        allActivities={allActivities}
+        from={from}
+        to={to}
+      />
     </>
   )
 }
