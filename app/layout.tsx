@@ -1,8 +1,9 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import SideBar from "@/components/sidebar"
 import Navbar from "@/components/navbar"
+import { Toaster } from "@/components/ui/toaster"
+import toast, { Toaster as BetterToast } from "react-hot-toast"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -19,6 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <Toaster />
+        <BetterToast />
         <Navbar />
         {children}
       </body>
