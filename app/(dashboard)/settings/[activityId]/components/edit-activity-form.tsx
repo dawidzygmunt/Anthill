@@ -4,20 +4,22 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { PatchActivity } from "@/actions/patch-activity"
 import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { toast } from "@/components/ui/use-toast"
-import { Activity } from "@prisma/client"
-import { Action } from "@prisma/client/runtime/library"
+import toast from "react-hot-toast"
+
+interface EditActivityFormProps {
+  addFunction: () => void
+}
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -34,24 +36,26 @@ export function EditActivityForm({
     resolver: zodResolver(FormSchema),
     defaultValues: initialData,
   })
-  console.log(initialData)
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+  async function onSubmit(
+    data: z.infer<typeof FormSchema>,
+    initialData: { id: string; name: string }
+  ) {
+    try {
+      const result = await PatchActivity({ ...data, id: initialData.id })
+      toast.success("Activity added")
+      console.log(result)
+    } catch (error) {
+      toast.error("error")
+      console.log(error)
+    }
   }
 
   return (
-    <main className="flex justify-center">
+    <main className="flex m-24">
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit((data) => onSubmit(data, initialData))}
           className="w-2/3 space-y-6"
         >
           <FormField
