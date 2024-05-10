@@ -8,8 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "format": "npx prettier --write .",
-    "populate-db": "tsc dev/populateDb.ts && node dev/populateDb.js",
-    "clear-db": "tsc dev/clearDb.ts && node dev/clearDb.js"
+    "populate-db": "npm run clear-db && tsc dev/populateDb.ts && node dev/populateDb.js && rm ./dev/populateDb.js ./lib/db.js",
+    "populate-db:fixed-data": "npm run clear-db && tsc dev/populateDbWithFixedData.ts && node dev/populateDbWithFixedData.js && rm ./dev/populateDbWithFixedData.js ./lib/db.js",
+    "clear-db": "tsc dev/clearDb.ts && node dev/clearDb.js && rm ./lib/db.js ./dev/clearDb.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
