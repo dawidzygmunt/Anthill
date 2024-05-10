@@ -3,56 +3,13 @@ import Selector from "./selector"
 import TracksRow from "./tracks-row"
 import prisma from "@/lib/db"
 import { addDays, differenceInDays, isSameDay, startOfWeek } from "date-fns"
+import getAllActivities from "../utils/getAllActivities"
+import getActivitiesForPeriod from "../utils/getActivitiesForPeriod"
+import getTracksForPeriod from "../utils/getTracksForPeriod"
 
 async function TracksGrid({ from, to }: { from: Date; to: Date }) {
-  const activitiesIds = (
-    await prisma.track.groupBy({
-      by: "activityId",
-      where: {
-        date: {
-          gte: from,
-          lt: to,
-        },
-      },
-    })
-  ).map((element) => element.activityId)
-
-  //todo: trzeba to gdzieś wyrzucić do zewnętrznego pliku
-  const getTracksByActivityId = async (
-    activityId: string,
-    from: Date,
-    to: Date
-  ) => {
-    const days = differenceInDays(to, from)
-
-    const dates = Array.from(Array(days).keys()).map((shift) =>
-      addDays(from, shift)
-    )
-
-    const tracks = await prisma.track.findMany({
-      where: {
-        activityId,
-        date: {
-          gte: from,
-          lt: to,
-        },
-      },
-    })
-
-    return dates.map(
-      (date) =>
-        tracks.find((track) => isSameDay(track.date, date)) || {
-          date,
-          activityId,
-        }
-    )
-  }
-
-  const activities = await prisma.activity.findMany({
-    where: { id: { in: activitiesIds } },
-  })
-
-  const allActivities = await prisma.activity.findMany()
+  const activities = await getActivitiesForPeriod(from, to)
+  const allActivities = await getAllActivities()
 
   return (
     <>
@@ -61,7 +18,7 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
           <>
             <Selector activity={activity} data={allActivities} />
             <TracksRow
-              trackData={await getTracksByActivityId(activity.id, from, to)}
+              trackData={await getTracksForPeriod(activity.id, from, to)}
             />
           </>
         ))
