@@ -1,11 +1,10 @@
-import React from "react"
-import Selector from "./selector"
-import TracksRow from "./tracks-row"
-import prisma from "@/lib/db"
-import { addDays, differenceInDays, isSameDay, startOfWeek } from "date-fns"
-import getAllActivities from "../utils/getAllActivities"
 import getActivitiesForPeriod from "../utils/getActivitiesForPeriod"
 import getTracksForPeriod from "../utils/getTracksForPeriod"
+import getAllActivities from "../utils/getAllActivities"
+import populateWithNewTracks from "../utils/populateWithNewTracks"
+import NewTracksRow from "./new-tracks-row"
+import Selector from "./selector"
+import TracksRow from "./tracks-row"
 
 async function TracksGrid({ from, to }: { from: Date; to: Date }) {
   const activities = await getActivitiesForPeriod(from, to)
@@ -16,13 +15,19 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
       {Promise.all(
         activities.map(async (activity) => (
           <>
-            <Selector activity={activity} data={allActivities} />
+            <Selector activityId={activity.id} activities={allActivities} />
             <TracksRow
-              trackData={await getTracksForPeriod(activity.id, from, to)}
+              trackData={populateWithNewTracks(
+                await getTracksForPeriod(activity.id, from, to),
+                activity.id,
+                from,
+                to
+              )}
             />
           </>
         ))
       )}
+      <NewTracksRow allActivities={allActivities} from={from} to={to} />
     </>
   )
 }

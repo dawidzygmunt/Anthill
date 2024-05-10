@@ -12,13 +12,13 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { toast } from "@/components/ui/use-toast"
 import { Track } from "@prisma/client"
+import { useEffect } from "react"
+
+import handleTrackChange from "../utils/handleTrackChange"
 
 const FormSchema = z.object({
-  trackInput: z.string().min(1, {
-    message: "Username must be at least 2 characters.",
-  }),
+  trackInput: z.string(),
 })
 
 export interface EmptyTrack {
@@ -27,27 +27,31 @@ export interface EmptyTrack {
   minutes?: number
 }
 
-interface TrackInputProps {
+interface Props {
   track: Track | EmptyTrack
 }
 
-const TrackInput = ({ track }: TrackInputProps) => {
+const TrackInput = ({ track }: Props) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {},
+    defaultValues: {
+      trackInput: track.minutes?.toString() ?? "",
+    },
   })
 
-  form.setValue("trackInput", (track.minutes || "").toString())
+  useEffect(() => {
+    form.setValue("trackInput", track.minutes?.toString() ?? "")
+  }, [track])
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const result = await handleTrackChange(
+      track.activityId,
+      track.date,
+      parseInt(data.trackInput)
+    )
+    if ("error" in result)
+      return form.setValue("trackInput", track.minutes?.toString() ?? "")
+    form.setValue("trackInput", result.minutes.toString())
   }
   return (
     <>
