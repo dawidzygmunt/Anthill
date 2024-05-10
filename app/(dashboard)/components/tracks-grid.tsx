@@ -40,7 +40,11 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
     })
 
     return dates.map(
-      (date) => tracks.find((track) => isSameDay(track.date, date)) || null
+      (date) =>
+        tracks.find((track) => isSameDay(track.date, date)) || {
+          date,
+          activityId,
+        }
     )
   }
 
@@ -53,7 +57,7 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
       {Promise.all(
         activities.map(async (activity) => (
           <>
-            <Selector data={activities} />
+            <Selector activity={activity} data={activities} />
             <TracksRow
               trackData={await getTracksByActivityId(activity.id, from, to)}
             />
