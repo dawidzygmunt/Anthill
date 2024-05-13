@@ -47,8 +47,6 @@ export function ActivitySelector({
     resolver: zodResolver(FormSchema),
   })
 
-  useEffect(() => form.setValue("picker", activityId), [activityId])
-
   function onSubmit(activities: z.infer<typeof FormSchema>) {
     toast({
       title: "You submitted the following values:",
@@ -91,7 +89,7 @@ export function ActivitySelector({
                       revalidateTracks()
                     }
                   }}
-                  value={field.value}
+                  value={activityId || field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
