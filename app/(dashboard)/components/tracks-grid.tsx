@@ -1,5 +1,5 @@
 import { GetActivities } from "@/actions/get-activities"
-import getTrackRowsForPeriod from "../server-actions/getActivitiesForPeriod"
+import getTrackRowsForPeriod from "../server-actions/getTrackRowsForPeriod"
 import getTracksForPeriod from "../server-actions/getTracksForPeriod"
 
 import populateWithNewTracks from "../utils/populateWithNewTracks"
@@ -24,8 +24,7 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
             <>
               <Selector
                 key={trackRow.activityId}
-                from={from}
-                to={to}
+                trackRowId={trackRow.id}
                 activityId={trackRow.activityId}
                 activities={allActivities}
               />

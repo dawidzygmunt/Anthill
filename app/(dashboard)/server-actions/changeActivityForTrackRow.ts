@@ -3,15 +3,13 @@
 import prisma from "@/lib/db"
 
 const changeActivityForTrackRow = async (
-  fromActivityId: string,
-  toActivityId: string,
-  from: Date,
-  to: Date
+  trackRowId: string,
+  activityId: string
 ) => {
   try {
-    return await prisma.track.updateMany({
-      data: { activityId: toActivityId },
-      where: { date: { gte: from, lt: to }, activityId: fromActivityId },
+    return await prisma.trackRow.update({
+      data: { activityId },
+      where: { id: trackRowId },
     })
   } catch (err) {
     return { error: "Something went wrong" }

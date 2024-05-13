@@ -25,8 +25,7 @@ import revalidateTracks from "../server-actions/revalidateTracks"
 interface Props {
   activities: Activity[]
   activityId: string
-  from: Date
-  to: Date
+  trackRowId: string
   onChange?: (activityId: string) => void
 }
 
@@ -38,8 +37,7 @@ export function ActivitySelector({
   activities,
   activityId,
   onChange,
-  from,
-  to,
+  trackRowId,
 }: Props) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -76,10 +74,8 @@ export function ActivitySelector({
                     if (onChange) onChange(value)
                     else {
                       const result = await changeActivityForTrackRow(
-                        activityId,
-                        value,
-                        from,
-                        to
+                        trackRowId,
+                        value
                       )
                       if ("error" in result) {
                         return field.onChange(activityId)
