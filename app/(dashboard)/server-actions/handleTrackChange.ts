@@ -1,6 +1,16 @@
 "use server"
 import prisma from "@/lib/db"
-import trackSchema from "./zod-schemas/track-schema"
+import { z } from "zod"
+
+const trackSchema = z.object({
+  activityId: z.string().cuid(),
+  date: z.date(),
+  minutes: z
+    .number()
+    .int()
+    .min(1)
+    .max(60 * 24),
+})
 
 const handleTrackChange = async (
   activityId: string,

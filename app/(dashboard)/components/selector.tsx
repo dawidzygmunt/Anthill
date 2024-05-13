@@ -15,14 +15,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
-import { ActivitiesProps } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Activity } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import changeActivityForTrackRow from "../utils/changeActivityForTrackRow"
-import revalidateTracks from "../utils/revalidateTracks"
-import { useEffect } from "react"
+import changeActivityForTrackRow from "../server-actions/changeActivityForTrackRow"
+import revalidateTracks from "../server-actions/revalidateTracks"
 
 interface Props {
   activities: Activity[]

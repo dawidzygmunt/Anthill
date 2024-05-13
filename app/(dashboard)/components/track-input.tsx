@@ -15,9 +15,9 @@ import { Input } from "@/components/ui/input"
 import { Track } from "@prisma/client"
 import { useEffect } from "react"
 
-import handleTrackChange from "../utils/handleTrackChange"
-import revalidateTracks from "../utils/revalidateTracks"
-import deleteTrack from "../utils/deleteTrack"
+import handleTrackChange from "../server-actions/handleTrackChange"
+import revalidateTracks from "../server-actions/revalidateTracks"
+import deleteTrack from "../server-actions/deleteTrack"
 import toast from "react-hot-toast"
 
 const FormSchema = z.object({
