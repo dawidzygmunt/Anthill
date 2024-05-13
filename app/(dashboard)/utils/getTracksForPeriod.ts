@@ -1,18 +1,21 @@
 "use server"
 
 import prisma from "@/lib/db"
-import { addDays, differenceInDays, isSameDay } from "date-fns"
 
 const getTracksForPeriod = async (activityId: string, from: Date, to: Date) => {
-  return await prisma.track.findMany({
-    where: {
-      activityId,
-      date: {
-        gte: from,
-        lt: to,
+  try {
+    return await prisma.track.findMany({
+      where: {
+        activityId,
+        date: {
+          gte: from,
+          lt: to,
+        },
       },
-    },
-  })
+    })
+  } catch (err) {
+    return { error: "Something went wrong" }
+  }
 }
 
 export default getTracksForPeriod

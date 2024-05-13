@@ -1,22 +1,25 @@
 "use server"
 import prisma from "@/lib/db"
-import { isValid } from "date-fns"
+import trackSchema from "./zod-schemas/track-schema"
 
 const handleTrackChange = async (
   activityId: string,
   date: Date,
   minutes: number
 ) => {
-  if (!activityId || !isValid(date)) return { error: "Invalid data" }
   try {
+    const data = trackSchema.parse({ activityId, date, minutes })
+
     const track = await prisma.track.findFirst({ where: { activityId, date } })
-    if (!track)
-      return await prisma.track.create({ data: { activityId, date, minutes } })
+    if (!track) return await prisma.track.create({ data })
+
     return await prisma.track.update({
       data: { minutes },
       where: { dateActivityPair: { activityId, date } },
     })
-  } catch (err) {
+  } catch (err: any) {
+    if ("errors" in err && err.errors.length > 0)
+      return { error: err.errors[0].message }
     return { error: "Something went wrong!" }
   }
 }

@@ -17,25 +17,24 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
   return (
     <>
       {Promise.all(
-        activities.map(async (activity) => (
-          <>
-            <Selector
-              key={activity.id}
-              from={from}
-              to={to}
-              activityId={activity.id}
-              activities={allActivities}
-            />
-            <TracksRow
-              trackData={populateWithNewTracks(
-                await getTracksForPeriod(activity.id, from, to),
-                activity.id,
-                from,
-                to
-              )}
-            />
-          </>
-        ))
+        activities.map(async (activity) => {
+          const tracks = await getTracksForPeriod(activity.id, from, to)
+          if ("error" in tracks) return tracks.error
+          return (
+            <>
+              <Selector
+                key={activity.id}
+                from={from}
+                to={to}
+                activityId={activity.id}
+                activities={allActivities}
+              />
+              <TracksRow
+                trackData={populateWithNewTracks(tracks, activity.id, from, to)}
+              />
+            </>
+          )
+        })
       )}
       <NewTracksRow
         opened={activities.length === 0}
