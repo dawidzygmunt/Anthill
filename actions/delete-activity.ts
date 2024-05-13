@@ -1,12 +1,12 @@
 "use server"
-import prismadb from '@/lib/prismadb'
 
+import prisma from "@/lib/db"
 
 export const DeleteActivity = (id: string) => {
-  const activity = prismadb.activity.delete({
+  const activity = prisma.activity.delete({
     where: {
-      id: id
-    }
+      id: id,
+    },
   })
   return activity
 }

@@ -1,14 +1,13 @@
 "use server"
-import prismadb from '@/lib/prismadb'
-import { Activity } from '@prisma/client'
-
+import prisma from "@/lib/db"
+import { Activity } from "@prisma/client"
 
 export const PatchActivity = async (activity: Activity) => {
-  const newActivity = await prismadb.activity.update({
+  const newActivity = await prisma.activity.update({
     where: {
-      id: activity.id
+      id: activity.id,
     },
-    data: activity
+    data: activity,
   })
   return newActivity
 }

@@ -1,10 +1,10 @@
-import prismadb from "@/lib/prismadb"
-import { Activity } from "@prisma/client"
+"use server"
 
+import prisma from "@/lib/db"
 
 export const GetSingleActivity = async (activityId: string) => {
-  const action = await prismadb.activity.findFirst({
-    where: { id: activityId }
+  const action = await prisma.activity.findFirst({
+    where: { id: activityId },
   })
   return action
 }
