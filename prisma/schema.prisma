@@ -12,10 +12,11 @@ datasource db {
 }
 
 model Activity {
-  id     String  @id @default(cuid())
-  name   String  @unique
-  color  String  @default("#fefefe")
-  tracks Track[]
+  id       String     @id @default(cuid())
+  name     String     @unique
+  color    String     @default("#fefefe")
+  tracks   Track[]
+  TrackRow TrackRow[]
 }
 
 model Track {
@@ -26,4 +27,11 @@ model Track {
   activityId String
 
   @@unique(name: "dateActivityPair", [date, activityId])
+}
+
+model TrackRow {
+  id         String   @id @default(cuid())
+  activity   Activity @relation(fields: [activityId], references: [id])
+  activityId String
+  from       DateTime
 }

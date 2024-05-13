@@ -1,5 +1,6 @@
 "use server"
 import prisma from "@/lib/db"
+import { startOfWeek } from "date-fns"
 import { z } from "zod"
 
 const trackSchema = z.object({
@@ -19,6 +20,16 @@ const handleTrackChange = async (
 ) => {
   try {
     const data = trackSchema.parse({ activityId, date, minutes })
+
+    const trackRow = await prisma.trackRow.findFirst({
+      where: { activityId, from: startOfWeek(date, { weekStartsOn: 1 }) },
+    })
+
+    if (!trackRow) {
+      await prisma.trackRow.create({
+        data: { activityId, from: startOfWeek(date, { weekStartsOn: 1 }) },
+      })
+    }
 
     const track = await prisma.track.findFirst({ where: { activityId, date } })
     if (!track) return await prisma.track.create({ data })

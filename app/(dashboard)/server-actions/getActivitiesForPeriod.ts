@@ -4,21 +4,16 @@ import prisma from "@/lib/db"
 
 const getActivitiesForPeriod = async (from: Date, to: Date) => {
   try {
-    const activitiesIds = (
-      await prisma.track.groupBy({
-        by: "activityId",
-        where: {
-          date: {
-            gte: from,
-            lt: to,
-          },
+    return (
+      await prisma.trackRow.findMany({
+        where: { from },
+        include: {
+          activity: true,
         },
       })
-    ).map((element) => element.activityId)
-    return await prisma.activity.findMany({
-      where: { id: { in: activitiesIds } },
-    })
+    ).map((element) => element.activity)
   } catch (err) {
+    console.log(err)
     return { error: "Something went wrong" }
   }
 }
