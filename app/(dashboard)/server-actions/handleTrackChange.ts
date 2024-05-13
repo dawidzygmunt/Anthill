@@ -6,10 +6,10 @@ const trackSchema = z.object({
   activityId: z.string().cuid(),
   date: z.date(),
   minutes: z
-    .number()
+    .number({ message: "Only numbers are valid" })
     .int()
-    .min(1)
-    .max(60 * 24),
+    .min(1, { message: "Time is required" })
+    .max(60 * 24, { message: "A day has only 24 hours" }),
 })
 
 const handleTrackChange = async (

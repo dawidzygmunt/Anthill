@@ -56,12 +56,15 @@ const TrackInput = ({ track }: Props) => {
       return revalidateTracks()
     }
 
+    if (data.trackInput.length < 1) return
+
     const result = await handleTrackChange(
       track.activityId,
       track.date,
-      parseInt(data.trackInput)
+      parseInt(data.trackInput, 10)
     )
     if ("error" in result) {
+      console.log(result.error)
       toast.error(result.error)
       return form.setValue("trackInput", track.minutes?.toString() ?? "")
     }

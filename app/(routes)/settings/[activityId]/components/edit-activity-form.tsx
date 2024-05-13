@@ -31,7 +31,7 @@ const FormSchema = z.object({
 export function EditActivityForm({
   initialData,
 }: {
-  initialData: { id: string; name: string; color: string }
+  initialData: { id: string; name: string; color: string | null }
 }) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -49,27 +49,33 @@ export function EditActivityForm({
   }
   return (
     <main className="flex m-24">
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit((data) => onSubmit(initialData, data))}
-          className="w-2/3 space-y-6"
-        >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Activity Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Activity 1" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit">Submit</Button>
-        </form>
-      </Form>
+      <div className="bg-[#c5c5c5] px-20 py-10 rounded-lg shadow-md">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit((data) => onSubmit(initialData, data))}
+            className="w-2/3 space-y-6"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Activity Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Activity 1..."
+                      className="w-[300px]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
+      </div>
     </main>
   )
 }
