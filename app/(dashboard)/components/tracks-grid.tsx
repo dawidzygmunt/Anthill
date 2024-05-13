@@ -9,6 +9,9 @@ import TracksRow from "./tracks-row"
 
 async function TracksGrid({ from, to }: { from: Date; to: Date }) {
   const activities = await getActivitiesForPeriod(from, to)
+
+  if ("error" in activities) return activities.error
+
   const allActivities = await GetActivities()
 
   return (
@@ -17,6 +20,7 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
         activities.map(async (activity) => (
           <>
             <Selector
+              key={activity.id}
               from={from}
               to={to}
               activityId={activity.id}
