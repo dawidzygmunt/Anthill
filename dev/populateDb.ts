@@ -23,6 +23,7 @@ const randomTrackRowsForWeek = async (
   return randomActivities.map((activity) => ({
     activityId: activity.id,
     from: weekStart,
+    createdAt: faker.date.between(weekStart, addDays(weekStart, 5)),
   }))
 }
 
