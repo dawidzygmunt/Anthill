@@ -1,4 +1,4 @@
-import { addDays } from "date-fns"
+import { addDays, format } from "date-fns"
 import React from "react"
 
 const WeekRow = ({ from }: { from: Date }) => {
@@ -30,9 +30,18 @@ const WeekRow = ({ from }: { from: Date }) => {
   return (
     <>
       {dates.map((day, index) => (
-        <div key={index} className="t">
-          <div>{days[day.getDay()]}</div>
-          {day.getDate()} {months[day.getMonth()]}
+        <div
+          key={index}
+          className={
+            day.getDay() === 0 || day.getDay() === 6
+              ? "text-gray-400 text-center"
+              : "text-center"
+          }
+        >
+          {/* <div>{days[day.getDay()]}</div> */}
+          <div>{days[day.getDay()].slice(0, 3).toUpperCase()}</div>
+          {/* {day.getDate()} {months[day.getMonth()]} */}
+          {format(day, "dd MMM")}
         </div>
       ))}
     </>
