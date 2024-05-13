@@ -4,6 +4,7 @@ import "./globals.css"
 import Navbar from "@/components/navbar"
 import { Toaster } from "@/components/ui/toaster"
 import toast, { Toaster as BetterToast } from "react-hot-toast"
+import SideBar from "@/components/sidebar"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -23,7 +24,10 @@ export default function RootLayout({
         <Toaster />
         <BetterToast />
         <Navbar />
-        {children}
+        <div className="flex">
+          <SideBar />
+          <div className="flex w-full justify-center">{children}</div>
+        </div>
       </body>
     </html>
   )
