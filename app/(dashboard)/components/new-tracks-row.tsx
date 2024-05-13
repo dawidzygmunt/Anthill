@@ -6,6 +6,9 @@ import Selector from "./selector"
 import TracksRow from "./tracks-row"
 import populateWithNewTracks from "../utils/populateWithNewTracks"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import createTrackRow from "../server-actions/createTrackRow"
+import { Form } from "@/components/ui/form"
 
 interface Props {
   allActivities: Activity[]
@@ -23,15 +26,16 @@ function NewTracksRow({ allActivities, from, to, opened }: Props) {
   return (
     <>
       <Selector
-        from={from}
-        to={to}
         activityId={activityId}
         onChange={(id) => {
           setActivityId(id)
+          if (id) createTrackRow(id, from)
         }}
         activities={allActivities}
       />
-      <TracksRow trackData={populateWithNewTracks([], activityId, from, to)} />
+      {Array.from(Array(7).keys()).map((number) => (
+        <Input disabled key={number}></Input>
+      ))}
     </>
   )
 }

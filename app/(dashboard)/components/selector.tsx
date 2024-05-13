@@ -25,7 +25,7 @@ import revalidateTracks from "../server-actions/revalidateTracks"
 interface Props {
   activities: Activity[]
   activityId: string
-  trackRowId: string
+  trackRowId?: string
   onChange?: (activityId: string) => void
 }
 
@@ -72,7 +72,7 @@ export function ActivitySelector({
                   onValueChange={async (value) => {
                     field.onChange(value)
                     if (onChange) onChange(value)
-                    else {
+                    else if (trackRowId) {
                       const result = await changeActivityForTrackRow(
                         trackRowId,
                         value
