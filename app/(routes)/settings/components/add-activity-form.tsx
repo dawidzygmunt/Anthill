@@ -37,6 +37,13 @@ interface AddActivityFormProps {
   onActivityAdd: (activity: ActivitiesProps) => void
 }
 
+function generateRandomColor() {
+  const red = Math.floor(Math.random() * 256)
+  const green = Math.floor(Math.random() * 256)
+  const blue = Math.floor(Math.random() * 256)
+  return `#${red.toString(16).padStart(2, "0")}${green.toString(16).padStart(2, "0")}${blue.toString(16).padStart(2, "0")}`
+}
+
 export function AddActivityForm({ onActivityAdd }: AddActivityFormProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -54,8 +61,11 @@ export function AddActivityForm({ onActivityAdd }: AddActivityFormProps) {
         </pre>
       ),
     })
-
-    onActivityAdd(data)
+    const newData = {
+      ...data,
+      color: generateRandomColor(), // Dodanie losowego koloru do danych
+    }
+    onActivityAdd(newData)
   }
   return (
     <Dialog>
