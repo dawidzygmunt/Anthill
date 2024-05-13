@@ -89,7 +89,7 @@ export function ActivitySelector({
                       revalidateTracks()
                     }
                   }}
-                  value={activityId || field.value}
+                  value={field.value || activityId}
                 >
                   <FormControl>
                     <SelectTrigger>
