@@ -15,18 +15,18 @@ model Activity {
   id       String     @id @default(cuid())
   name     String     @unique
   color    String     @default("#fefefe")
-  tracks   Track[]
   TrackRow TrackRow[]
 }
 
 model Track {
-  id         String   @id @default(cuid())
-  minutes    Int
-  date       DateTime
-  activity   Activity @relation(fields: [activityId], references: [id])
-  activityId String
+  id      String   @id @default(cuid())
+  minutes Int
+  date    DateTime
 
-  @@unique(name: "dateActivityPair", [date, activityId])
+  trackRow   TrackRow @relation(fields: [trackRowId], references: [id])
+  trackRowId String
+
+  @@unique(name: "rowDatePair", [date, trackRowId])
 }
 
 model TrackRow {
@@ -34,4 +34,5 @@ model TrackRow {
   activity   Activity @relation(fields: [activityId], references: [id])
   activityId String
   from       DateTime
+  Track      Track[]
 }

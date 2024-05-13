@@ -3,7 +3,7 @@ import { addDays, differenceInDays, isSameDay } from "date-fns"
 
 const populateWithNewTracks = (
   tracks: Track[],
-  activityId: string,
+  trackRowId: string,
   from: Date,
   to: Date
 ) => {
@@ -17,7 +17,7 @@ const populateWithNewTracks = (
     (date) =>
       tracks.find((track) => isSameDay(track.date, date)) || {
         date,
-        activityId,
+        trackRowId,
       }
   )
 }

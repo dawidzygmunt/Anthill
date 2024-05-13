@@ -4,7 +4,7 @@ import { startOfWeek } from "date-fns"
 import { z } from "zod"
 
 const trackSchema = z.object({
-  activityId: z.string().cuid(),
+  trackRowId: z.string().cuid(),
   date: z.date(),
   minutes: z
     .number()
@@ -14,29 +14,19 @@ const trackSchema = z.object({
 })
 
 const handleTrackChange = async (
-  activityId: string,
+  trackRowId: string,
   date: Date,
   minutes: number
 ) => {
   try {
-    const data = trackSchema.parse({ activityId, date, minutes })
+    const data = trackSchema.parse({ trackRowId, date, minutes })
 
-    const trackRow = await prisma.trackRow.findFirst({
-      where: { activityId, from: startOfWeek(date, { weekStartsOn: 1 }) },
-    })
-
-    if (!trackRow) {
-      await prisma.trackRow.create({
-        data: { activityId, from: startOfWeek(date, { weekStartsOn: 1 }) },
-      })
-    }
-
-    const track = await prisma.track.findFirst({ where: { activityId, date } })
+    const track = await prisma.track.findFirst({ where: { trackRowId, date } })
     if (!track) return await prisma.track.create({ data })
 
     return await prisma.track.update({
       data: { minutes },
-      where: { dateActivityPair: { activityId, date } },
+      where: { rowDatePair: { trackRowId, date } },
     })
   } catch (err: any) {
     if ("errors" in err && err.errors.length > 0)

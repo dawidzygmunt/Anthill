@@ -25,7 +25,7 @@ const FormSchema = z.object({
 })
 
 export interface EmptyTrack {
-  activityId: string
+  trackRowId: string
   date: Date
   minutes?: number
 }
@@ -57,7 +57,7 @@ const TrackInput = ({ track }: Props) => {
     }
 
     const result = await handleTrackChange(
-      track.activityId,
+      track.trackRowId,
       track.date,
       parseInt(data.trackInput)
     )

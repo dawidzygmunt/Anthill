@@ -2,20 +2,12 @@
 
 import prisma from "@/lib/db"
 
-const getTracksForPeriod = async (activityId: string, from: Date, to: Date) => {
+const getTracksForRow = async (trackRowId: string) => {
   try {
-    return await prisma.track.findMany({
-      where: {
-        activityId,
-        date: {
-          gte: from,
-          lt: to,
-        },
-      },
-    })
+    return await prisma.track.findMany({ where: { trackRowId } })
   } catch (err) {
     return { error: "Something went wrong" }
   }
 }
 
-export default getTracksForPeriod
+export default getTracksForRow

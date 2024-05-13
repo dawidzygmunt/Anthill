@@ -2,20 +2,14 @@
 
 import prisma from "@/lib/db"
 
-const getActivitiesForPeriod = async (from: Date, to: Date) => {
+const getTrackRowsForPeriod = async (from: Date) => {
   try {
-    return (
-      await prisma.trackRow.findMany({
-        where: { from },
-        include: {
-          activity: true,
-        },
-      })
-    ).map((element) => element.activity)
+    return await prisma.trackRow.findMany({
+      where: { from },
+    })
   } catch (err) {
-    console.log(err)
     return { error: "Something went wrong" }
   }
 }
 
-export default getActivitiesForPeriod
+export default getTrackRowsForPeriod
