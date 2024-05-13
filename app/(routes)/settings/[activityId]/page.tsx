@@ -1,5 +1,6 @@
 import { GetSingleActivity } from "@/actions/get-single-activity"
 import { EditActivityForm } from "./components/edit-activity-form"
+import { Activity } from "@prisma/client"
 
 const EditActivity = async ({ params }: { params: { activityId: string } }) => {
   const activity = await GetSingleActivity(params.activityId)
