@@ -84,7 +84,7 @@ export function ActivitySelector({
                         to
                       )
                       if ("error" in result) {
-                        field.onChange(activityId)
+                        return field.onChange(activityId)
                       }
                       revalidateTracks()
                     }
