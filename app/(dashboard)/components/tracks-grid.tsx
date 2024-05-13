@@ -1,6 +1,7 @@
+import { GetActivities } from "@/actions/get-activities"
 import getActivitiesForPeriod from "../utils/getActivitiesForPeriod"
 import getTracksForPeriod from "../utils/getTracksForPeriod"
-import getAllActivities from "../utils/getAllActivities"
+
 import populateWithNewTracks from "../utils/populateWithNewTracks"
 import NewTracksRow from "./new-tracks-row"
 import Selector from "./selector"
@@ -8,7 +9,7 @@ import TracksRow from "./tracks-row"
 
 async function TracksGrid({ from, to }: { from: Date; to: Date }) {
   const activities = await getActivitiesForPeriod(from, to)
-  const allActivities = await getAllActivities()
+  const allActivities = await GetActivities()
 
   return (
     <>
