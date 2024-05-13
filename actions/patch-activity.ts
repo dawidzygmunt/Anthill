@@ -10,18 +10,20 @@ const activitySchema = z.object({
 
 export const PatchActivity = async (activity: Activity) => {
   try {
-    const result = activitySchema.parse(activity)
-    const newActivity = await prisma.activity.update({
+    const data = activitySchema.parse(activity)
+    const result = await prisma.activity.findFirst({
+      where: { id: data.id },
+    })
+
+    const updatedActivity = await prisma.activity.update({
       where: {
         id: activity.id,
       },
       data: activity,
     })
-    if (!newActivity)
-      return { error: `Activity with this ${activity.id} Id not found` }
-    return newActivity
+    return updatedActivity
   } catch (err: any) {
-    if ("errors" in err && err.error.length > 0) {
+    if ("errors" in err && err.errors.length > 0) {
       return { error: err.errors[0].message }
     }
     return { error: "Something went wrong!" }

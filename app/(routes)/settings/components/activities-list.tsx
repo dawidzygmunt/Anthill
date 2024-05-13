@@ -15,24 +15,25 @@ export const ActivitiesList = ({ data }: { data: Activity[] }) => {
   const [activities, setActivities] = useState(data)
 
   async function handleActivityAdd(activity: ActivitiesProps) {
-    try {
-      const newActivity = await PostActivities(activity)
-      setActivities([...activities, newActivity])
-      toast.success("Activity added")
-    } catch (error) {
-      toast.error("Internal error")
+    const newActivity = await PostActivities(activity)
+    if ("error" in newActivity) {
+      toast.error(newActivity.error)
+      return
     }
+    setActivities([...activities, newActivity])
+    toast.success("Activity added")
+
+    toast.error("Internal error")
   }
 
   const handleDelete = async (id: string) => {
-    try {
-      const response = await DeleteActivity(id)
-    } catch (error) {
-      toast.error("Error")
-      console.log(error)
+    const result = await DeleteActivity(id)
+    if ("error" in result) {
+      toast.error(result.error)
+      return
     }
+    toast.success("Activity deleted")
   }
-
   return (
     <div className="flex flex-col">
       <AddActivityForm onActivityAdd={handleActivityAdd} />

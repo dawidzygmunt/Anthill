@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input"
 import toast from "react-hot-toast"
 import { ActivitiesProps } from "@/lib/types"
+import { Activity } from "@prisma/client"
 
 interface EditActivityFormProps {
   addFunction: () => void
@@ -37,21 +38,20 @@ export function EditActivityForm({
     defaultValues: initialData,
   })
 
-  async function onSubmit(data: { name: string }) {
-    console.log(data)
-
-    const result = await PatchActivity({ id: initialData.id, ...data })
+  async function onSubmit(initialData: Activity, data: { name: string }) {
+    const newData = { ...data, id: initialData.id, color: "#fefefe" }
+    const result = await PatchActivity(newData)
     if ("error" in result) {
       toast.error(result.error)
       return
     }
-    toast.success("Activity added")
+    toast.success("Activity modified")
   }
   return (
     <main className="flex m-24">
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit((data) => onSubmit(data, initialData))}
+          onSubmit={form.handleSubmit((data) => onSubmit(initialData, data))}
           className="w-2/3 space-y-6"
         >
           <FormField
