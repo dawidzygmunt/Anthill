@@ -14,7 +14,7 @@ datasource db {
 model Activity {
   id     String  @id @default(cuid())
   name   String  @unique
-  color  String
+  color  String  @default("#fefefe")
   tracks Track[]
 }
 
