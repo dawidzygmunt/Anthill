@@ -23,6 +23,8 @@ function NewTracksRow({ allActivities, from, to, opened }: Props) {
   return (
     <>
       <Selector
+        from={from}
+        to={to}
         activityId={activityId}
         onChange={(id) => {
           setActivityId(id)

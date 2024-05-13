@@ -16,7 +16,12 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
       {Promise.all(
         activities.map(async (activity) => (
           <>
-            <Selector activityId={activity.id} activities={allActivities} />
+            <Selector
+              from={from}
+              to={to}
+              activityId={activity.id}
+              activities={allActivities}
+            />
             <TracksRow
               trackData={populateWithNewTracks(
                 await getTracksForPeriod(activity.id, from, to),

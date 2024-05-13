@@ -18,6 +18,7 @@ import { useEffect } from "react"
 import handleTrackChange from "../utils/handleTrackChange"
 import revalidateTracks from "../utils/revalidateTracks"
 import deleteTrack from "../utils/deleteTrack"
+import toast from "react-hot-toast"
 
 const FormSchema = z.object({
   trackInput: z.string(),
@@ -49,6 +50,7 @@ const TrackInput = ({ track }: Props) => {
     if ("id" in track && data.trackInput === "") {
       const result = await deleteTrack(track.id)
       if ("error" in result) {
+        toast.error(result.error)
         return form.setValue("trackInput", track.minutes?.toString() ?? "")
       }
       return revalidateTracks()
@@ -59,8 +61,10 @@ const TrackInput = ({ track }: Props) => {
       track.date,
       parseInt(data.trackInput)
     )
-    if ("error" in result)
+    if ("error" in result) {
+      toast.error(result.error)
       return form.setValue("trackInput", track.minutes?.toString() ?? "")
+    }
     form.setValue("trackInput", result.minutes.toString())
     revalidateTracks()
   }

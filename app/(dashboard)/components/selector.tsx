@@ -20,10 +20,15 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Activity } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import changeActivityForTrackRow from "../utils/changeActivityForTrackRow"
+import revalidateTracks from "../utils/revalidateTracks"
+import { useEffect } from "react"
 
 interface Props {
   activities: Activity[]
   activityId: string
+  from: Date
+  to: Date
   onChange?: (activityId: string) => void
 }
 
@@ -31,10 +36,18 @@ const FormSchema = z.object({
   picker: z.string(),
 })
 
-export function ActivitySelector({ activities, activityId, onChange }: Props) {
+export function ActivitySelector({
+  activities,
+  activityId,
+  onChange,
+  from,
+  to,
+}: Props) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
+
+  useEffect(() => form.setValue("picker", activityId), [activityId])
 
   function onSubmit(activities: z.infer<typeof FormSchema>) {
     toast({
@@ -62,11 +75,23 @@ export function ActivitySelector({ activities, activityId, onChange }: Props) {
             render={({ field }) => (
               <FormItem>
                 <Select
-                  onValueChange={(value) => {
-                    if (onChange) onChange(value)
+                  onValueChange={async (value) => {
                     field.onChange(value)
+                    if (onChange) onChange(value)
+                    else {
+                      const result = await changeActivityForTrackRow(
+                        activityId,
+                        value,
+                        from,
+                        to
+                      )
+                      if ("error" in result) {
+                        field.onChange(activityId)
+                      }
+                      revalidateTracks()
+                    }
                   }}
-                  value={activityId}
+                  value={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
