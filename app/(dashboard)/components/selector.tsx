@@ -14,13 +14,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { toast } from "@/components/ui/use-toast"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Activity } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import changeActivityForTrackRow from "../server-actions/changeActivityForTrackRow"
 import revalidateTracks from "../server-actions/revalidateTracks"
+
+import { toast } from "react-hot-toast"
 
 interface Props {
   activities: Activity[]
@@ -43,26 +44,10 @@ export function ActivitySelector({
     resolver: zodResolver(FormSchema),
   })
 
-  function onSubmit(activities: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">
-            {JSON.stringify(activities, null, 2)}
-          </code>
-        </pre>
-      ),
-    })
-  }
-
   return (
     <div className="col-span-2">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-[200px] space-y-6"
-        >
+        <form className="w-[200px] space-y-6">
           <FormField
             name="picker"
             control={form.control}
@@ -78,6 +63,7 @@ export function ActivitySelector({
                         value
                       )
                       if ("error" in result) {
+                        toast.error(result.error)
                         return field.onChange(activityId)
                       }
                       revalidateTracks()
