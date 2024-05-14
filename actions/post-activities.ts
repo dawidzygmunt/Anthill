@@ -18,6 +18,6 @@ export const PostActivities = async (data: ActivitiesProps) => {
   } catch (err: any) {
     if ("errors" in err && err.errors.lenght > 0)
       return { error: err.errors[0].message }
-    return { error: err.errors[0].message }
+    return { error: "Internal error" }
   }
 }
