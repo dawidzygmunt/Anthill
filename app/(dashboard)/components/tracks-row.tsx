@@ -1,6 +1,5 @@
-import { TracksProps } from "@/lib/types"
-import TrackInput, { EmptyTrack } from "./track-input"
 import { Track } from "@prisma/client"
+import TrackInput, { EmptyTrack } from "./track-input"
 
 const TracksRow = ({ trackData }: { trackData: (Track | EmptyTrack)[] }) => {
   return (

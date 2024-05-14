@@ -1,15 +1,12 @@
 "use client"
 
-import { Activity } from "@prisma/client"
-import React, { useState } from "react"
-import Selector from "./selector"
-import TracksRow from "./tracks-row"
-import populateWithNewTracks from "../utils/populateWithNewTracks"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import createTrackRow from "../server-actions/createTrackRow"
-import { Form } from "@/components/ui/form"
+import { Activity } from "@prisma/client"
+import { useState } from "react"
 import toast from "react-hot-toast"
+import createTrackRow from "../server-actions/createTrackRow"
+import Selector from "./selector"
 
 interface Props {
   allActivities: Activity[]

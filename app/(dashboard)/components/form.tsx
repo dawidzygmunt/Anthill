@@ -1,23 +1,18 @@
 "use client"
 
-import { TracksProps } from '@/lib/types'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
-
 
 const FormSchema = z.object({
   trackInput: z.string().min(1, {
@@ -25,13 +20,10 @@ const FormSchema = z.object({
   }),
 })
 
-
 const FormTrackInput = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-
-    },
+    defaultValues: {},
   })
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -46,7 +38,10 @@ const FormTrackInput = () => {
   }
   return (
     <Form {...form}>
-      <form onBlur={form.handleSubmit(onSubmit)} className="space-y-6 justify-start">
+      <form
+        onBlur={form.handleSubmit(onSubmit)}
+        className="space-y-6 justify-start"
+      >
         <FormField
           control={form.control}
           name={`trackInput`}

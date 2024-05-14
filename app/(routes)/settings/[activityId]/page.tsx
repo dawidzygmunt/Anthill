@@ -1,7 +1,6 @@
 import { GetSingleActivity } from "@/actions/get-single-activity"
-import { EditActivityForm } from "./components/edit-activity-form"
-import { Activity } from "@prisma/client"
 import toast from "react-hot-toast"
+import { EditActivityForm } from "./components/edit-activity-form"
 
 const EditActivity = async ({ params }: { params: { activityId: string } }) => {
   const activity = await GetSingleActivity(params.activityId)
