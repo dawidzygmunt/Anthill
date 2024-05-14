@@ -4,8 +4,15 @@ import { ActivitiesProps } from "@/lib/types"
 import { error } from "console"
 import { z } from "zod"
 
+const prismaCodesMap: Record<string, string> = {
+  P2002: "Activity with this name already exists!",
+}
+
 const activitySchema = z.object({
-  name: z.string().min(2, { message: "Activity Name is required" }),
+  name: z
+    .string()
+    .min(2, { message: "Activity Name is required" })
+    .max(100, "Activity Name cannot be longer than 100 characters"),
 })
 
 export const PostActivities = async (data: ActivitiesProps) => {
@@ -18,6 +25,11 @@ export const PostActivities = async (data: ActivitiesProps) => {
   } catch (err: any) {
     if ("errors" in err && err.errors.lenght > 0)
       return { error: err.errors[0].message }
-    return { error: "Internal error" }
+    if ("code" in err && err.code in prismaCodesMap) {
+      return {
+        error: prismaCodesMap[err.code],
+      }
+    }
+    return { error: "Something went wrong" }
   }
 }

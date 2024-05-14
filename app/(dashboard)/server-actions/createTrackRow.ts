@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/db"
 import revalidateTracks from "./revalidateTracks"
-import prismaCodesMap from "@/data/prismaCodes"
+import prismaCodesMap from "@/app/(dashboard)/utils/prismaCodes"
 
 const createTrackRow = async (activityId: string, from: Date) => {
   try {

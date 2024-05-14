@@ -6,34 +6,12 @@ import { error } from "console"
 import { Prisma } from "@prisma/client"
 
 const activitySchema = z.object({
-  id: z.string().min(1, { message: "activity Id is required" }),
+  id: z.string().cuid({ message: "activity Id is required" }),
 })
 
 export const DeleteActivity = async (id: string) => {
   try {
     const data = activitySchema.parse({ id: id })
-    const result = await prisma.activity.findFirst({
-      where: {
-        id: data.id,
-      },
-    })
-
-    if (!result) {
-      return { error: "no activity found with this Id" }
-    }
-
-    const relatedTracks = await prisma.track.findMany({
-      where: {
-        activityId: data.id,
-      },
-    })
-
-    if (relatedTracks.length > 0) {
-      return {
-        error:
-          "Cannot delete Activity because it is associated with other tracks.",
-      }
-    }
 
     const activity = await prisma.activity.delete({
       where: {
@@ -46,7 +24,6 @@ export const DeleteActivity = async (id: string) => {
       err instanceof Prisma.PrismaClientKnownRequestError &&
       err.code === "P2003"
     ) {
-      console.log("XDDD")
       return {
         error:
           "Cannot delete Activity because it is associated with other tracks.",

@@ -26,6 +26,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { ActivitiesProps } from "@/lib/types"
+import { DialogClose } from "@radix-ui/react-dialog"
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -88,7 +89,9 @@ export function AddActivityForm({ onActivityAdd }: AddActivityFormProps) {
                     </FormItem>
                   )}
                 />
-                <Button type="submit">Submit</Button>
+                <DialogClose>
+                  <Button type="submit">Submit</Button>
+                </DialogClose>
               </form>
             </Form>
           </div>
