@@ -24,8 +24,8 @@ const randomTrackRowsForWeek = async (
     activityId: activity.id,
     from: weekStart,
     createdAt: faker.date.between({
-      from: weekStart,
-      to: subDays(weekStart, 5),
+      from: subDays(weekStart, 5),
+      to: weekStart,
     }),
   }))
 }
