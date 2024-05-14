@@ -1,8 +1,8 @@
 import { getActivities } from "@/actions/get-activities"
-import getTrackRowsForPeriod from "../server-actions/getTrackRowsForPeriod"
-import getTracksForPeriod from "../server-actions/getTracksForPeriod"
+import getTrackRowsForPeriod from "../server-actions/get-track-rows-for-period"
+import getTracksForPeriod from "../server-actions/get-tracks-for-period"
 
-import populateWithNewTracks from "../utils/populateWithNewTracks"
+import populateWithNewTracks from "../utils/populate-with-new-tracks"
 import NewTracksRow from "./new-tracks-row"
 import Selector from "./selector"
 import TracksRow from "./tracks-row"

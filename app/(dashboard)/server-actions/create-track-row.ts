@@ -1,8 +1,8 @@
 "use server"
 
 import prisma from "@/lib/db"
-import revalidateTracks from "./revalidateTracks"
-import prismaCodesMap from "@/app/(dashboard)/utils/prismaCodes"
+import revalidateTracks from "./revalidate-tracks"
+import prismaCodesMap from "@/app/(dashboard)/utils/prisma-codes"
 
 const createTrackRow = async (activityId: string, from: Date) => {
   try {

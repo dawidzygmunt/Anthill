@@ -18,8 +18,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Activity } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import changeActivityForTrackRow from "../server-actions/changeActivityForTrackRow"
-import revalidateTracks from "../server-actions/revalidateTracks"
+import changeActivityForTrackRow from "../server-actions/change-activity-for-track-row"
+import revalidateTracks from "../server-actions/revalidate-tracks"
 
 import { toast } from "react-hot-toast"
 
