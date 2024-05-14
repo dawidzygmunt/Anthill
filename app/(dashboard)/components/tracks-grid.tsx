@@ -13,6 +13,7 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
   if ("error" in trackRows) return trackRows.error
 
   const allActivities = await GetActivities()
+  if ("error" in allActivities) return "Something went wrong"!
 
   return (
     <>
