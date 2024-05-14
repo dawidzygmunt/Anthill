@@ -9,7 +9,7 @@ const activitySchema = z.object({
   name: z.string().min(2, { message: "Activity Name is required" }),
 })
 
-export const PostActivities = async (data: ActivitiesProps) => {
+export const postActivities = async (data: ActivitiesProps) => {
   try {
     const parsedData = activitySchema.parse(data)
     const activity = await prisma.activity.create({
