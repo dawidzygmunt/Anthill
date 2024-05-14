@@ -22,8 +22,6 @@ export const ActivitiesList = ({ data }: { data: Activity[] }) => {
     }
     setActivities([...activities, newActivity])
     toast.success("Activity added")
-
-    toast.error("Internal error")
   }
 
   const handleDelete = async (id: string) => {
