@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import toast from "react-hot-toast"
-import { ActivitiesProps } from "@/lib/types"
 import { Activity } from "@prisma/client"
+import { useRouter } from "next/navigation"
 
 interface EditActivityFormProps {
   addFunction: () => void
@@ -33,6 +33,7 @@ export function EditActivityForm({
 }: {
   initialData: { id: string; name: string; color: string | null }
 }) {
+  const router = useRouter()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: initialData,
@@ -46,6 +47,7 @@ export function EditActivityForm({
       return
     }
     toast.success("Activity modified")
+    router.push("/settings")
   }
   return (
     <main className="flex m-24">

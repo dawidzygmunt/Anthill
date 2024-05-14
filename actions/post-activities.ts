@@ -1,7 +1,8 @@
 "use server"
+
 import prisma from "@/lib/db"
 import { ActivitiesProps } from "@/lib/types"
-import { error } from "console"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { z } from "zod"
 
 const activitySchema = z.object({
@@ -16,6 +17,9 @@ export const PostActivities = async (data: ActivitiesProps) => {
     })
     return activity
   } catch (err: any) {
+    if (err instanceof PrismaClientKnownRequestError && err.code === "P2002") {
+      return { error: "Activity with this name already exists." }
+    }
     if ("errors" in err && err.errors.lenght > 0)
       return { error: err.errors[0].message }
     return { error: "Internal error" }

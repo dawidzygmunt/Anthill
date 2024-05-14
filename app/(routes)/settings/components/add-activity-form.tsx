@@ -3,21 +3,15 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-
 import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { toast } from "@/components/ui/use-toast"
-import { Send } from "lucide-react"
-
 import {
   Dialog,
   DialogContent,
@@ -29,7 +23,7 @@ import { ActivitiesProps } from "@/lib/types"
 
 const FormSchema = z.object({
   name: z.string().min(2, {
-    message: "Activity must be at least 2 characters.",
+    message: "Activity name must be at least 2 characters.",
   }),
 })
 
@@ -55,7 +49,7 @@ export function AddActivityForm({ onActivityAdd }: AddActivityFormProps) {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     const newData = {
       ...data,
-      color: generateRandomColor(), // Dodanie losowego koloru do danych
+      color: generateRandomColor(),
     }
     onActivityAdd(newData)
   }
@@ -74,7 +68,7 @@ export function AddActivityForm({ onActivityAdd }: AddActivityFormProps) {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="w-2/3 space-y-6"
+                className="space-y-6"
               >
                 <FormField
                   control={form.control}

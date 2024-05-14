@@ -3,6 +3,12 @@
 import prisma from "@/lib/db"
 
 export const GetActivities = async () => {
-  const actions = await prisma.activity.findMany()
-  return actions
+  try {
+    const actions = await prisma.activity.findMany()
+    return actions
+  } catch (err: any) {
+    if ("error" in err && err.errors.length > 0)
+      return { error: err.errors[0].message }
+    return { error: "Something went wrong!" }
+  }
 }
