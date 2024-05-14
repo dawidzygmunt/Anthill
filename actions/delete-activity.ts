@@ -1,9 +1,8 @@
 "use server"
 
-import { z } from "zod"
+import prismaCodesMap from "@/app/(routes)/settings/utils/prismaCodes"
 import prisma from "@/lib/db"
-import { error } from "console"
-import { Prisma } from "@prisma/client"
+import { z } from "zod"
 
 const activitySchema = z.object({
   id: z.string().cuid({ message: "activity Id is required" }),
@@ -20,16 +19,12 @@ export const DeleteActivity = async (id: string) => {
     })
     return activity
   } catch (err: any) {
-    if (
-      err instanceof Prisma.PrismaClientKnownRequestError &&
-      err.code === "P2003"
-    ) {
+    if ("code" in err && err.code in prismaCodesMap) {
       return {
-        error:
-          "Cannot delete Activity because it is associated with other tracks.",
+        error: prismaCodesMap[err.code],
       }
     }
-    if ("error" in err && err.errors.length > 0)
+    if ("errors" in err && err.errors.length > 0)
       return { error: err.errors[0].message }
     return { error: "Something went wrong!" }
   }

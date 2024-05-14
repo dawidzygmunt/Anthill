@@ -1,13 +1,9 @@
 "use server"
 
+import prismaCodesMap from "@/app/(routes)/settings/utils/prismaCodes"
 import prisma from "@/lib/db"
 import { ActivitiesProps } from "@/lib/types"
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { z } from "zod"
-
-const prismaCodesMap: Record<string, string> = {
-  P2002: "Activity with this name already exists!",
-}
 
 const activitySchema = z.object({
   name: z
@@ -24,9 +20,6 @@ export const PostActivities = async (data: ActivitiesProps) => {
     })
     return activity
   } catch (err: any) {
-    if (err instanceof PrismaClientKnownRequestError && err.code === "P2002") {
-      return { error: "Activity with this name already exists." }
-    }
     if ("errors" in err && err.errors.lenght > 0)
       return { error: err.errors[0].message }
     if ("code" in err && err.code in prismaCodesMap) {
