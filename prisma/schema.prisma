@@ -35,6 +35,7 @@ model TrackRow {
   activityId String
   from       DateTime
   Track      Track[]
+  createdAt  DateTime @default(now())
 
-  createdAt DateTime @default(now())
+  @@unique([from, activityId])
 }
