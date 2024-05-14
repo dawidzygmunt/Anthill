@@ -1,7 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button"
 import { Edit, Trash2 } from "lucide-react"
-
 import { Activity } from "@prisma/client"
 import Link from "next/link"
 import { AddActivityForm } from "./add-activity-form"
@@ -30,6 +29,7 @@ export const ActivitiesList = ({ data }: { data: Activity[] }) => {
       toast.error(result.error)
       return
     }
+    setActivities(activities.filter((activity) => activity.id !== result.id))
     toast.success("Activity deleted")
   }
   return (
