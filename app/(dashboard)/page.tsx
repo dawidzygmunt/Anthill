@@ -24,7 +24,7 @@ export default function Home({ searchParams }: HomeProps) {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       {/* <SideBar /> */}
-      <div className="grid grid-cols-9 gap-2">
+      <div className="grid grid-cols-9 gap-1">
         <WeekToggler from={from} />
 
         <WeekRow from={from} />

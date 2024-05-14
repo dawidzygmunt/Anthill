@@ -4,19 +4,28 @@ import { Activity } from "@prisma/client"
 import { z } from "zod"
 
 const activitySchema = z.object({
-  id: z.string({ message: "activity Id is required" }),
+  id: z.string().min(3, { message: "Activity id required" }),
+  name: z.string().min(1, { message: "Name is required" }),
 })
 
 export const PatchActivity = async (activity: Activity) => {
-  const result = activitySchema.safeParse(activity)
-  if (!result.success) return { error: result.error }
-  const newActivity = await prisma.activity.update({
-    where: {
-      id: activity.id,
-    },
-    data: activity,
-  })
-  if (!newActivity)
-    return { message: `Activity with this ${activity.id} Id not found` }
-  return newActivity
+  try {
+    const data = activitySchema.parse(activity)
+    const result = await prisma.activity.findFirst({
+      where: { id: data.id },
+    })
+
+    const updatedActivity = await prisma.activity.update({
+      where: {
+        id: activity.id,
+      },
+      data: activity,
+    })
+    return updatedActivity
+  } catch (err: any) {
+    if ("errors" in err && err.errors.length > 0) {
+      return { error: err.errors[0].message }
+    }
+    return { error: "Something went wrong!" }
+  }
 }
