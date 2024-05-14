@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { PatchActivity } from "@/actions/patch-activity"
+import { patchActivity } from "@/actions/patch-activity"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -41,7 +41,7 @@ export function EditActivityForm({
 
   async function onSubmit(initialData: Activity, data: { name: string }) {
     const newData = { ...data, id: initialData.id, color: "#fefefe" }
-    const result = await PatchActivity(newData)
+    const result = await patchActivity(newData)
     if ("error" in result) {
       toast.error(result.error)
       return

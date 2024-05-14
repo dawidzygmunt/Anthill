@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/db"
 
-export const GetSingleActivity = async (activityId: string) => {
+export const getSingleActivity = async (activityId: string) => {
   try {
     if (!activityId) return { error: "activity Id is required" }
     const action = await prisma.activity.findFirst({

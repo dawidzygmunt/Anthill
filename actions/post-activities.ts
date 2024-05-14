@@ -12,7 +12,7 @@ const activitySchema = z.object({
     .max(100, "Activity Name cannot be longer than 100 characters"),
 })
 
-export const PostActivities = async (data: ActivitiesProps) => {
+export const postActivities = async (data: ActivitiesProps) => {
   try {
     const parsedData = activitySchema.parse(data)
     const activity = await prisma.activity.create({

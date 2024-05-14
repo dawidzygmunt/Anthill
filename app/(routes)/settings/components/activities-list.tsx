@@ -6,15 +6,15 @@ import Link from "next/link"
 import { AddActivityForm } from "./add-activity-form"
 import { useState } from "react"
 import { ActivitiesProps } from "@/lib/types"
-import { PostActivities } from "@/actions/post-activities"
+import { postActivities } from "@/actions/post-activities"
 import toast from "react-hot-toast"
-import { DeleteActivity } from "@/actions/delete-activity"
+import { deleteActivity } from "@/actions/delete-activity"
 
 export const ActivitiesList = ({ data }: { data: Activity[] }) => {
   const [activities, setActivities] = useState(data)
 
   async function handleActivityAdd(activity: ActivitiesProps) {
-    const newActivity = await PostActivities(activity)
+    const newActivity = await postActivities(activity)
     if ("error" in newActivity) {
       toast.error(newActivity.error)
       return
@@ -24,7 +24,7 @@ export const ActivitiesList = ({ data }: { data: Activity[] }) => {
   }
 
   const handleDelete = async (id: string) => {
-    const result = await DeleteActivity(id)
+    const result = await deleteActivity(id)
     if ("error" in result) {
       toast.error(result.error)
       return

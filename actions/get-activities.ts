@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/db"
 
-export const GetActivities = async () => {
+export const getActivities = async () => {
   try {
     const actions = await prisma.activity.findMany()
     return actions

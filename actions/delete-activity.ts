@@ -8,7 +8,7 @@ const activitySchema = z.object({
   id: z.string().cuid({ message: "activity Id is required" }),
 })
 
-export const DeleteActivity = async (id: string) => {
+export const deleteActivity = async (id: string) => {
   try {
     const data = activitySchema.parse({ id: id })
 

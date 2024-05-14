@@ -1,8 +1,8 @@
-import { GetActivities } from "@/actions/get-activities"
+import { getActivities } from "@/actions/get-activities"
 import { ActivitiesList } from "./components/activities-list"
 
 const Settings = async () => {
-  const activitiesList = await GetActivities()
+  const activitiesList = await getActivities()
   if ("error" in activitiesList) {
     return activitiesList.error
   }

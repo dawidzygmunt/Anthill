@@ -1,4 +1,4 @@
-import { GetActivities } from "@/actions/get-activities"
+import { getActivities } from "@/actions/get-activities"
 import getTrackRowsForPeriod from "../server-actions/getTrackRowsForPeriod"
 import getTracksForPeriod from "../server-actions/getTracksForPeriod"
 
@@ -12,7 +12,7 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
 
   if ("error" in trackRows) return trackRows.error
 
-  const allActivities = await GetActivities()
+  const allActivities = await getActivities()
   if ("error" in allActivities) return "Something went wrong"!
 
   return (
