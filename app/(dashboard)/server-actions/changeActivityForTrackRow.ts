@@ -1,5 +1,6 @@
 "use server"
 
+import prismaCodesMap from "@/data/prismaCodes"
 import prisma from "@/lib/db"
 
 const changeActivityForTrackRow = async (
@@ -11,7 +12,12 @@ const changeActivityForTrackRow = async (
       data: { activityId },
       where: { id: trackRowId },
     })
-  } catch (err) {
+  } catch (err: any) {
+    if ("code" in err && err.code in prismaCodesMap) {
+      return {
+        error: prismaCodesMap[err.code],
+      }
+    }
     return { error: "Something went wrong" }
   }
 }

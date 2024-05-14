@@ -2,10 +2,7 @@
 
 import prisma from "@/lib/db"
 import revalidateTracks from "./revalidateTracks"
-
-const prismaCodesMap: Record<string, string> = {
-  P2002: "Row for this activity already exists in this week!",
-}
+import prismaCodesMap from "@/data/prismaCodes"
 
 const createTrackRow = async (activityId: string, from: Date) => {
   try {
