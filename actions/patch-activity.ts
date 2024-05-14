@@ -1,6 +1,7 @@
 "use server"
 import prisma from "@/lib/db"
 import { Activity } from "@prisma/client"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { z } from "zod"
 
 const activitySchema = z.object({
@@ -17,15 +18,17 @@ export const PatchActivity = async (activity: Activity) => {
 
     const updatedActivity = await prisma.activity.update({
       where: {
-        id: activity.id,
+        id: data.id,
       },
       data: activity,
     })
     return updatedActivity
   } catch (err: any) {
-    if ("errors" in err && err.errors.length > 0) {
-      return { error: err.errors[0].message }
+    if (err instanceof PrismaClientKnownRequestError && err.code === "P2002") {
+      return { error: "Activity with this name already exists." }
     }
+    if ("errors" in err && err.errors.length > 0)
+      return { error: err.errors[0].message }
     return { error: "Something went wrong!" }
   }
 }
