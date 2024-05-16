@@ -1,6 +1,5 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import { Edit, Trash2 } from "lucide-react"
 import { Activity } from "@prisma/client"
 import Link from "next/link"
 import { AddActivityForm } from "./add-activity-form"
@@ -9,6 +8,8 @@ import { ActivitiesProps } from "@/lib/types"
 import { postActivities } from "@/actions/post-activities"
 import toast from "react-hot-toast"
 import { deleteActivity } from "@/actions/delete-activity"
+import { DeleteIcon } from "./delete-icon"
+import { EditIcon } from "./edit-icon"
 
 export const ActivitiesList = ({ data }: { data: Activity[] }) => {
   const [activities, setActivities] = useState(data)
@@ -44,16 +45,15 @@ export const ActivitiesList = ({ data }: { data: Activity[] }) => {
           <div>
             <Link href={`/settings/${activity.id}`}>
               <Button className="mr-1">
-                <Edit size={15} />
+                <EditIcon className="w-5 h-5" />
               </Button>
             </Link>
             <Button
               className="ml-2"
               onClick={() => handleDelete(activity.id)}
               variant="destructive"
-            >
-              <Trash2 size={15} />
-            </Button>
+            ></Button>
+            <DeleteIcon className="w-5 h-5" />
           </div>
         </div>
       ))}
