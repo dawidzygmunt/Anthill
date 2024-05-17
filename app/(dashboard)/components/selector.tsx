@@ -45,14 +45,14 @@ export function ActivitySelector({
   })
 
   return (
-    <div className="col-span-2">
+    <div className="col-span-2 flex items-center text-[2px]">
       <Form {...form}>
         <form className="w-[200px] space-y-6">
           <FormField
             name="picker"
             control={form.control}
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-16 sm:w-32 xl:w-auto">
                 <Select
                   onValueChange={async (value) => {
                     field.onChange(value)

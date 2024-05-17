@@ -33,7 +33,7 @@ export const ActivitiesList = ({ data }: { data: Activity[] }) => {
     toast.success("Activity deleted")
   }
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col items-center">
       <AddActivityForm onActivityAdd={handleActivityAdd} />
       {activities?.map((activity, index) => (
         <div

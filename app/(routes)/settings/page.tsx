@@ -8,7 +8,7 @@ const Settings = async () => {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-24">
+    <main className="flex min-h-screen flex-col items-center lg:p-24 pt-24">
       <ActivitiesList data={activitiesList} />
     </main>
   )
