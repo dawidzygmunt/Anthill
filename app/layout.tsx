@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Toaster />
         <BetterToast />
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="flex">
           <SideBar />
           <div className="flex w-full justify-center">{children}</div>
