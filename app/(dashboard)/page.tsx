@@ -17,13 +17,10 @@ export default function Home({ searchParams }: HomeProps) {
     : startOfWeek(new Date(), { weekStartsOn: 1 })
 
   const to = addDays(from, 7)
-  // let nextFrom = to
-
-  // let preVFrom = removeda(to, 7)
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between px-5 lg:p-24 pt-20">
-      <div className="grid grid-cols-9 lg:gap-1">
+      <div className="grid grid-cols-9 lg:gap-1 px-0 mx-0">
         <WeekToggler from={from} />
 
         <WeekRow from={from} />

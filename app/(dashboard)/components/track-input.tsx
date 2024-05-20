@@ -84,7 +84,12 @@ const TrackInput = ({ track }: Props) => {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Input
+                    className="p-0 text-center md:text-left md:px-2"
+                    placeholder=""
+                    {...field}
+                    key={track.date.toString()}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
