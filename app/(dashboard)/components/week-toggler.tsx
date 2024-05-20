@@ -1,4 +1,3 @@
-import { SkeletonLoader } from "@/components/skeleton-lodaer"
 import { Button } from "@/components/ui/button"
 import { addDays, subDays } from "date-fns"
 import Link from "next/link"
@@ -17,22 +16,20 @@ const WeekToggler: React.FC<WeekToggler> = ({ from: date }) => {
   searchParamsNext.set("from", addDays(date, 7).toISOString())
 
   return (
-    <Suspense fallback={<SkeletonLoader />}>
-      <div className="col-span-2 flex">
-        <Link
-          href={`/?${searchParamsPrev}`}
-          className="flex justify-start items-center"
-        >
-          <Button className="p-0 px-2 sm:p-4 md:mx-2 lg:w-2/3">{"<"}</Button>
-        </Link>
-        <Link
-          href={`/?${searchParamsNext}`}
-          className="flex justify-start items-center"
-        >
-          <Button className="p-2 mx-1 sm:p-4 lg:mx-2 lg:w-2/3">{">"}</Button>
-        </Link>
-      </div>
-    </Suspense>
+    <div className="col-span-2 flex">
+      <Link
+        href={`/?${searchParamsPrev}`}
+        className="flex justify-start items-center"
+      >
+        <Button className="p-0 px-2 sm:p-4 md:mx-2 lg:w-2/3">{"<"}</Button>
+      </Link>
+      <Link
+        href={`/?${searchParamsNext}`}
+        className="flex justify-start items-center"
+      >
+        <Button className="p-2 mx-1 sm:p-4 lg:mx-2 lg:w-2/3">{">"}</Button>
+      </Link>
+    </div>
   )
 }
 
