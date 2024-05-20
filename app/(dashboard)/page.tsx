@@ -4,6 +4,7 @@ import TracksGrid from "./components/tracks-grid"
 import { addDays, startOfWeek, isValid } from "date-fns"
 import WeekToggler from "./components/week-toggler"
 import { Suspense } from "react"
+import { SkeletonLoader } from "@/components/skeleton-lodaer"
 
 interface HomeProps {
   searchParams: { from: string }
@@ -26,7 +27,7 @@ export default function Home({ searchParams }: HomeProps) {
         <WeekToggler from={from} />
 
         <WeekRow from={from} />
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<SkeletonLoader />}>
           <TracksGrid from={from} to={to} />
         </Suspense>
       </div>

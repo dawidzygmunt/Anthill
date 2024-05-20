@@ -6,6 +6,7 @@ import populateWithNewTracks from "../utils/populate-with-new-tracks"
 import NewTracksRow from "./new-tracks-row"
 import Selector from "./selector"
 import TracksRow from "./tracks-row"
+import { Suspense } from "react"
 
 async function TracksGrid({ from, to }: { from: Date; to: Date }) {
   const trackRows = await getTrackRowsForPeriod(from)
@@ -17,25 +18,27 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
 
   return (
     <>
-      {Promise.all(
-        trackRows.map(async (trackRow) => {
-          const tracks = await getTracksForPeriod(trackRow.id)
-          if ("error" in tracks) return tracks.error
-          return (
-            <>
-              <Selector
-                key={trackRow.activityId}
-                trackRowId={trackRow.id}
-                activityId={trackRow.activityId}
-                activities={allActivities}
-              />
-              <TracksRow
-                trackData={populateWithNewTracks(tracks, trackRow.id, from, to)}
-              />
-            </>
-          )
-        })
-      )}
+      {trackRows.map((trackRow) => {
+        // if ("error" in tracks) return tracks.error
+        return (
+          <>
+            <Selector
+              key={trackRow.activityId}
+              trackRowId={trackRow.id}
+              activityId={trackRow.activityId}
+              activities={allActivities}
+            />
+            <TracksRow
+              trackData={populateWithNewTracks(
+                trackRow.Track,
+                trackRow.id,
+                from,
+                to
+              )}
+            />
+          </>
+        )
+      })}
       <NewTracksRow
         opened={trackRows.length === 0}
         key={trackRows.length}

@@ -6,6 +6,7 @@ const getTrackRowsForPeriod = async (from: Date) => {
   try {
     return await prisma.trackRow.findMany({
       where: { from },
+      include: { Track: true },
       orderBy: { createdAt: "asc" },
     })
   } catch (err) {

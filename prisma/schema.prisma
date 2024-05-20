@@ -12,16 +12,22 @@ datasource db {
 }
 
 model Activity {
-  id       String     @id @default(cuid())
-  name     String     @unique
-  color    String?    @default("#fefefe")
-  TrackRow TrackRow[]
+  id        String     @id @default(cuid())
+  name      String     @unique
+  color     String?    @default("#fefefe")
+  TrackRow  TrackRow[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
 }
 
 model Track {
-  id      String   @id @default(cuid())
-  minutes Int
-  date    DateTime
+  id        String    @id @default(cuid())
+  minutes   Int
+  date      DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   trackRow   TrackRow @relation(fields: [trackRowId], references: [id])
   trackRowId String
@@ -30,12 +36,14 @@ model Track {
 }
 
 model TrackRow {
-  id         String   @id @default(cuid())
-  activity   Activity @relation(fields: [activityId], references: [id])
+  id         String    @id @default(cuid())
+  activity   Activity  @relation(fields: [activityId], references: [id])
   activityId String
   from       DateTime
   Track      Track[]
-  createdAt  DateTime @default(now())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
 
   @@unique([from, activityId])
 }
