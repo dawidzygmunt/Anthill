@@ -1,11 +1,11 @@
 import { getActivities } from "@/actions/get-activities"
 import getTrackRowsForPeriod from "../server-actions/get-track-rows-for-period"
-import getTracksForPeriod from "../server-actions/get-tracks-for-period"
-
 import populateWithNewTracks from "../utils/populate-with-new-tracks"
 import NewTracksRow from "./new-tracks-row"
 import Selector from "./selector"
 import TracksRow from "./tracks-row"
+import { Suspense } from "react"
+import { SkeletonLoader } from "@/components/skeleton-lodaer"
 
 async function TracksGrid({ from, to }: { from: Date; to: Date }) {
   const trackRows = await getTrackRowsForPeriod(from)
@@ -17,32 +17,37 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
 
   return (
     <>
-      {Promise.all(
-        trackRows.map(async (trackRow) => {
-          const tracks = await getTracksForPeriod(trackRow.id)
-          if ("error" in tracks) return tracks.error
+      <Suspense fallback={<SkeletonLoader />}>
+        {trackRows.map((trackRow) => {
           return (
             <>
-              <Selector
-                key={trackRow.activityId}
-                trackRowId={trackRow.id}
-                activityId={trackRow.activityId}
-                activities={allActivities}
-              />
+              <Suspense fallback={<SkeletonLoader />}>
+                <Selector
+                  key={trackRow.activityId}
+                  trackRowId={trackRow.id}
+                  activityId={trackRow.activityId}
+                  activities={allActivities}
+                />
+              </Suspense>
               <TracksRow
-                trackData={populateWithNewTracks(tracks, trackRow.id, from, to)}
+                trackData={populateWithNewTracks(
+                  trackRow.Track,
+                  trackRow.id,
+                  from,
+                  to
+                )}
               />
             </>
           )
-        })
-      )}
-      <NewTracksRow
-        opened={trackRows.length === 0}
-        key={trackRows.length}
-        allActivities={allActivities}
-        from={from}
-        to={to}
-      />
+        })}
+        <NewTracksRow
+          opened={trackRows.length === 0}
+          key={trackRows.length}
+          allActivities={allActivities}
+          from={from}
+          to={to}
+        />
+      </Suspense>
     </>
   )
 }

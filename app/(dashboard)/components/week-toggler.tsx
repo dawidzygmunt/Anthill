@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { addDays, subDays } from "date-fns"
 import Link from "next/link"
-import React from "react"
+import React, { Suspense } from "react"
 import { URLSearchParams } from "url"
 
 interface WeekToggler {
@@ -23,7 +23,6 @@ const WeekToggler: React.FC<WeekToggler> = ({ from: date }) => {
       >
         <Button className="m-0 sm:p-4 ">{"<"}</Button>
       </Link>
-
       <Link
         href={`/?${searchParamsNext}`}
         className="flex justify-start items-center"
