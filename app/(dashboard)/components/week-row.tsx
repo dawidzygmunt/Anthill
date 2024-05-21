@@ -34,8 +34,8 @@ const WeekRow = ({ from }: { from: Date }) => {
           key={index}
           className={
             day.getDay() === 0 || day.getDay() === 6
-              ? "text-gray-400 text-center"
-              : "text-center"
+              ? "text-gray-400 text-center text-[10px] sm:text-sm"
+              : "text-center text-[10px] sm:text-sm"
           }
         >
           {/* <div>{days[day.getDay()]}</div> */}

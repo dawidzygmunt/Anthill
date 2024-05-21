@@ -21,9 +21,8 @@ export default function Home({ searchParams }: HomeProps) {
   // let preVFrom = removeda(to, 7)
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      {/* <SideBar /> */}
-      <div className="grid grid-cols-9 gap-1">
+    <main className="flex min-h-screen flex-col items-center justify-between px-5 lg:p-24 pt-20">
+      <div className="grid grid-cols-9 lg:gap-1">
         <WeekToggler from={from} />
 
         <WeekRow from={from} />
