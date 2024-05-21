@@ -36,14 +36,30 @@ model Track {
 }
 
 model TrackRow {
-  id         String    @id @default(cuid())
-  activity   Activity  @relation(fields: [activityId], references: [id])
-  activityId String
-  from       DateTime
-  Track      Track[]
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  deletedAt  DateTime?
+  id           String    @id @default(cuid())
+  activity     Activity  @relation(fields: [activityId], references: [id])
+  activityId   String
+  from         DateTime
+  Track        Track[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+  isDone       Boolean   @default(false)
+  Week         Week?     @relation(fields: [weekId], references: [id])
+  weekId       String?
+  totalMinutes Int       @default(0)
 
   @@unique([from, activityId])
+}
+
+model Week {
+  id        String     @id @default(cuid())
+  startDate DateTime
+  endDate   DateTime
+  TrackRow  TrackRow[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+
+  @@unique([startDate, endDate])
 }

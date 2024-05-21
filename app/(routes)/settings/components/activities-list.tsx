@@ -52,8 +52,9 @@ export const ActivitiesList = ({ data }: { data: Activity[] }) => {
               className="ml-2"
               onClick={() => handleDelete(activity.id)}
               variant="destructive"
-            ></Button>
-            <DeleteIcon className="w-5 h-5" />
+            >
+              <DeleteIcon className="w-5 h-5" />
+            </Button>
           </div>
         </div>
       ))}
