@@ -1,14 +1,21 @@
-import { Track, TrackRow } from "@prisma/client"
+import { Track, TrackRow, Week } from "@prisma/client"
 import { SingleWeek } from "./single-week"
+import { da } from "@faker-js/faker"
 
-interface SingleWeekData {
-  data: TrackRow[]
+interface ListWeeksProps {
+  weeks: (Week[] & { TrackRow: TrackRow[] }) | null
 }
 
-export const ListWeeks = ({ data }: SingleWeekData) => {
+export const ListWeeks = ({ weeks }: ListWeeksProps) => {
+  if (!weeks) {
+    return <div>No data</div>
+  }
+
   return (
     <div>
-      {data?.map((week: any) => <SingleWeek key={week.id} data={week} />)}
+      {weeks.map((week) => (
+        <SingleWeek key={week.id} week={week} />
+      ))}
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import { updateTotalMinutes } from "../actions/weeks/update-total-minutes"
 import prisma from "../lib/db"
 import { faker } from "@faker-js/faker"
 import { Activity } from "@prisma/client"
@@ -62,10 +63,14 @@ const populateDb = async (weeks = 52 * 5) => {
   ).flat()
 
   await prisma.trackRow.createMany({ data: trackRows })
+  const trackRowsIds = await prisma.trackRow.findMany()
 
   const tracks = await randomTracks()
 
   await prisma.track.createMany({ data: tracks })
+  trackRowsIds.forEach(async (trackRow) => {
+    await updateTotalMinutes(trackRow.id)
+  })
 }
 
 populateDb()

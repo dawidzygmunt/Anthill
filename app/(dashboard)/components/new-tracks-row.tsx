@@ -15,7 +15,7 @@ interface Props {
   opened: boolean
 }
 
-function NewTracksRow({ allActivities, from, to, opened }: Props) {
+function NewTracksRow({ allActivities, from, to, opened = false }: Props) {
   const [add, setAdd] = useState(opened)
   const [activityId, setActivityId] = useState("")
 

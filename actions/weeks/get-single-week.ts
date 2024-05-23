@@ -2,13 +2,13 @@ import prismaCodesMap from "@/app/(dashboard)/utils/prisma-codes"
 import prisma from "@/lib/db"
 import { addDays } from "date-fns"
 
-export const getWeeks = async (from: Date, to: Date) => {
+export const getSingleWeek = async (from: Date) => {
   try {
-    const weeks = await prisma.week.findMany({
+    const week = await prisma.week.findFirst({
       where: {
         from: {
           gte: from,
-          lt: to,
+          lt: addDays(from, 7),
         },
       },
       include: {
@@ -19,7 +19,7 @@ export const getWeeks = async (from: Date, to: Date) => {
         },
       },
     })
-    return weeks
+    return week
   } catch (err: any) {
     if ("code" in err && err.code in prismaCodesMap) {
       return {
