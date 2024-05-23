@@ -2,6 +2,7 @@ import React from "react"
 import { DoneIndicator } from "./done-indicator"
 import { addDays, format } from "date-fns"
 import { Track, TrackRow, Week } from "@prisma/client"
+import { timeFormatter } from "@/lib/utils"
 
 interface SingleWeekProps {
   week: Week & { TrackRow: (TrackRow & { Track: Track[] })[] }
@@ -28,7 +29,7 @@ export const SingleWeek: React.FC<SingleWeekProps> = ({ week }) => {
       <span className="text-sm">{formattedDateRange}</span>
       <div className="flex items-center">
         <DoneIndicator isDone={week.isClosed} />
-        {totalMinutes}
+        {timeFormatter(totalMinutes)}
       </div>
     </div>
   )
