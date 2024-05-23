@@ -29,12 +29,6 @@ export const SingleWeek: React.FC<SingleWeekProps> = ({ week }) => {
       <div className="flex items-center">
         <DoneIndicator isDone={week.isClosed} />
         {totalMinutes}
-        {/* {data.Track.map((track) => (
-          <div key={track.id} className="flex items-center">
-            <span className="text-sm">{track.minutes}</span>
-            <span className="text-sm ml-2">{track.minutes} minutes</span>
-          </div>
-        ))} */}
       </div>
     </div>
   )

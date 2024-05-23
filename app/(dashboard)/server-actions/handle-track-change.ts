@@ -26,14 +26,7 @@ const handleTrackChange = async (
       const trackRow = await prisma.trackRow.findFirst({
         where: { id: trackRowId },
       })
-
       if (!trackRow) return { error: "Track row not found" }
-      prisma.week.create({
-        data: {
-          from: trackRow.from,
-          TrackRow: { connect: { id: trackRowId } },
-        },
-      })
     }
 
     return await prisma.track.update({

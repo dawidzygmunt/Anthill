@@ -1,22 +1,20 @@
+"use server"
 import prismaCodesMap from "@/app/(dashboard)/utils/prisma-codes"
 import prisma from "@/lib/db"
 import { addDays } from "date-fns"
 
-export const getWeeks = async (from: Date, to: Date) => {
+export const updateSingleWeek = async (from: Date, isDone: boolean) => {
   try {
-    return await prisma.week.findMany({
+    const week = await prisma.week.findFirst({
       where: {
-        from: {
-          gte: from,
-          lt: to,
-        },
+        from,
       },
-      include: {
-        TrackRow: {
-          include: {
-            Track: true,
-          },
-        },
+    })
+    if (!week) return { error: "Week not found!" }
+    return await prisma.week.update({
+      where: { id: week.id },
+      data: {
+        isClosed: isDone,
       },
     })
   } catch (err: any) {

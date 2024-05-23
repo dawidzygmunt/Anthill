@@ -8,13 +8,14 @@ import toast from "react-hot-toast"
 
 const SideBar = async () => {
   const today = new Date()
-  const from = subDays(today, 91)
-  const to = addDays(today, 91)
+  const from = subDays(today, 180)
+  const to = addDays(today, 180)
   const weeks = await getWeeks(from, to)
-  // if ("error" in data) {
-  //   toast.error(data.error)
-  //   return
-  // }
+  if ("error" in weeks) {
+    toast.error(weeks.error)
+    return
+  }
+  console.log(weeks)
 
   return (
     <>
@@ -23,7 +24,8 @@ const SideBar = async () => {
       justify-between`}
       >
         <div className="overflow-auto">
-          <ListWeeks weeks={weeks} />
+          {/* <ListWeeks weeks={weeks} /> */}
+          <ListWeeks weeks={weeks.map((week) => ({ ...week, week }))} />
         </div>
 
         <div className="p-4 bg-[#0d1321] text-[#8d8d8d] flex">
