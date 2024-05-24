@@ -15,7 +15,6 @@ const SideBar = async () => {
     toast.error(weeks.error)
     return
   }
-  console.log(weeks)
 
   return (
     <>
@@ -24,7 +23,6 @@ const SideBar = async () => {
       justify-between`}
       >
         <div className="overflow-auto">
-          {/* <ListWeeks weeks={weeks} /> */}
           <ListWeeks weeks={weeks.map((week) => ({ ...week, week }))} />
         </div>
 

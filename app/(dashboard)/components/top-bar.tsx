@@ -16,6 +16,7 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
       const response = await getSingleWeek(from)
       if (!response) {
         // toast.error("Week not found!")
+        setIsDone(false)
         return
       }
       if ("error" in response) {
@@ -33,6 +34,7 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
     const response = await updateSingleWeek(from, !isDone)
     if ("error" in response) {
       toast.error(response.error)
+      return
     }
     !isDone && toast.success("Week closed")
     revalidateTracks("/")

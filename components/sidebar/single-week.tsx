@@ -1,9 +1,12 @@
+// "use client"
+
 import React from "react"
 import { DoneIndicator } from "./done-indicator"
 import { addDays, format } from "date-fns"
 import { Track, TrackRow, Week } from "@prisma/client"
 import { timeFormatter } from "@/lib/utils"
 import { getSingleActivity } from "@/actions/get-single-activity"
+import Link from "next/link"
 
 interface SingleWeekProps {
   week: Week & { TrackRow: (TrackRow & { Track: Track[] })[] }
@@ -49,17 +52,23 @@ export const SingleWeek: React.FC<SingleWeekProps> = async ({ week }) => {
   if ("error" in mostActivity) {
     return
   }
-
+  const weekUrl = new URLSearchParams()
+  weekUrl.set("from", from.toISOString())
   return (
-    <div className="px-5 py-5 flex flex-col justify-center my-4 shadow-md bg-[#f1f0f0]">
-      <span className="text-md">{formattedDateRange}</span>
-      <div className="font-bold my-1">{mostActivity.name}</div>
-      <div className="flex justify-between items-center">
-        <DoneIndicator isDone={week.isClosed} />
-        <div className="text-sm bg-slate-300 px-2 rounded-xl mr-6">
-          {timeFormatter(totalMinutes)}
+    <Link href={`/?${weekUrl}`}>
+      <div
+        className={`px-5 py-5 flex flex-col justify-center my-4 shadow-md bg-[#f1f0f0] 
+        hover:bg-slate-200 transition-all ${"a" === from.toISOString() ? "bg-slate-200" : ""}`}
+      >
+        <span className="text-md">{formattedDateRange}</span>
+        <div className="font-bold my-1">{mostActivity.name}</div>
+        <div className="flex justify-between items-center">
+          <DoneIndicator isDone={week.isClosed} />
+          <div className="text-sm bg-slate-300 px-2 rounded-xl mr-6">
+            {timeFormatter(totalMinutes)}
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }

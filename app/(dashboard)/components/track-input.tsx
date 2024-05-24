@@ -64,7 +64,6 @@ const TrackInput = ({ track }: Props) => {
       parseInt(data.trackInput, 10)
     )
     if ("error" in result) {
-      console.log(result.error)
       toast.error(result.error)
       return form.setValue("trackInput", track.minutes?.toString() ?? "")
     }

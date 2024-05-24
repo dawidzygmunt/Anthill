@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog"
 import { ActivitiesProps } from "@/lib/types"
 import { DialogClose } from "@radix-ui/react-dialog"
+import { getRandomHexColor } from "@/lib/utils"
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -30,13 +31,6 @@ const FormSchema = z.object({
 
 interface AddActivityFormProps {
   onActivityAdd: (activity: ActivitiesProps) => void
-}
-
-function generateRandomColor() {
-  const red = Math.floor(Math.random() * 256)
-  const green = Math.floor(Math.random() * 256)
-  const blue = Math.floor(Math.random() * 256)
-  return `#${red.toString(16).padStart(2, "0")}${green.toString(16).padStart(2, "0")}${blue.toString(16).padStart(2, "0")}`
 }
 
 export function AddActivityForm({ onActivityAdd }: AddActivityFormProps) {
@@ -50,7 +44,7 @@ export function AddActivityForm({ onActivityAdd }: AddActivityFormProps) {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     const newData = {
       ...data,
-      color: generateRandomColor(),
+      color: getRandomHexColor(),
     }
     onActivityAdd(newData)
   }

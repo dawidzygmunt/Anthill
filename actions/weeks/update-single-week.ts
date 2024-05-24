@@ -9,7 +9,7 @@ export const updateSingleWeek = async (from: Date, isDone: boolean) => {
         from,
       },
     })
-    if (!week) return { error: "Week not found!" }
+    if (!week) return { error: "There are no activities for this week" }
     return await prisma.week.update({
       where: { id: week.id },
       data: {

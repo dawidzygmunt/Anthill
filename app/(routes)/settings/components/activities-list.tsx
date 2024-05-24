@@ -42,7 +42,7 @@ export const ActivitiesList = ({ data }: { data: Activity[] }) => {
           className="px-3 pl-5 py-2 bg-[#e5e3e3] m-3 w-[400px] rounded-sm flex justify-between items-center"
         >
           {activity.name}
-          <div>
+          <div key={activity.id}>
             <Link href={`/settings/${activity.id}`}>
               <Button className="mr-1">
                 <EditIcon className="w-5 h-5" />
