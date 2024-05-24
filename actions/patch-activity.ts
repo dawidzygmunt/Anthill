@@ -9,7 +9,11 @@ const activitySchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
 })
 
-export const patchActivity = async (activity: Activity) => {
+export const patchActivity = async (activity: {
+  id: string
+  color: string
+  name: string
+}) => {
   try {
     const data = activitySchema.parse(activity)
     const result = await prisma.activity.findFirst({

@@ -2,7 +2,6 @@
 import { updateSingleWeek } from "@/actions/weeks/update-single-week"
 import { Button } from "@/components/ui/button"
 import { error } from "console"
-import { revalidatePath } from "next/cache"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { getSingleWeek } from "@/actions/weeks/get-single-week"
@@ -36,7 +35,7 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
       toast.error(response.error)
     }
     !isDone && toast.success("Week closed")
-    revalidateTracks()
+    revalidateTracks("/")
   }
 
   const formattedDateRange = `${format(from, "dd MMM")} - ${format(to, "dd MMM yyyy")}`

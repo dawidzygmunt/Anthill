@@ -1,7 +1,6 @@
 "use server"
 import prismaCodesMap from "@/app/(dashboard)/utils/prisma-codes"
 import prisma from "@/lib/db"
-import { addDays } from "date-fns"
 
 export const updateSingleWeek = async (from: Date, isDone: boolean) => {
   try {

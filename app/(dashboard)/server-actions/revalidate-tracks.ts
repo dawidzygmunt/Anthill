@@ -3,8 +3,8 @@
 import { de } from "@faker-js/faker"
 import { revalidatePath } from "next/cache"
 
-const revalidateTracks = () => {
-  revalidatePath("/")
+const revalidate = (path: string = "/") => {
+  revalidatePath(path)
 }
 
-export default revalidateTracks
+export default revalidate
