@@ -1,0 +1,47 @@
+default:
+  tags:
+    - self-hosted
+    # - docker
+  image: node:20.12.2
+
+stages:
+  - prepare
+  - lint
+  - test
+  - build
+  # - docker
+prepare:
+  stage: prepare
+  artifacts:
+    paths:
+      - node_modules
+  cache:
+    key:
+      files:
+        - package-lock.json
+        - package.json
+      prefix: ${CI_PROJECT_NAME}
+    paths:
+      - node_modules/
+  script:
+    - "npm ci"
+
+lint:
+  stage: lint
+  script:
+    - "npm run lint"
+
+build:
+  stage: build
+  script:
+    - "npm run build"
+# docker:
+#   stage: docker
+#   image: docker:25.0.5
+#   tags:
+#     - docker
+#   script:
+#     - 'docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY'
+#     - "docker build -t $CI_REGISTRY_IMAGE/dawid ."
+#     - "docker push $CI_REGISTRY_IMAGE/dawid"
+
