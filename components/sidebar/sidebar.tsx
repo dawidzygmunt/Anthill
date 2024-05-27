@@ -1,4 +1,3 @@
-// "use client"
 import { getWeeks } from "@/actions/weeks/get-weeks"
 import { addDays, subDays } from "date-fns"
 import { ListWeeks } from "./list-weeks"

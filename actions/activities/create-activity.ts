@@ -2,6 +2,7 @@
 
 import prismaCodesMap from "@/app/(routes)/settings/utils/prismaCodes"
 import prisma from "@/lib/db"
+import { ERROR_MESSAGES } from "@/lib/error-messages"
 import { ActivitiesProps } from "@/lib/types"
 import { getRandomHexColor } from "@/lib/utils"
 import { z } from "zod"
@@ -29,6 +30,6 @@ export const postActivities = async (data: ActivitiesProps) => {
         error: prismaCodesMap[err.code],
       }
     }
-    return { error: "Something went wrong" }
+    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
   }
 }

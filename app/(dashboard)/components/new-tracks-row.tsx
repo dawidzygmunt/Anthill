@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Activity } from "@prisma/client"
 import { useState } from "react"
 import toast from "react-hot-toast"
-import createTrackRow from "../server-actions/create-track-row"
+import createTrackRow from "../../../actions/tracks/create-track-row"
 import Selector from "./selector"
 
 interface Props {

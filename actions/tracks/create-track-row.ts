@@ -1,9 +1,9 @@
 "use server"
 
 import prisma from "@/lib/db"
-import prismaCodesMap from "@/app/(dashboard)/utils/prisma-codes"
+import prismaCodesMap from "@/utils/prisma-codes"
 import { tr } from "@faker-js/faker"
-import revalidateTracks from "./revalidate-tracks"
+import revalidateTracks from "./revalidate"
 
 const createTrackRow = async (activityId: string, from: Date) => {
   try {

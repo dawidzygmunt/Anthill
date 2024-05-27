@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { patchActivity } from "@/actions/patch-activity"
+import { patchActivity } from "@/actions/activities/update-activity"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { revalidatePath } from "next/cache"
-import revalidateTracks from "@/app/(dashboard)/server-actions/revalidate-tracks"
+import revalidateTracks from "@/actions/tracks/revalidate"
 
 const FormSchema = z.object({
   name: z.string({

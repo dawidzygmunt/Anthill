@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { getSingleWeek } from "@/actions/weeks/get-single-week"
 import { format } from "date-fns"
-import revalidateTracks from "../server-actions/revalidate-tracks"
+import revalidateTracks from "../../../actions/tracks/revalidate"
 
 export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
   const [isDone, setIsDone] = useState(false)

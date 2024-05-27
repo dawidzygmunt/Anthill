@@ -1,4 +1,4 @@
-import prisma from "../lib/db"
+import prisma from "../../lib/db"
 
 export const clearDb = async () => {
   console.log("Clearing db...")

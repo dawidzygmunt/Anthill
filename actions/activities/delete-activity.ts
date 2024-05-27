@@ -2,6 +2,7 @@
 
 import prismaCodesMap from "@/app/(routes)/settings/utils/prismaCodes"
 import prisma from "@/lib/db"
+import { ERROR_MESSAGES } from "@/lib/error-messages"
 import { z } from "zod"
 
 const activitySchema = z.object({
@@ -26,6 +27,6 @@ export const deleteActivity = async (id: string) => {
     }
     if ("errors" in err && err.errors.length > 0)
       return { error: err.errors[0].message }
-    return { error: "Something went wrong!" }
+    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
   }
 }

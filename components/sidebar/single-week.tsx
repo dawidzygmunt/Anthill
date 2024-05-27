@@ -1,11 +1,9 @@
-// "use client"
-
 import React from "react"
 import { DoneIndicator } from "./done-indicator"
-import { addDays, format } from "date-fns"
+import { addDays, format, startOfWeek } from "date-fns"
 import { Track, TrackRow, Week } from "@prisma/client"
 import { timeFormatter } from "@/lib/utils"
-import { getSingleActivity } from "@/actions/get-single-activity"
+import { getSingleActivity } from "@/actions/activities/get-single-activity"
 import Link from "next/link"
 
 interface SingleWeekProps {
@@ -13,8 +11,9 @@ interface SingleWeekProps {
 }
 
 export const SingleWeek: React.FC<SingleWeekProps> = async ({ week }) => {
-  const from = week.from
-  const to = addDays(from, 7)
+  const from = startOfWeek(new Date(week.from), { weekStartsOn: 1 })
+
+  const to = addDays(from, 6)
 
   const activityMinutesMap = new Map<string, number>()
 
@@ -53,7 +52,10 @@ export const SingleWeek: React.FC<SingleWeekProps> = async ({ week }) => {
     return
   }
   const weekUrl = new URLSearchParams()
-  weekUrl.set("from", from.toISOString())
+  weekUrl.set(
+    "from",
+    startOfWeek(from.toISOString(), { weekStartsOn: 1 }).toISOString()
+  )
   return (
     <Link href={`/?${weekUrl}`}>
       <div

@@ -1,5 +1,5 @@
 import { updateTotalMinutes } from "../actions/weeks/update-total-minutes"
-import prisma from "../lib/db"
+import prisma from "../../lib/db"
 import { faker } from "@faker-js/faker"
 import { Activity } from "@prisma/client"
 import { addDays, subDays, startOfWeek, setDefaultOptions } from "date-fns"
