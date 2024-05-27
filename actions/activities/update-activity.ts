@@ -1,14 +1,10 @@
 "use server"
+
 import prisma from "@/lib/db"
 import { ERROR_MESSAGES } from "@/lib/error-messages"
-import { Activity } from "@prisma/client"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
-import { z } from "zod"
 
-const activitySchema = z.object({
-  id: z.string().min(3, { message: "Activity id required" }),
-  name: z.string().min(1, { message: "Name is required" }),
-})
+import { editFormSchema } from "@/schemas/edit-form-schema"
 
 export const patchActivity = async (activity: {
   id: string
@@ -16,7 +12,7 @@ export const patchActivity = async (activity: {
   name: string
 }) => {
   try {
-    const data = activitySchema.parse(activity)
+    const data = editFormSchema.parse(activity)
     const result = await prisma.activity.findFirst({
       where: { id: data.id },
     })

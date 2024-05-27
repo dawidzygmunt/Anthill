@@ -1,6 +1,7 @@
 "use server"
 
 import prisma from "@/lib/db"
+import { ERROR_MESSAGES } from "@/lib/error-messages"
 
 export const createWeek = async (from: Date, to: Date, TrackRows: any) => {
   try {
@@ -8,14 +9,16 @@ export const createWeek = async (from: Date, to: Date, TrackRows: any) => {
       where: { from },
     })
     if (!week) {
-      const response = await prisma.week.create({
+      return await prisma.week.create({
         data: {
           from,
           TrackRow: TrackRows,
         },
       })
     }
-  } catch (err) {
-    return { error: "Something went wrong" }
+  } catch (err: any) {
+    if ("error" in err && err.errors.length > 0)
+      return { error: err.errors[0].message }
+    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
   }
 }

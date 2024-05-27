@@ -14,7 +14,7 @@ datasource db {
 model Activity {
   id        String     @id @default(cuid())
   name      String     @unique
-  color     String?    @default("#fefefe")
+  color     String     @default("#fefefe")
   TrackRow  TrackRow[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt

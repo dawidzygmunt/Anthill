@@ -11,7 +11,7 @@ const activitySchema = z.object({
   name: z
     .string()
     .min(2, { message: "Activity Name is required" })
-    .max(100, "Activity Name cannot be longer than 100 characters"),
+    .max(40, "Activity Name cannot be longer than 40 characters"),
 })
 
 export const postActivities = async (data: ActivitiesProps) => {

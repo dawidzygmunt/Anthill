@@ -2,12 +2,13 @@
 
 import prisma from "@/lib/db"
 import { ERROR_MESSAGES } from "@/lib/error-messages"
+import { idSchema } from "@/schemas/activities/id-schema"
 
 export const getSingleActivity = async (activityId: string) => {
   try {
-    if (!activityId) return { error: "activity Id is required" }
+    const parsedData = idSchema.parse({ id: activityId })
     const action = await prisma.activity.findFirst({
-      where: { id: activityId },
+      where: { id: parsedData.id },
     })
     if (!action) return { error: "Can't find activity with this Id" }
     return action

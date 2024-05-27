@@ -3,19 +3,15 @@
 import prismaCodesMap from "@/app/(routes)/settings/utils/prismaCodes"
 import prisma from "@/lib/db"
 import { ERROR_MESSAGES } from "@/lib/error-messages"
-import { z } from "zod"
-
-const activitySchema = z.object({
-  id: z.string().cuid({ message: "activity Id is required" }),
-})
+import { idSchema } from "@/schemas/activities/id-schema"
 
 export const deleteActivity = async (id: string) => {
   try {
-    const data = activitySchema.parse({ id: id })
+    const parsedData = idSchema.parse({ id: id })
 
     const activity = await prisma.activity.delete({
       where: {
-        id: id,
+        id: parsedData.id,
       },
     })
     return activity

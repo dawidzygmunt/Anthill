@@ -16,33 +16,15 @@ import {
 import { Input } from "@/components/ui/input"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
-import { revalidatePath } from "next/cache"
-import revalidateTracks from "@/actions/tracks/revalidate"
+import revalidate from "@/actions/tracks/revalidate"
+import { editFormSchema } from "@/schemas/edit-form-schema"
+import { X } from "lucide-react"
+import { Activity } from "@prisma/client"
 
-const FormSchema = z.object({
-  name: z.string({
-    message: "Name must be at least 2 characters." || "",
-  }),
-  color: z.string({
-    message: "Color must be a valid hex code." || "",
-  }),
-})
-
-export function EditActivityForm({
-  initialData,
-}: {
-  initialData: {
-    id: string
-    name: string
-    color: string
-    createdAt: Date | null
-    updatedAt: Date | null
-    deletedAt: Date | null
-  }
-}) {
+export function EditActivityForm({ initialData }: { initialData: Activity }) {
   const router = useRouter()
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof editFormSchema>>({
+    resolver: zodResolver(editFormSchema),
     defaultValues: initialData,
   })
 
@@ -54,12 +36,20 @@ export function EditActivityForm({
       return
     }
     toast.success("Activity modified")
-    revalidateTracks(`/settings/${initialData.id}`)
+    revalidate(`/settings/${initialData.id}`)
     router.push("/settings")
   }
   return (
     <main className="flex m-24">
-      <div className="bg-[#c5c5c5] px-10 py-5 rounded-lg shadow-md">
+      <div className="bg-[#c5c5c5] px-10 py-5 rounded-lg shadow-md relative">
+        <Button
+          className="absolute right-2 top-2 w-[20px] h-[20px] p-0"
+          onClick={() => {
+            router.push("/settings")
+          }}
+        >
+          <X size={15} />
+        </Button>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit((data) => onSubmit(data))}
