@@ -31,7 +31,27 @@ lint:
 
 build:
   stage: build
-  dependencies:
-    - prepare
+  image:
+    name: quay.io/buildah/stable:v1.34.0
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - |
+      export STORAGE_DRIVER='vfs'
+      export BUILDAH_FORMAT='docker'
   script:
-    - "npm run build"
+    - |
+      if [[ "$CI_COMMIT_REF_NAME" == "$CI_DEFAULT_BRANCH" ]]; then
+        TAG="latest"
+        echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
+      elif [[ -n "$CI_COMMIT_TAG" ]]; then
+        TAG="$CI_COMMIT_TAG"
+        echo "Running on tag '$CI_COMMIT_TAG': tag = $TAG"
+      fi
+    - buildah build --ulimit nofile=4096:4096
+      -t "$CI_REGISTRY_IMAGE:$TAG" -t "$CI_REGISTRY_IMAGE:${CI_COMMIT_SHORT_SHA}"
+      -f "Dockerfile" .
+    - buildah push "$CI_REGISTRY_IMAGE:$TAG"
+    - buildah push "$CI_REGISTRY_IMAGE:${CI_COMMIT_SHORT_SHA}"
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: '$CI_COMMIT_REF_NAME == "main"'
