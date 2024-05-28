@@ -5,6 +5,11 @@ import { Button } from "../ui/button"
 import { ListWeeks } from "./list-weeks"
 import { Nav } from "./nav"
 import { useState } from "react"
+import { WeekProps } from "@/lib/types"
+
+interface ListWeeksProps {
+  weeks: WeekProps[]
+}
 
 export const MobileSidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -31,7 +36,7 @@ export const MobileSidebar = () => {
           <Button className="px-3 m-2">
             <X size={20} onClick={toggleSidebar} />
           </Button>
-          {/* <ListWeeks data={data12} /> */}
+          {/* <ListWeeks weeks={weeks} /> */}
         </div>
         <div className="p-4 bg-[#0d1321] w-full text-[#8d8d8d] flex">
           <Nav />
