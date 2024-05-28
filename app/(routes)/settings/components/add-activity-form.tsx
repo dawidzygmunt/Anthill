@@ -19,9 +19,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { ActivitiesProps } from "@/lib/types"
 import { DialogClose } from "@radix-ui/react-dialog"
 import { getRandomHexColor } from "@/lib/utils"
+import revalidate from "@/actions/tracks/revalidate"
+import { createActivity } from "@/actions/activities/create-activity"
+import toast from "react-hot-toast"
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -29,11 +31,7 @@ const FormSchema = z.object({
   }),
 })
 
-interface AddActivityFormProps {
-  onActivityAdd: (activity: ActivitiesProps) => void
-}
-
-export function AddActivityForm({ onActivityAdd }: AddActivityFormProps) {
+export function AddActivityForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -41,12 +39,17 @@ export function AddActivityForm({ onActivityAdd }: AddActivityFormProps) {
     },
   })
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     const newData = {
       ...data,
       color: getRandomHexColor(),
     }
-    onActivityAdd(newData)
+    const response = await createActivity(newData)
+    if ("error" in response) {
+      toast.error(response.error)
+    }
+    toast.success("Activity added successfully")
+    revalidate("/settings")
   }
   return (
     <Dialog>

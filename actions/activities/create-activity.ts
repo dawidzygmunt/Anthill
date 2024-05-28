@@ -14,7 +14,7 @@ const activitySchema = z.object({
     .max(40, "Activity Name cannot be longer than 40 characters"),
 })
 
-export const postActivities = async (data: ActivitiesProps) => {
+export const createActivity = async (data: ActivitiesProps) => {
   const randomColor = getRandomHexColor()
   try {
     const parsedData = activitySchema.parse(data)
