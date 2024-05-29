@@ -5,7 +5,7 @@ import { addDays, startOfWeek, isValid, subDays, add } from "date-fns"
 import WeekToggler from "./components/week-toggler"
 import { Suspense } from "react"
 import { SkeletonLoader } from "@/components/skeleton-lodaer"
-import { TopBar } from "./components/top-bar"
+import { TopBar } from "../../components/top-bar"
 
 interface HomeProps {
   searchParams: { from: string }
@@ -21,7 +21,7 @@ export default function Home({ searchParams }: HomeProps) {
   console.log(from, to)
 
   return (
-    <main className="flex min-h-screen flex-col items-center px-5 lg:p-24 lg:pt-10 ">
+    <main className="px-5 lg:p-24 lg:pt-10 ">
       <TopBar from={from} to={to} />
 
       <div className="grid grid-cols-9 lg:gap-1 px-0 mx-0">

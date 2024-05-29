@@ -1,12 +1,11 @@
 "use client"
 import { updateSingleWeek } from "@/actions/weeks/update-single-week"
 import { Button } from "@/components/ui/button"
-import { error } from "console"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { getSingleWeek } from "@/actions/weeks/get-single-week"
 import { format } from "date-fns"
-import revalidateTracks from "../../../actions/tracks/revalidate"
+import revalidateTracks from "../actions/tracks/revalidate"
 
 export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
   const [isDone, setIsDone] = useState(false)
@@ -15,7 +14,6 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
     const getWeek = async () => {
       const response = await getSingleWeek(from)
       if (!response) {
-        // toast.error("Week not found!")
         setIsDone(false)
         return
       }
@@ -43,7 +41,7 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
   const formattedDateRange = `${format(from, "dd MMM")} - ${format(to, "dd MMM yyyy")}`
 
   return (
-    <div className="w-full flex justify-between items-center m-10 mr-20 mt-0">
+    <div className="w-full flex justify-between mb-10 mr-20 mt-0">
       <div className="text-2xl font-bold">{formattedDateRange}</div>
       <div>
         {isDone ? (
