@@ -66,7 +66,7 @@ export const SingleWeek: React.FC<SingleWeekProps> = async ({ week }) => {
         <div className="font-bold my-1">{mostActivity.name}</div>
         <div className="flex justify-between items-center">
           <DoneIndicator isDone={week.isClosed} />
-          <div className="text-sm bg-slate-300 px-2 rounded-xl mr-6">
+          <div className="text-sm bg-slate-300 px-2 rounded-xl mr-3">
             {timeFormatter(totalMinutes)}
           </div>
         </div>

@@ -26,7 +26,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "eslint-rules/.eslintrc.js"
+    "eslint-rules/.eslintrc.js",
+    "prisma/dev/clearDb.js"
   ],
   "exclude": ["node_modules"]
 }
