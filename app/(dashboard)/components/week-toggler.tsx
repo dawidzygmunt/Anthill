@@ -10,10 +10,10 @@ interface WeekToggler {
 
 const WeekToggler: React.FC<WeekToggler> = ({ from: date }) => {
   const searchParamsPrev = new URLSearchParams()
-  searchParamsPrev.set("from", subDays(date, 7).toISOString())
+  searchParamsPrev.set("from", subDays(date, 7).toISOString().split("T")[0])
 
   const searchParamsNext = new URLSearchParams()
-  searchParamsNext.set("from", addDays(date, 7).toISOString())
+  searchParamsNext.set("from", addDays(date, 7).toISOString().split("T")[0])
 
   return (
     <div className="col-span-2 flex">

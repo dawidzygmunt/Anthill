@@ -1,4 +1,4 @@
-import prisma from "../lib/db"
+import prisma from "../../lib/db"
 import { faker } from "@faker-js/faker"
 import { Activity } from "@prisma/client"
 import { addDays, subDays, startOfWeek, setDefaultOptions } from "date-fns"
@@ -62,10 +62,12 @@ const populateDb = async (weeks = 52 * 5) => {
   ).flat()
 
   await prisma.trackRow.createMany({ data: trackRows })
+  const trackRowsIds = await prisma.trackRow.findMany()
 
   const tracks = await randomTracks()
 
   await prisma.track.createMany({ data: tracks })
+  trackRowsIds.forEach(async (trackRow) => {})
 }
 
 populateDb()

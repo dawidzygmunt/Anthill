@@ -1,4 +1,4 @@
-import { getActivities } from "@/actions/get-activities"
+import { getActivities } from "@/actions/activities/get-activities"
 import { ActivitiesList } from "./components/activities-list"
 
 const Settings = async () => {

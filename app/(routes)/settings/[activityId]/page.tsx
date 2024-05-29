@@ -1,4 +1,4 @@
-import { getSingleActivity } from "@/actions/get-single-activity"
+import { getSingleActivity } from "@/actions/activities/get-single-activity"
 import toast from "react-hot-toast"
 import { EditActivityForm } from "./components/edit-activity-form"
 

@@ -8,8 +8,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Activity } from "@prisma/client"
-import changeActivityForTrackRow from "../server-actions/change-activity-for-track-row"
-import revalidateTracks from "../server-actions/revalidate-tracks"
+import changeActivityForTrackRow from "../../../actions/tracks/change-activity-for-track-row"
+import revalidateTracks from "../../../actions/tracks/revalidate"
 
 import { toast } from "react-hot-toast"
 import { useEffect, useState } from "react"

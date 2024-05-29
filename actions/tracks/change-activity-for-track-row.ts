@@ -1,6 +1,6 @@
 "use server"
 
-import prismaCodesMap from "@/app/(dashboard)/utils/prisma-codes"
+import prismaCodesMap from "@/utils/prisma-codes"
 import prisma from "@/lib/db"
 
 const changeActivityForTrackRow = async (

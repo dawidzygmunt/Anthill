@@ -1,5 +1,6 @@
 "use server"
 import prisma from "@/lib/db"
+import { ERROR_MESSAGES } from "@/lib/error-messages"
 import { z } from "zod"
 
 const trackSchema = z.object({
@@ -21,7 +22,13 @@ const handleTrackChange = async (
     const data = trackSchema.parse({ trackRowId, date, minutes })
 
     const track = await prisma.track.findFirst({ where: { trackRowId, date } })
-    if (!track) return await prisma.track.create({ data })
+    if (!track) {
+      await prisma.track.create({ data })
+      const trackRow = await prisma.trackRow.findFirst({
+        where: { id: trackRowId },
+      })
+      if (!trackRow) return { error: "Track row not found" }
+    }
 
     return await prisma.track.update({
       data: { minutes },
@@ -30,7 +37,7 @@ const handleTrackChange = async (
   } catch (err: any) {
     if ("errors" in err && err.errors.length > 0)
       return { error: err.errors[0].message }
-    return { error: "Something went wrong!" }
+    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
   }
 }
 

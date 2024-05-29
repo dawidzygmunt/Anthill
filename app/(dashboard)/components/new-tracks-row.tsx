@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Activity } from "@prisma/client"
 import { useState } from "react"
 import toast from "react-hot-toast"
-import createTrackRow from "../server-actions/create-track-row"
+import createTrackRow from "../../../actions/tracks/create-track-row"
 import Selector from "./selector"
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
   opened: boolean
 }
 
-function NewTracksRow({ allActivities, from, to, opened }: Props) {
+function NewTracksRow({ allActivities, from, to, opened = false }: Props) {
   const [add, setAdd] = useState(opened)
   const [activityId, setActivityId] = useState("")
 
@@ -29,7 +29,7 @@ function NewTracksRow({ allActivities, from, to, opened }: Props) {
           setActivityId(id)
           if (id) {
             const result = await createTrackRow(id, from)
-            if ("error" in result) {
+            if ("error" in result && result.error) {
               toast.error(result.error)
               setActivityId("")
             }

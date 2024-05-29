@@ -1,6 +1,6 @@
-import { getActivities } from "@/actions/get-activities"
-import getTrackRowsForPeriod from "../server-actions/get-track-rows-for-period"
-import populateWithNewTracks from "../utils/populate-with-new-tracks"
+import { getActivities } from "@/actions/activities/get-activities"
+import getTrackRowsForPeriod from "../../../actions/tracks/get-track-rows-for-period"
+import populateWithNewTracks from "../../../utils/populate-with-new-tracks"
 import NewTracksRow from "./new-tracks-row"
 import Selector from "./selector"
 import TracksRow from "./tracks-row"
@@ -8,27 +8,36 @@ import { Suspense } from "react"
 import { SkeletonLoader } from "@/components/skeleton-lodaer"
 
 async function TracksGrid({ from, to }: { from: Date; to: Date }) {
-  const trackRows = await getTrackRowsForPeriod(from)
-
-  if ("error" in trackRows) return trackRows.error
-
+  const weeks = await getTrackRowsForPeriod(from)
   const allActivities = await getActivities()
   if ("error" in allActivities) return "Something went wrong"!
+
+  if (!weeks)
+    return (
+      <NewTracksRow
+        opened={true}
+        key={from.toDateString()}
+        allActivities={allActivities}
+        from={from}
+        to={to}
+      />
+    )
+
+  if ("error" in weeks) return weeks.error
 
   return (
     <>
       <Suspense fallback={<SkeletonLoader />}>
-        {trackRows.map((trackRow) => {
+        {weeks.TrackRow.map((trackRow) => {
           return (
             <>
-              <Suspense fallback={<SkeletonLoader />}>
-                <Selector
-                  key={trackRow.activityId}
-                  trackRowId={trackRow.id}
-                  activityId={trackRow.activityId}
-                  activities={allActivities}
-                />
-              </Suspense>
+              <Selector
+                key={trackRow.activityId}
+                trackRowId={trackRow.id}
+                activityId={trackRow.activityId}
+                activities={allActivities}
+              />
+
               <TracksRow
                 trackData={populateWithNewTracks(
                   trackRow.Track,
@@ -36,13 +45,14 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
                   from,
                   to
                 )}
+                key={trackRow.id}
               />
             </>
           )
         })}
         <NewTracksRow
-          opened={trackRows.length === 0}
-          key={trackRows.length}
+          opened={weeks.TrackRow.length === 0}
+          key={weeks.TrackRow.length}
           allActivities={allActivities}
           from={from}
           to={to}

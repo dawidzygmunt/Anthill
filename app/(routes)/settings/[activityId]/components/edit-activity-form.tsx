@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { patchActivity } from "@/actions/patch-activity"
+import { patchActivity } from "@/actions/activities/update-activity"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -15,46 +15,44 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import toast from "react-hot-toast"
-import { Activity } from "@prisma/client"
 import { useRouter } from "next/navigation"
+import revalidate from "@/actions/tracks/revalidate"
+import { editFormSchema } from "@/schemas/edit-form-schema"
+import { X } from "lucide-react"
+import { Activity } from "@prisma/client"
 
-interface EditActivityFormProps {
-  addFunction: () => void
-}
-
-const FormSchema = z.object({
-  name: z.string({
-    message: "Name must be at least 2 characters." || "",
-  }),
-})
-
-export function EditActivityForm({
-  initialData,
-}: {
-  initialData: { id: string; name: string; color: string | null }
-}) {
+export function EditActivityForm({ initialData }: { initialData: Activity }) {
   const router = useRouter()
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof editFormSchema>>({
+    resolver: zodResolver(editFormSchema),
     defaultValues: initialData,
   })
 
-  async function onSubmit(initialData: Activity, data: { name: string }) {
-    const newData = { ...data, id: initialData.id, color: "#fefefe" }
+  async function onSubmit(data: { name: string; color: string }) {
+    const newData = { ...data, id: initialData.id }
     const result = await patchActivity(newData)
     if ("error" in result) {
       toast.error(result.error)
       return
     }
     toast.success("Activity modified")
+    revalidate(`/settings/${initialData.id}`)
     router.push("/settings")
   }
   return (
     <main className="flex m-24">
-      <div className="bg-[#c5c5c5] px-20 py-10 rounded-lg shadow-md">
+      <div className="bg-[#c5c5c5] px-10 py-5 rounded-lg shadow-md relative">
+        <Button
+          className="absolute right-2 top-2 w-[20px] h-[20px] p-0"
+          onClick={() => {
+            router.push("/settings")
+          }}
+        >
+          <X size={15} />
+        </Button>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit((data) => onSubmit(initialData, data))}
+            onSubmit={form.handleSubmit((data) => onSubmit(data))}
             className="w-2/3 space-y-6"
           >
             <FormField
@@ -68,6 +66,25 @@ export function EditActivityForm({
                       placeholder="Activity 1..."
                       className="w-[300px]"
                       {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="color"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Color</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Activity 1..."
+                      className="w-[80px] p-0 rounded-lg"
+                      {...field}
+                      type="color"
                     />
                   </FormControl>
                   <FormMessage />

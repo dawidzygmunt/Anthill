@@ -1,20 +1,22 @@
 "use server"
+
 import prisma from "@/lib/db"
-import { Activity } from "@prisma/client"
+import { ERROR_MESSAGES } from "@/lib/error-messages"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
-import { z } from "zod"
 
-const activitySchema = z.object({
-  id: z.string().min(3, { message: "Activity id required" }),
-  name: z.string().min(1, { message: "Name is required" }),
-})
+import { editFormSchema } from "@/schemas/edit-form-schema"
 
-export const patchActivity = async (activity: Activity) => {
+export const patchActivity = async (activity: {
+  id: string
+  color: string
+  name: string
+}) => {
   try {
-    const data = activitySchema.parse(activity)
+    const data = editFormSchema.parse(activity)
     const result = await prisma.activity.findFirst({
       where: { id: data.id },
     })
+    if (!result) return { error: "Activity not found" }
 
     const updatedActivity = await prisma.activity.update({
       where: {
@@ -29,6 +31,6 @@ export const patchActivity = async (activity: Activity) => {
     }
     if ("errors" in err && err.errors.length > 0)
       return { error: err.errors[0].message }
-    return { error: "Something went wrong!" }
+    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
   }
 }
