@@ -1,8 +1,10 @@
 "use server"
 
-import prismaCodesMap from "@/app/(routes)/settings/utils/prismaCodes"
+import {
+  default as activitiesPrismaCodesMap,
+  default as prismaCodesMap,
+} from "@/app/(routes)/settings/utils/activities-prisma-codes"
 import prisma from "@/lib/db"
-import { ERROR_MESSAGES } from "@/lib/error-messages"
 import { ActivitiesProps } from "@/lib/types"
 import { getRandomHexColor } from "@/lib/utils"
 import { z } from "zod"
@@ -22,14 +24,16 @@ export const createActivity = async (data: ActivitiesProps) => {
       data: { name: parsedData.name, color: randomColor },
     })
     return activity
-  } catch (err: any) {
-    if ("errors" in err && err.errors.length > 0)
-      return { error: err.errors[0].message }
-    if ("code" in err && err.code in prismaCodesMap) {
-      return {
-        error: prismaCodesMap[err.code],
-      }
+  } catch (error) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      String(error.code) in prismaCodesMap
+    ) {
+      const prismaCode = String(error.code)
+      const message = activitiesPrismaCodesMap[prismaCode]
+      return { error: message }
     }
-    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
   }
 }

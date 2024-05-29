@@ -11,7 +11,6 @@ export const timeFormatter = (minutes: number) => {
   const remainingMinutes = roundedMinutes % 60
   // Format as "HH:MM"
   const formattedTime = `${hours}:${remainingMinutes === 0 ? "00" : String(remainingMinutes).padStart(2, "0")}`
-
   return formattedTime
 }
 
@@ -22,6 +21,21 @@ export const getRandomHexColor = () => {
   for (let i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)]
   }
-
   return color
+}
+
+export const extractErrorMessage = (error: unknown): string => {
+  let message: string
+
+  if (error instanceof Error) {
+    message = error.message
+  } else if (error && typeof error === "object" && "message" in error) {
+    message = String(error.message)
+  } else if (typeof error === "string") {
+    message = error
+  } else {
+    message = "Something went wrong"
+  }
+
+  return message
 }

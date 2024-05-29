@@ -1,6 +1,7 @@
 "use server"
 import prisma from "@/lib/db"
-import { ERROR_MESSAGES } from "@/lib/error-messages"
+import { extractErrorMessage } from "@/lib/utils"
+import tracksPrismaCodesMap from "@/utils/tracks-prisma-codes"
 import { z } from "zod"
 
 const trackSchema = z.object({
@@ -34,10 +35,18 @@ const handleTrackChange = async (
       data: { minutes },
       where: { rowDatePair: { trackRowId, date } },
     })
-  } catch (err: any) {
-    if ("errors" in err && err.errors.length > 0)
-      return { error: err.errors[0].message }
-    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
+  } catch (error) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      String(error.code) in tracksPrismaCodesMap
+    ) {
+      const prismaCode = String(error.code)
+      const message = tracksPrismaCodesMap[prismaCode]
+      return { error: message }
+    }
+    return { error: extractErrorMessage(error) }
   }
 }
 

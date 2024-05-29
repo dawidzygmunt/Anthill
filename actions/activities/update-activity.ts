@@ -1,10 +1,9 @@
 "use server"
 
 import prisma from "@/lib/db"
-import { ERROR_MESSAGES } from "@/lib/error-messages"
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
-
 import { editFormSchema } from "@/schemas/edit-form-schema"
+import { extractErrorMessage } from "@/lib/utils"
+import activitiesPrismaCodesMap from "@/app/(routes)/settings/utils/activities-prisma-codes"
 
 export const patchActivity = async (activity: {
   id: string
@@ -25,12 +24,17 @@ export const patchActivity = async (activity: {
       data: activity,
     })
     return updatedActivity
-  } catch (err: any) {
-    if (err instanceof PrismaClientKnownRequestError && err.code === "P2002") {
-      return { error: "Activity with this name already exists." }
+  } catch (error) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      String(error.code) in activitiesPrismaCodesMap
+    ) {
+      const prismaCode = String(error.code)
+      const message = activitiesPrismaCodesMap[prismaCode]
+      return { error: message }
     }
-    if ("errors" in err && err.errors.length > 0)
-      return { error: err.errors[0].message }
-    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
+    return { error: extractErrorMessage(error) }
   }
 }

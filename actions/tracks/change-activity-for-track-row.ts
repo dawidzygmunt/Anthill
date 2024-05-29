@@ -1,7 +1,9 @@
 "use server"
 
-import prismaCodesMap from "@/utils/prisma-codes"
+
 import prisma from "@/lib/db"
+import { extractErrorMessage } from "@/lib/utils"
+import tracksPrismaCodesMap from "@/utils/tracks-prisma-codes"
 
 const changeActivityForTrackRow = async (
   trackRowId: string,
@@ -12,13 +14,18 @@ const changeActivityForTrackRow = async (
       data: { activityId },
       where: { id: trackRowId },
     })
-  } catch (err: any) {
-    if ("code" in err && err.code in prismaCodesMap) {
-      return {
-        error: prismaCodesMap[err.code],
-      }
+  } catch (error) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      String(error.code) in tracksPrismaCodesMap
+    ) {
+      const prismaCode = String(error.code)
+      const message = tracksPrismaCodesMap[prismaCode]
+      return { error: message }
     }
-    return { error: "Something went wrong" }
+    return { error: extractErrorMessage(error) }
   }
 }
 

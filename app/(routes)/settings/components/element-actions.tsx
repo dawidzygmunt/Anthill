@@ -10,9 +10,9 @@ import toast from "react-hot-toast"
 
 export const ElementActions = ({ activity }: { activity: Activity }) => {
   const handleDelete = async () => {
-    const actv = await deleteActivity(activity.id)
-    if ("error" in actv) {
-      toast.error(actv.error)
+    const result = await deleteActivity(activity.id)
+    if ("error" in result) {
+      toast.error(result.error)
       return
     }
     revalidate(`/settings/${activity.id}`)
