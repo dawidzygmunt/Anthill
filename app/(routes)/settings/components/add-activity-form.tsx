@@ -44,9 +44,11 @@ export function AddActivityForm() {
       ...data,
       color: getRandomHexColor(),
     }
+
     const response = await createActivity(newData)
     if ("error" in response) {
       toast.error(response.error)
+      return
     }
     toast.success("Activity added successfully")
     revalidate("/settings")
