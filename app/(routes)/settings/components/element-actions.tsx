@@ -15,7 +15,7 @@ export const ElementActions = ({ activity }: { activity: Activity }) => {
       toast.error(result.error)
       return
     }
-    revalidate(`/settings/${activity.id}`)
+    revalidate(`/settings`)
     toast.success("Activity deleted")
   }
   return (
