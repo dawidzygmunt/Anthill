@@ -2,8 +2,8 @@
 
 import prisma from "@/lib/db"
 import { editFormSchema } from "@/schemas/edit-form-schema"
-import { extractErrorMessage } from "@/lib/utils"
-import activitiesPrismaCodesMap from "@/app/(routes)/settings/utils/activities-prisma-codes"
+import activitiesPrismaCodesMap from "@/utils/prisma-codes/activities-prisma-codes"
+import { handleError } from "@/utils/error-handler"
 
 export const patchActivity = async (activity: {
   id: string
@@ -12,10 +12,6 @@ export const patchActivity = async (activity: {
 }) => {
   try {
     const data = editFormSchema.parse(activity)
-    const result = await prisma.activity.findFirst({
-      where: { id: data.id },
-    })
-    if (!result) return { error: "Activity not found" }
 
     const updatedActivity = await prisma.activity.update({
       where: {
@@ -25,16 +21,6 @@ export const patchActivity = async (activity: {
     })
     return updatedActivity
   } catch (error) {
-    if (
-      error &&
-      typeof error === "object" &&
-      "code" in error &&
-      String(error.code) in activitiesPrismaCodesMap
-    ) {
-      const prismaCode = String(error.code)
-      const message = activitiesPrismaCodesMap[prismaCode]
-      return { error: message }
-    }
-    return { error: extractErrorMessage(error) }
+    return handleError(error, activitiesPrismaCodesMap)
   }
 }

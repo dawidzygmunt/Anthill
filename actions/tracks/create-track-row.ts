@@ -1,9 +1,10 @@
 "use server"
 
 import prisma from "@/lib/db"
-import { extractErrorMessage } from "@/lib/utils"
-import tracksPrismaCodesMap from "@/utils/tracks-prisma-codes"
+
+import tracksPrismaCodesMap from "@/utils/prisma-codes/tracks-prisma-codes"
 import revalidateTracks from "./revalidate"
+import { CustomError, handleError } from "@/utils/error-handler"
 
 const createTrackRow = async (activityId: string, from: Date) => {
   try {
@@ -28,9 +29,7 @@ const createTrackRow = async (activityId: string, from: Date) => {
         },
       })
       if (istTackRow) {
-        return {
-          error: "Track row already exists",
-        }
+        throw new CustomError("Track row already exists", "ALREADY_EXISTS")
       }
 
       const trackRow = await prisma.trackRow.create({
@@ -44,18 +43,7 @@ const createTrackRow = async (activityId: string, from: Date) => {
     })
     return result
   } catch (error) {
-    if (
-      error &&
-      typeof error === "object" &&
-      "code" in error &&
-      String(error.code) in tracksPrismaCodesMap
-    ) {
-      const prismaCode = String(error.code)
-      const message = tracksPrismaCodesMap[prismaCode]
-      return { error: message }
-    }
-    return { error: extractErrorMessage(error) }
+    return handleError(error, tracksPrismaCodesMap)
   }
 }
-
 export default createTrackRow

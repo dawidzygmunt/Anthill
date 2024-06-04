@@ -6,6 +6,7 @@ import toast from "react-hot-toast"
 import { getSingleWeek } from "@/actions/weeks/get-single-week"
 import { format } from "date-fns"
 import revalidateTracks from "../actions/tracks/revalidate"
+import DisplayError from "@/utils/display-error"
 
 export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
   const [isDone, setIsDone] = useState(false)
@@ -18,7 +19,7 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
         return
       }
       if ("error" in response) {
-        toast.error(response.error)
+        DisplayError(response.error.code)
         return
       }
       setIsDone(response.isClosed)
@@ -31,7 +32,7 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
     updateSingleWeek(from, !isDone)
     const response = await updateSingleWeek(from, !isDone)
     if ("error" in response) {
-      toast.error(response.error)
+      DisplayError(response.error.code)
       return
     }
     !isDone && toast.success("Week closed")

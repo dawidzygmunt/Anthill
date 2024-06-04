@@ -1,9 +1,15 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { createActivity } from "@/actions/activities/create-activity"
+import revalidate from "@/actions/tracks/revalidate"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -12,23 +18,16 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { DialogClose } from "@radix-ui/react-dialog"
 import { getRandomHexColor } from "@/lib/utils"
-import revalidate from "@/actions/tracks/revalidate"
-import { createActivity } from "@/actions/activities/create-activity"
+import DisplayError from "@/utils/display-error"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { DialogClose } from "@radix-ui/react-dialog"
+import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
+import { z } from "zod"
 
 const FormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Activity name must be at least 2 characters.",
-  }),
+  name: z.string(),
 })
 
 export function AddActivityForm() {
@@ -46,7 +45,7 @@ export function AddActivityForm() {
     }
     const result = await createActivity(newData)
     if ("error" in result) {
-      toast.error(result.error)
+      DisplayError(result.error)
       return
     }
     toast.success("Activity added successfully")

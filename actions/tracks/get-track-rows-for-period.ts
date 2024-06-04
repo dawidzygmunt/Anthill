@@ -2,7 +2,8 @@
 
 import prisma from "@/lib/db"
 import { extractErrorMessage } from "@/lib/utils"
-import tracksPrismaCodesMap from "@/utils/tracks-prisma-codes"
+import { handleError } from "@/utils/error-handler"
+import tracksPrismaCodesMap from "@/utils/prisma-codes/tracks-prisma-codes"
 
 const getTrackRowsForPeriod = async (from: Date) => {
   try {
@@ -12,17 +13,7 @@ const getTrackRowsForPeriod = async (from: Date) => {
       orderBy: { createdAt: "asc" },
     })
   } catch (error) {
-    if (
-      error &&
-      typeof error === "object" &&
-      "code" in error &&
-      String(error.code) in tracksPrismaCodesMap
-    ) {
-      const prismaCode = String(error.code)
-      const message = tracksPrismaCodesMap[prismaCode]
-      return { error: message }
-    }
-    return { error: extractErrorMessage(error) }
+    return handleError(error, tracksPrismaCodesMap)
   }
 }
 

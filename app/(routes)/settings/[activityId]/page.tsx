@@ -1,11 +1,12 @@
 import { getSingleActivity } from "@/actions/activities/get-single-activity"
 import toast from "react-hot-toast"
 import { EditActivityForm } from "./components/edit-activity-form"
+import DisplayError from "@/utils/display-error"
 
 const EditActivity = async ({ params }: { params: { activityId: string } }) => {
   const activity = await getSingleActivity(params.activityId)
   if ("error" in activity) {
-    toast.error(activity.error)
+    DisplayError(activity.error)
     return
   }
   return (
