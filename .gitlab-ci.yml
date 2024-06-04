@@ -24,8 +24,14 @@ prepare:
 
 lint:
   stage: lint
-  dependencies:
-    - prepare
+  cache:
+    key:
+      files:
+        - package-lock.json
+        - package.json
+      prefix: ${CI_PROJECT_NAME}
+    paths:
+      - node_modules/
   script:
     - "npm run lint"
 
