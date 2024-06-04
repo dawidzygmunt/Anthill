@@ -1,5 +1,5 @@
 "use client"
-import { deleteActivity } from "@/actions/activities/delete-activity"
+import { softDeleteActivity } from "@/actions/activities/delete-activity"
 import revalidate from "@/actions/tracks/revalidate"
 import { Button } from "@/components/ui/button"
 import { Activity } from "@prisma/client"
@@ -10,7 +10,7 @@ import toast from "react-hot-toast"
 
 export const ElementActions = ({ activity }: { activity: Activity }) => {
   const handleDelete = async () => {
-    const result = await deleteActivity(activity.id)
+    const result = await softDeleteActivity(activity.id)
     if ("error" in result) {
       toast.error(result.error)
       return
