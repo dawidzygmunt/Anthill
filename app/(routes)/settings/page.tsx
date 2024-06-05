@@ -1,16 +1,35 @@
-import { getActivities } from "@/actions/activities/get-activities"
-import { ActivitiesList } from "./components/activities-list"
+import {
+  getActivities,
+  getAllActivities,
+} from "@/actions/activities/get-activities"
+import { DataTable } from "./components/data-table/data-table"
+import { columns } from "./components/data-table/columns"
 
-const Settings = async () => {
-  const activitiesList = await getActivities()
-  if ("error" in activitiesList) {
-    return activitiesList.error
+interface SettingsProps {
+  searchParams: { showDeleted: string }
+}
+
+const Settings = async ({ searchParams }: SettingsProps) => {
+  let activitiesList
+  if (searchParams.showDeleted === "true") {
+    activitiesList = await getAllActivities()
+    if ("error" in activitiesList) {
+      console.log(activitiesList.error)
+
+      return
+    }
+  } else {
+    activitiesList = await getActivities()
+    if ("error" in activitiesList) {
+      console.error(activitiesList.error)
+      return
+    }
   }
 
   return (
-    <main className="lg:p-24 pt-24">
-      <ActivitiesList data={activitiesList} />
-    </main>
+    <div className="container mx-auto py-10">
+      <DataTable columns={columns} data={activitiesList} />
+    </div>
   )
 }
 

@@ -4,8 +4,9 @@ import prismaCodesMap from "@/app/(routes)/settings/utils/prismaCodes"
 import prisma from "@/lib/db"
 import { ERROR_MESSAGES } from "@/lib/error-messages"
 import { idSchema } from "@/schemas/activities/id-schema"
+import revalidate from "../tracks/revalidate"
 
-export const softDeleteActivity = async (id: string) => {
+export const deleteActivity = async (id: string) => {
   try {
     const parsedData = idSchema.parse({ id: id })
 
@@ -17,6 +18,7 @@ export const softDeleteActivity = async (id: string) => {
         deletedAt: new Date(),
       },
     })
+    revalidate("/settings")
     return activity
   } catch (err: any) {
     if ("code" in err && err.code in prismaCodesMap) {
@@ -30,7 +32,7 @@ export const softDeleteActivity = async (id: string) => {
   }
 }
 
-export const deleteActivity = async (id: string) => {
+export const hardDeleteActivity = async (id: string) => {
   try {
     const parsedData = idSchema.parse({ id: id })
 
@@ -39,6 +41,7 @@ export const deleteActivity = async (id: string) => {
         id: parsedData.id,
       },
     })
+    revalidate("/settings")
     return activity
   } catch (err: any) {
     if ("code" in err && err.code in prismaCodesMap) {

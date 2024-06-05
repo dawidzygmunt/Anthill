@@ -56,7 +56,7 @@ export function AddActivityForm() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="w-[400px] mb-5">Add</Button>
+        <Button className="w-[200px]">Add new</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>

@@ -5,11 +5,13 @@ import { ERROR_MESSAGES } from "@/lib/error-messages"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 
 import { editFormSchema } from "@/schemas/edit-form-schema"
+import revalidate from "../tracks/revalidate"
 
 export const patchActivity = async (activity: {
   id: string
   color: string
   name: string
+  deletedAt: Date | null
 }) => {
   try {
     const data = editFormSchema.parse(activity)
@@ -24,6 +26,7 @@ export const patchActivity = async (activity: {
       },
       data: activity,
     })
+    revalidate("/settings")
     return updatedActivity
   } catch (err: any) {
     if (err instanceof PrismaClientKnownRequestError && err.code === "P2002") {
