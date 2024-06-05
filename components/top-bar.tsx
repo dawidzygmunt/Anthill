@@ -19,7 +19,7 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
         return
       }
       if ("error" in response) {
-        DisplayError(response.error.code)
+        DisplayError(response.error)
         return
       }
       setIsDone(response.isClosed)
@@ -32,7 +32,7 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
     updateSingleWeek(from, !isDone)
     const response = await updateSingleWeek(from, !isDone)
     if ("error" in response) {
-      DisplayError(response.error.code)
+      DisplayError(response.error)
       return
     }
     !isDone && toast.success("Week closed")

@@ -6,7 +6,7 @@ import DisplayError from "@/utils/display-error"
 const Settings = async () => {
   const activitiesList = await getActivities()
   if ("error" in activitiesList) {
-    DisplayError(activitiesList.error.code)
+    DisplayError(activitiesList.error)
     return
   }
 

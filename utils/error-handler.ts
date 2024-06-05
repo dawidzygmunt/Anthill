@@ -35,7 +35,7 @@ export const handleError = (
     return { error: { message: error.errors[0].message } }
   }
 
-  // To make typing safe
+  // To translate unknown errors
   if (!(error instanceof CustomError)) {
     return { error: { code: UNKNOWN_ERROR } }
   }
@@ -44,6 +44,6 @@ export const handleError = (
   if (error.code in errorDefaultCodeMap) {
     return { error: { code: errorDefaultCodeMap[error.code] } }
   } else {
-    return { error: { code: "9000" } }
+    return { error: { code: UNKNOWN_ERROR } }
   }
 }
