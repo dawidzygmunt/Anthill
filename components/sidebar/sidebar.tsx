@@ -11,6 +11,7 @@ const SideBar = async () => {
   const from = subDays(today, 180)
   const to = addDays(today, 180)
   const weeks = await getWeeks(from, to)
+
   if ("error" in weeks) {
     DisplayError(weeks.error)
     return
@@ -23,7 +24,7 @@ const SideBar = async () => {
       justify-between`}
       >
         <div className="overflow-auto">
-          <ListWeeks weeks={weeks.map((week) => ({ ...week, week }))} />
+          <ListWeeks weeks={weeks} />
         </div>
 
         <div className="p-4 bg-[#0d1321] text-[#8d8d8d] flex">
@@ -31,7 +32,7 @@ const SideBar = async () => {
         </div>
       </aside>
 
-      <MobileSidebar />
+      <MobileSidebar weeks={weeks} />
     </>
   )
 }
