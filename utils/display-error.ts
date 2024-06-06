@@ -2,6 +2,7 @@
 
 import toast from "react-hot-toast"
 import { frontErrorCodes } from "./front-error-codes"
+import { handleError } from "./error-handler"
 
 type ErrorType = { code: string } | { message: string }
 
@@ -14,7 +15,7 @@ const DisplayError = (error: ErrorType) => {
     toast.error(frontErrorCodes[error.code])
     return
   } catch (error) {
-    console.log(error)
+    handleError(error)
   }
 }
 

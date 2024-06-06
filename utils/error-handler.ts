@@ -19,7 +19,7 @@ const NOT_FOUND_ERROR = "9001"
 
 export const handleError = (
   error: unknown,
-  customPrismaMap: Record<string, string>
+  customPrismaMap: Record<string, string> = errorDefaultCodeMap
 ): { error: { code: string } | { message: string } } => {
   // To translate Prisma errors
   if (

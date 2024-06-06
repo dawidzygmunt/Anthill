@@ -18,7 +18,6 @@ export default function Home({ searchParams }: HomeProps) {
     : startOfWeek(new Date(), { weekStartsOn: 1 })
 
   const to = addDays(from, 6)
-  console.log(from, to)
 
   return (
     <main className="px-5 lg:p-24 lg:pt-10 ">
