@@ -1,7 +1,8 @@
 import { getActivities } from "@/actions/activities/get-activities"
-import { ActivitiesList } from "./components/activities-list"
 import { Metadata } from "next"
 import DisplayError from "@/utils/display-error"
+import { DataTable } from "./components/data-table/data-table"
+import { columns } from "./components/data-table/columns"
 
 export const generateMetadata: Metadata = {
   title: `Anthill v2 - Settings`,
@@ -15,9 +16,9 @@ const Settings = async () => {
   }
 
   return (
-    <main className="lg:p-24 pt-24">
-      <ActivitiesList data={activitiesList} />
-    </main>
+    <div className="container mx-auto py-10">
+      <DataTable columns={columns} data={activitiesList} />
+    </div>
   )
 }
 
