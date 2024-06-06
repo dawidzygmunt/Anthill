@@ -6,11 +6,15 @@ import Selector from "./selector"
 import TracksRow from "./tracks-row"
 import { Suspense } from "react"
 import { SkeletonLoader } from "@/components/skeleton-lodaer"
+import DisplayError from "@/utils/display-error"
 
 async function TracksGrid({ from, to }: { from: Date; to: Date }) {
   const weeks = await getTrackRowsForPeriod(from)
   const allActivities = await getActivities()
-  if ("error" in allActivities) return "Something went wrong"!
+  if ("error" in allActivities) {
+    DisplayError(allActivities.error)
+    return
+  }
 
   if (!weeks)
     return (
@@ -23,7 +27,10 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
       />
     )
 
-  if ("error" in weeks) return weeks.error
+  if ("error" in weeks) {
+    DisplayError(weeks.error)
+    return
+  }
 
   return (
     <>

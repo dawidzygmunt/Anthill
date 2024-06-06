@@ -4,6 +4,7 @@ import { ListWeeks } from "./list-weeks"
 import { MobileSidebar } from "./mobile-sidebar"
 import { Nav } from "./nav"
 import toast from "react-hot-toast"
+import DisplayError from "@/utils/display-error"
 
 const SideBar = async () => {
   const today = new Date()
@@ -11,7 +12,7 @@ const SideBar = async () => {
   const to = addDays(today, 180)
   const weeks = await getWeeks(from, to)
   if ("error" in weeks) {
-    toast.error(weeks.error)
+    DisplayError(weeks.error)
     return
   }
 

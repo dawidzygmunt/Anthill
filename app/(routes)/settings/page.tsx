@@ -1,10 +1,13 @@
 import { getActivities } from "@/actions/activities/get-activities"
 import { ActivitiesList } from "./components/activities-list"
+import toast from "react-hot-toast"
+import DisplayError from "@/utils/display-error"
 
 const Settings = async () => {
   const activitiesList = await getActivities()
   if ("error" in activitiesList) {
-    return activitiesList.error
+    DisplayError(activitiesList.error)
+    return
   }
 
   return (

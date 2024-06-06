@@ -1,13 +1,15 @@
 "use server"
 
 import prisma from "@/lib/db"
-import { ERROR_MESSAGES } from "@/lib/error-messages"
+import { extractErrorMessage } from "@/lib/utils"
+import { handleError } from "@/utils/error-handler"
+import tracksPrismaCodesMap from "@/utils/prisma-codes/tracks-prisma-codes"
 
 const deleteTrack = async (trackId: string) => {
   try {
     return await prisma.track.delete({ where: { id: trackId } })
-  } catch (err) {
-    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
+  } catch (error) {
+    return handleError(error, tracksPrismaCodesMap)
   }
 }
 

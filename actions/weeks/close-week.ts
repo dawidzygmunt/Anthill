@@ -1,6 +1,6 @@
 import prisma from "@/lib/db"
-import { ERROR_MESSAGES } from "@/lib/error-messages"
-import React from "react"
+import { handleError } from "@/utils/error-handler"
+import weeksPrismaCodesMap from "@/utils/prisma-codes/weeks-prisma-codes"
 
 export const CloseWeek = async (weekId: string, isClosed: boolean) => {
   try {
@@ -10,9 +10,7 @@ export const CloseWeek = async (weekId: string, isClosed: boolean) => {
         isClosed: isClosed,
       },
     })
-  } catch (err: any) {
-    if ("error" in err && err.errors.length > 0)
-      return { error: err.errors[0].message }
-    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
+  } catch (error) {
+    return handleError(error, weeksPrismaCodesMap)
   }
 }

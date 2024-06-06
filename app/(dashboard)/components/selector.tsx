@@ -13,6 +13,7 @@ import revalidateTracks from "../../../actions/tracks/revalidate"
 
 import { toast } from "react-hot-toast"
 import { useEffect, useState } from "react"
+import DisplayError from "@/utils/display-error"
 
 interface Props {
   activities: Activity[]
@@ -38,7 +39,7 @@ export function ActivitySelector({
     else if (trackRowId) {
       const result = await changeActivityForTrackRow(trackRowId, value)
       if ("error" in result) {
-        toast.error(result.error)
+        DisplayError(result.error)
         setSelectedActivity(activityId)
       } else {
         revalidateTracks()

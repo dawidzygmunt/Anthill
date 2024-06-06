@@ -1,6 +1,8 @@
-import prismaCodesMap from "@/utils/prisma-codes"
+"use server"
 import prisma from "@/lib/db"
-import { ERROR_MESSAGES } from "@/lib/error-messages"
+import { extractErrorMessage } from "@/lib/utils"
+import { handleError } from "@/utils/error-handler"
+import weeksPrismaCodesMap from "@/utils/prisma-codes/weeks-prisma-codes"
 
 export const getWeeks = async (from: Date, to: Date) => {
   try {
@@ -22,14 +24,7 @@ export const getWeeks = async (from: Date, to: Date) => {
         from: "desc",
       },
     })
-  } catch (err: any) {
-    if ("code" in err && err.code in prismaCodesMap) {
-      return {
-        error: prismaCodesMap[err.code],
-      }
-    }
-    if ("errors" in err && err.errors.length > 0)
-      return { error: err.errors[0].message }
-    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
+  } catch (error) {
+    return handleError(error, weeksPrismaCodesMap)
   }
 }
