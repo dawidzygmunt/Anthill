@@ -12,11 +12,12 @@ export const generateMetadata = ({
     title: `Anthill v2 - Edit activity ${params.activityId}`,
   }
 }
+import DisplayError from "@/utils/display-error"
 
 const EditActivity = async ({ params }: { params: { activityId: string } }) => {
   const activity = await getSingleActivity(params.activityId)
   if ("error" in activity) {
-    toast.error(activity.error)
+    DisplayError(activity.error)
     return
   }
   return (

@@ -19,6 +19,7 @@ import handleTrackChange from "../../../actions/tracks/handle-track-change"
 import revalidateTracks from "../../../actions/tracks/revalidate"
 import deleteTrack from "../../../actions/tracks/delete-track"
 import toast from "react-hot-toast"
+import DisplayError from "@/utils/display-error"
 
 const FormSchema = z.object({
   trackInput: z.string(),
@@ -44,13 +45,13 @@ const TrackInput = ({ track }: Props) => {
 
   useEffect(() => {
     form.setValue("trackInput", track.minutes?.toString() ?? "")
-  }, [track])
+  }, [track, form])
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     if ("id" in track && data.trackInput === "") {
       const result = await deleteTrack(track.id)
       if ("error" in result) {
-        toast.error(result.error)
+        DisplayError(result.error)
         return form.setValue("trackInput", track.minutes?.toString() ?? "")
       }
       return revalidateTracks()
@@ -64,7 +65,7 @@ const TrackInput = ({ track }: Props) => {
       parseInt(data.trackInput, 10)
     )
     if ("error" in result) {
-      toast.error(result.error)
+      DisplayError(result.error)
       return form.setValue("trackInput", track.minutes?.toString() ?? "")
     }
     form.setValue("trackInput", result.minutes.toString())

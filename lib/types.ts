@@ -9,6 +9,20 @@ export interface TracksProps {
   minutes: number
 }
 
-export interface WeekProps {
-  week: Week & { TrackRow: (TrackRow & { Track: Track[] })[] }
+interface ExtendedTrackRow extends TrackRow {
+  Track: Track[]
+}
+
+export interface ExtendedWeek extends Week {
+  TrackRow: ExtendedTrackRow[]
+  totalMinutes: number
+  mostActiveActivities: string
+}
+
+export interface ListWeeksProps {
+  weeks: ExtendedWeek[]
+}
+
+export interface SingleWeekProps {
+  week: ExtendedWeek
 }

@@ -1,6 +1,9 @@
 "use server"
 
 import prisma from "@/lib/db"
+import { extractErrorMessage } from "@/lib/utils"
+import { handleError } from "@/utils/error-handler"
+import tracksPrismaCodesMap from "@/utils/prisma-codes/tracks-prisma-codes"
 
 const getTrackRowsForPeriod = async (from: Date) => {
   try {
@@ -9,8 +12,8 @@ const getTrackRowsForPeriod = async (from: Date) => {
       include: { TrackRow: { include: { Track: true } } },
       orderBy: { createdAt: "asc" },
     })
-  } catch (err) {
-    return { error: "Something went wrong" }
+  } catch (error) {
+    return handleError(error, tracksPrismaCodesMap)
   }
 }
 

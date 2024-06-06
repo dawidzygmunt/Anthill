@@ -1,6 +1,8 @@
 "use server"
 import prisma from "@/lib/db"
-import { ERROR_MESSAGES } from "@/lib/error-messages"
+import { extractErrorMessage } from "@/lib/utils"
+import { CustomError, handleError } from "@/utils/error-handler"
+import tracksPrismaCodesMap from "@/utils/prisma-codes/tracks-prisma-codes"
 import { z } from "zod"
 
 const trackSchema = z.object({
@@ -27,17 +29,15 @@ const handleTrackChange = async (
       const trackRow = await prisma.trackRow.findFirst({
         where: { id: trackRowId },
       })
-      if (!trackRow) return { error: "Track row not found" }
+      if (!trackRow) throw new CustomError("Track row not found", "NOT_FOUND")
     }
 
     return await prisma.track.update({
       data: { minutes },
       where: { rowDatePair: { trackRowId, date } },
     })
-  } catch (err: any) {
-    if ("errors" in err && err.errors.length > 0)
-      return { error: err.errors[0].message }
-    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
+  } catch (error) {
+    return handleError(error, tracksPrismaCodesMap)
   }
 }
 

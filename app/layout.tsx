@@ -24,7 +24,7 @@ export default function RootLayout({
         <BetterToast />
         <div className="flex">
           <SideBar />
-          <main className="flex w-full min-h-screen justify-center">
+          <main className="flex w-full min-h-screen justify-center mt-10 lg:mt-0">
             {children}
           </main>
         </div>

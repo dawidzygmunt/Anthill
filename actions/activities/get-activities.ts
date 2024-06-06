@@ -1,15 +1,13 @@
 "use server"
 
 import prisma from "@/lib/db"
-import { ERROR_MESSAGES } from "@/lib/error-messages"
+import { handleError } from "@/utils/error-handler"
+import activitiesPrismaCodesMap from "@/utils/prisma-codes/activities-prisma-codes"
 
 export const getActivities = async () => {
   try {
-    const actions = await prisma.activity.findMany()
-    return actions
-  } catch (err: any) {
-    if ("error" in err && err.errors.length > 0)
-      return { error: err.errors[0].message }
-    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
+    return await prisma.activity.findMany()
+  } catch (error) {
+    return handleError(error, activitiesPrismaCodesMap)
   }
 }
