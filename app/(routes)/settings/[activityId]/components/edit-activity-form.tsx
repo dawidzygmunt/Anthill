@@ -20,6 +20,7 @@ import revalidate from "@/actions/tracks/revalidate"
 import { editFormSchema } from "@/schemas/edit-form-schema"
 import { X } from "lucide-react"
 import { Activity } from "@prisma/client"
+import DisplayError from "@/utils/display-error"
 
 export function EditActivityForm({ initialData }: { initialData: Activity }) {
   const router = useRouter()
@@ -32,7 +33,7 @@ export function EditActivityForm({ initialData }: { initialData: Activity }) {
     const newData = { ...data, id: initialData.id }
     const result = await patchActivity(newData)
     if ("error" in result) {
-      toast.error(result.error)
+      DisplayError(result.error)
       return
     }
     toast.success("Activity modified")

@@ -1,10 +1,13 @@
-import prismaCodesMap from "@/utils/prisma-codes"
+"use server"
 import prisma from "@/lib/db"
-import { ERROR_MESSAGES } from "@/lib/error-messages"
+import { handleError } from "@/utils/error-handler"
+import weeksPrismaCodesMap from "@/utils/prisma-codes/weeks-prisma-codes"
+import { getSingleActivity } from "../activities/get-single-activity"
+import { ExtendedWeek } from "@/lib/types"
 
 export const getWeeks = async (from: Date, to: Date) => {
   try {
-    return await prisma.week.findMany({
+    const weeks = await prisma.week.findMany({
       where: {
         from: {
           gte: from,
@@ -22,14 +25,59 @@ export const getWeeks = async (from: Date, to: Date) => {
         from: "desc",
       },
     })
-  } catch (err: any) {
-    if ("code" in err && err.code in prismaCodesMap) {
-      return {
-        error: prismaCodesMap[err.code],
-      }
-    }
-    if ("errors" in err && err.errors.length > 0)
-      return { error: err.errors[0].message }
-    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
+
+    const weeksWithDetails = await Promise.all(
+      weeks.map(async (week) => {
+        const activityMinutesMap = new Map<string, number>()
+
+        const totalMinutes = week.TrackRow.reduce((sum, trackRow) => {
+          return (
+            sum + trackRow.Track.reduce((sum, track) => sum + track.minutes, 0)
+          )
+        }, 0)
+
+        week.TrackRow.forEach((trackRow) => {
+          trackRow.Track.forEach((track) => {
+            const activityId = trackRow.activityId
+            const minutes = track.minutes
+
+            if (activityMinutesMap.has(activityId)) {
+              activityMinutesMap.set(
+                activityId,
+                activityMinutesMap.get(activityId)! + minutes
+              )
+            } else {
+              activityMinutesMap.set(activityId, minutes)
+            }
+          })
+        })
+
+        let maxMinutesActivityId = ""
+        let maxMinutes = 0
+        activityMinutesMap.forEach((minutes, activityId) => {
+          if (minutes > maxMinutes) {
+            maxMinutes = minutes
+            maxMinutesActivityId = activityId
+          }
+        })
+
+        const mostActivity = await getSingleActivity(maxMinutesActivityId)
+        if ("error" in mostActivity) {
+          return
+        }
+
+        return {
+          ...week,
+          totalMinutes,
+          mostActiveActivities: mostActivity.name,
+        } as ExtendedWeek
+      })
+    )
+
+    return weeksWithDetails.filter(
+      (week): week is ExtendedWeek => week !== undefined
+    )
+  } catch (error) {
+    return handleError(error, weeksPrismaCodesMap)
   }
 }

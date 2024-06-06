@@ -1,8 +1,9 @@
 "use server"
 
+import activitiesPrismaCodesMap from "@/utils/prisma-codes/activities-prisma-codes"
 import prisma from "@/lib/db"
-import { ERROR_MESSAGES } from "@/lib/error-messages"
 import { idSchema } from "@/schemas/activities/id-schema"
+import { CustomError, handleError } from "@/utils/error-handler"
 
 export const getSingleActivity = async (activityId: string) => {
   try {
@@ -10,11 +11,9 @@ export const getSingleActivity = async (activityId: string) => {
     const action = await prisma.activity.findFirst({
       where: { id: parsedData.id },
     })
-    if (!action) return { error: "Can't find activity with this Id" }
+    if (!action) throw new CustomError("Activity not found", "NOT_FOUND")
     return action
-  } catch (err: any) {
-    if ("error" in err && err.errors.length > 0)
-      return { error: err.errors[0].message }
-    return { error: ERROR_MESSAGES.SOMETHING_WENT_WRONG_MESSAGE }
+  } catch (error) {
+    return handleError(error, activitiesPrismaCodesMap)
   }
 }
