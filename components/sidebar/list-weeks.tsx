@@ -1,5 +1,7 @@
+import { Suspense } from "react"
 import { SingleWeek } from "./single-week"
 import { ListWeeksProps } from "@/lib/types"
+import { SkeletonLoader } from "../skeleton-lodaer"
 
 export const ListWeeks = ({ weeks }: ListWeeksProps) => {
   if (!weeks) {
@@ -9,7 +11,9 @@ export const ListWeeks = ({ weeks }: ListWeeksProps) => {
   return (
     <div>
       {weeks.map((week) => (
-        <SingleWeek key={week.id} week={week} />
+        <Suspense key={week.id} fallback={<SkeletonLoader />}>
+          <SingleWeek key={week.id} week={week} />
+        </Suspense>
       ))}
     </div>
   )

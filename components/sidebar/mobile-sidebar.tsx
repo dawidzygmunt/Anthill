@@ -14,7 +14,6 @@ export const MobileSidebar = ({ weeks }: ListWeeksProps) => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen)
   }
-  console.log(weeks)
 
   return (
     <div>
