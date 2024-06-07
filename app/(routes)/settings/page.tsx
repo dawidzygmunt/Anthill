@@ -1,18 +1,30 @@
-import { getActivities } from "@/actions/activities/get-activities"
-import { Metadata } from "next"
-import DisplayError from "@/utils/display-error"
+import {
+  getActivities,
+  getAllActivities,
+} from "@/actions/activities/get-activities"
 import { DataTable } from "./components/data-table/data-table"
 import { columns } from "./components/data-table/columns"
+import DisplayError from "@/utils/display-error"
 
-export const generateMetadata: Metadata = {
-  title: `Anthill v2 - Settings`,
+interface SettingsProps {
+  searchParams: { showDeleted: string }
 }
 
-const Settings = async () => {
-  const activitiesList = await getActivities()
-  if ("error" in activitiesList) {
-    DisplayError(activitiesList.error)
-    return
+const Settings = async ({ searchParams }: SettingsProps) => {
+  let activitiesList
+  if (searchParams.showDeleted === "true") {
+    activitiesList = await getAllActivities()
+    if ("error" in activitiesList) {
+      DisplayError(activitiesList.error)
+
+      return
+    }
+  } else {
+    activitiesList = await getActivities()
+    if ("error" in activitiesList) {
+      DisplayError(activitiesList.error)
+      return
+    }
   }
 
   return (

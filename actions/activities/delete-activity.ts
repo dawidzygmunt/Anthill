@@ -22,7 +22,7 @@ export const deleteActivity = async (id: string) => {
     revalidate("/settings")
     return activity
   } catch (error) {
-    handleError(error, activitiesPrismaCodesMap)
+    return handleError(error, activitiesPrismaCodesMap)
   }
 }
 

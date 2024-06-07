@@ -37,7 +37,7 @@ export function EditActivityForm({ initialData }: { initialData: Activity }) {
       return
     }
     toast.success("Activity modified")
-    revalidate(`/settings/${initialData.id}`)
+    revalidate(`/settings/`)
     router.push("/settings")
   }
   return (

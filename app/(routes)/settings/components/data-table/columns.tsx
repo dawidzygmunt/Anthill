@@ -24,14 +24,14 @@ import {
   Undo2,
 } from "lucide-react"
 import { patchActivity } from "@/actions/activities/update-activity"
-import revalidate from "@/actions/tracks/revalidate"
 import toast from "react-hot-toast"
 import { Activity } from "@prisma/client"
+import DisplayError from "@/utils/display-error"
 
 const handleDelete = async (activityId: string) => {
   const result = await deleteActivity(activityId)
   if ("error" in result) {
-    toast.error(result.error)
+    DisplayError(result.error)
     return
   }
   toast.success("Activity deleted")
@@ -40,7 +40,7 @@ const handleDelete = async (activityId: string) => {
 const handleHardDelete = async (activityId: string) => {
   const result = await hardDeleteActivity(activityId)
   if ("error" in result) {
-    toast.error(result.error)
+    DisplayError(result.error)
     return
   }
   toast.success("Activity deleted")
@@ -49,7 +49,7 @@ const handleHardDelete = async (activityId: string) => {
 const handleRestore = async (activity: Activity) => {
   const result = await patchActivity({ ...activity, deletedAt: null })
   if ("error" in result) {
-    toast.error(result.error)
+    DisplayError(result.error)
     return
   }
   toast.success("Activity restored")
@@ -126,7 +126,7 @@ export const columns: ColumnDef<Activity>[] = [
                 </DropdownMenuItem>
               </Link>
               <DropdownMenuItem
-                onClick={() => handleDelete(row.original.id)}
+                onClick={() => handleDelete(activity.id)}
                 className="flex gap-2 justify-between"
               >
                 Delete

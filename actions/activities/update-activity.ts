@@ -10,7 +10,7 @@ export const patchActivity = async (activity: {
   id: string
   color: string
   name: string
-  deletedAt: Date | null
+  deletedAt?: Date | null
 }) => {
   try {
     const data = editFormSchema.parse(activity)

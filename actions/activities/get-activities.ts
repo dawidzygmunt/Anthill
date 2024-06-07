@@ -6,7 +6,21 @@ import activitiesPrismaCodesMap from "@/utils/prisma-codes/activities-prisma-cod
 
 export const getActivities = async () => {
   try {
-    return await prisma.activity.findMany()
+    const actions = await prisma.activity.findMany({
+      where: {
+        deletedAt: null,
+      },
+    })
+    return actions
+  } catch (error) {
+    return handleError(error, activitiesPrismaCodesMap)
+  }
+}
+
+export const getAllActivities = async () => {
+  try {
+    const actions = await prisma.activity.findMany()
+    return actions
   } catch (error) {
     return handleError(error, activitiesPrismaCodesMap)
   }
