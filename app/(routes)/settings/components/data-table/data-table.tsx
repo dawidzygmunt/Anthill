@@ -74,7 +74,6 @@ export function DataTable<TData, TValue>({
 
   const handleSwitch = (value: boolean) => {
     setSwitchValue(value)
-    console.log(value)
   }
   return (
     <div>

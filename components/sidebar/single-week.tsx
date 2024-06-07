@@ -24,10 +24,6 @@ export const SingleWeek: React.FC<SingleWeekProps> = ({ week }) => {
   )
 
   const formattedDate = format(parsedDate, "yyyy-MM-dd")
-  if (search == formattedDate) {
-    console.log("search", search)
-    console.log("formattedDate", formattedDate)
-  }
 
   return (
     <Link href={`/?${weekUrl}`}>
