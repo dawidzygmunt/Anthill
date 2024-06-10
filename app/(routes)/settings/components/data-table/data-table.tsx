@@ -34,7 +34,6 @@ import {
 import { Button } from "@/components/ui/button"
 import { AddActivityForm } from "../add-activity-form"
 import Link from "next/link"
-import { useRouter } from "next/router"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]

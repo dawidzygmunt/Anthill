@@ -1,6 +1,5 @@
 import { Prisma } from "@prisma/client"
-import { error } from "console"
-import { string, ZodError } from "zod"
+import { ZodError } from "zod"
 
 const errorDefaultCodeMap: Record<string, string> = {
   NOT_FOUND: "9001",
