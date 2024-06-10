@@ -14,7 +14,6 @@ export class CustomError extends Error {
 }
 
 const UNKNOWN_ERROR = "9000"
-const NOT_FOUND_ERROR = "9001"
 
 export const handleError = (
   error: unknown,
