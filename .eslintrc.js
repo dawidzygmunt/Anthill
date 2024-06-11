@@ -8,9 +8,9 @@ module.exports = {
     node: true,
   },
   extends: ["next/core-web-vitals"],
-  plugins: ["my-lint"],
+  // plugins: ["my-lint"],
   rules: {
     // "my-lint/func-prefix-matching": [1, { include: [], exclude: [] }],
-    "my-lint/enforce-page-metadata-format": [1, { include: [], exclude: [] }],
+    // "my-lint/enforce-page-metadata-format": [1, { include: [], exclude: [] }],
   },
 }

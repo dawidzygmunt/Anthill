@@ -34,6 +34,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { AddActivityForm } from "../add-activity-form"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -49,6 +50,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
+  const searchParams = useSearchParams()
 
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -71,10 +73,14 @@ export function DataTable<TData, TValue>({
     },
   })
 
-  const handleSwitch = (value: boolean) => {
-    setSwitchValue(value)
-    console.log(value)
-  }
+  React.useEffect(() => {
+    if (searchParams.get("showDeleted") === "true") {
+      setSwitchValue(true)
+    } else {
+      setSwitchValue(false)
+    }
+  }, [searchParams, switchValue])
+
   return (
     <div>
       <div className="flex items-center gap-4 py-4 justify-between">
@@ -93,7 +99,10 @@ export function DataTable<TData, TValue>({
           <div className="flex justify-center items-center gap-4 border border-slate-200 p-2 px-4 rounded-lg text-sm ">
             <span>Show deleted</span>
             <Link href={`?showDeleted=${!switchValue}`}>
-              <Switch onCheckedChange={handleSwitch} />
+              <Switch
+                onCheckedChange={(value) => setSwitchValue(value)}
+                checked={switchValue}
+              />
             </Link>
           </div>
           <DropdownMenu>
