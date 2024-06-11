@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
 
-const SITE_URL = "https://www.example.com"
+const SITE_URL = "https://anthill-five.vercel.app"
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const robots = `
