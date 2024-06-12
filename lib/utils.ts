@@ -6,6 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const timeFormatter = (minutes: number) => {
+  if (minutes === undefined) return "0:00"
   const roundedMinutes = Math.round(minutes / 30) * 30
   const hours = Math.floor(roundedMinutes / 60)
   const remainingMinutes = roundedMinutes % 60
@@ -22,20 +23,4 @@ export const getRandomHexColor = () => {
     color += letters[Math.floor(Math.random() * 16)]
   }
   return color
-}
-
-export const extractErrorMessage = (error: unknown): string => {
-  let message: string
-
-  if (error instanceof Error) {
-    message = error.message
-  } else if (error && typeof error === "object" && "message" in error) {
-    message = String(error.message)
-  } else if (typeof error === "string") {
-    message = error
-  } else {
-    message = "Something went wrong"
-  }
-
-  return message
 }

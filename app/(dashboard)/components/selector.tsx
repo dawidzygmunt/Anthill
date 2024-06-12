@@ -1,7 +1,5 @@
 "use client"
 
-
-
 import { Activity } from "@prisma/client"
 import changeActivityForTrackRow from "../../../actions/tracks/change-activity-for-track-row"
 import revalidateTracks from "../../../actions/tracks/revalidate"
