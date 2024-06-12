@@ -61,7 +61,6 @@ export function ActivitySelector({
               {activity.name}
             </option>
           ))}
-          <option value="new">Add new +</option>
         </select>
       </form>
     </div>

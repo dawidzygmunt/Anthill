@@ -1,6 +1,6 @@
 "use client"
 import { DoneIndicator } from "./done-indicator"
-import { add, addDays, format, parse, startOfWeek } from "date-fns"
+import { addDays, format, parse, startOfWeek } from "date-fns"
 import { timeFormatter } from "@/lib/utils"
 import Link from "next/link"
 import { SingleWeekProps } from "@/lib/types"

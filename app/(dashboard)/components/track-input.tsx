@@ -18,7 +18,6 @@ import { useEffect } from "react"
 import handleTrackChange from "../../../actions/tracks/handle-track-change"
 import revalidateTracks from "../../../actions/tracks/revalidate"
 import deleteTrack from "../../../actions/tracks/delete-track"
-import toast from "react-hot-toast"
 import DisplayError from "@/utils/display-error"
 
 const FormSchema = z.object({
