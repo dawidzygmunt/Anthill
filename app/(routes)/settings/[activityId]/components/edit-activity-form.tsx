@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import toast from "react-hot-toast"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import revalidate from "@/actions/tracks/revalidate"
 import { editFormSchema } from "@/schemas/edit-form-schema"
 import { X } from "lucide-react"
@@ -24,6 +24,7 @@ import DisplayError from "@/utils/display-error"
 
 export function EditActivityForm({ initialData }: { initialData: Activity }) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const form = useForm<z.infer<typeof editFormSchema>>({
     resolver: zodResolver(editFormSchema),
     defaultValues: initialData,
@@ -36,9 +37,9 @@ export function EditActivityForm({ initialData }: { initialData: Activity }) {
       DisplayError(result.error)
       return
     }
-    toast.success("Activity modified")
     revalidate(`/settings/`)
-    router.push("/settings")
+    toast.success("Activity modified")
+    router.push(`/settings?${searchParams}`)
   }
   return (
     <main className="flex m-24">
@@ -46,7 +47,7 @@ export function EditActivityForm({ initialData }: { initialData: Activity }) {
         <Button
           className="absolute right-2 top-2 w-[20px] h-[20px] p-0"
           onClick={() => {
-            router.push("/settings")
+            router.push(`/settings?${searchParams}`)
           }}
         >
           <X size={15} />

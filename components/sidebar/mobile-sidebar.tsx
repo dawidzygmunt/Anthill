@@ -6,7 +6,6 @@ import { ListWeeks } from "./list-weeks"
 import { Nav } from "./nav"
 import { useState } from "react"
 import { ListWeeksProps } from "@/lib/types"
-import { SingleWeek } from "./single-week"
 
 export const MobileSidebar = ({ weeks }: ListWeeksProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)

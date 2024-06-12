@@ -16,7 +16,6 @@ const Settings = async ({ searchParams }: SettingsProps) => {
     activitiesList = await getAllActivities()
     if ("error" in activitiesList) {
       DisplayError(activitiesList.error)
-
       return
     }
   } else {

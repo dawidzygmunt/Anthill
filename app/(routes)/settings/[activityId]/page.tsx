@@ -1,5 +1,4 @@
 import { getSingleActivity } from "@/actions/activities/get-single-activity"
-import toast from "react-hot-toast"
 import { EditActivityForm } from "./components/edit-activity-form"
 import { Metadata } from "next"
 
