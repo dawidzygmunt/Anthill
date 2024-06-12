@@ -1,5 +1,6 @@
 import prisma from "@/lib/db"
 import { test, expect } from "@playwright/test"
+import { AwardIcon, Search } from "lucide-react"
 
 test.beforeEach(async ({}) => {
   await prisma.track.deleteMany()
@@ -63,19 +64,22 @@ test("Edit activity", async ({ page }) => {
     "153123",
     "v4activity 5",
   ]
-  for (const activity of activities) {
+  for (let i = 0; i < activities.length; i++) {
+    const activity = activities[i]
     await page.goto("http://localhost:3000/settings")
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)
     await page.getByText("Submit").click()
-    await page.waitForTimeout(400)
+    await page.waitForTimeout(300)
 
     await page.getByRole("row", { name: activity }).getByRole("button").click()
-    await page.getByRole("link", { name: "Edit" }).click()
+    await page.waitForTimeout(100)
+    await page.getByRole("menuitem", { name: "Edit" }).click()
     await page.getByLabel("Activity Name").click()
     await page.getByLabel("Activity Name").fill("")
     await page.getByLabel("Activity Name").fill(activity + " edited")
+    await page.waitForTimeout(100)
     await page.getByLabel("Color").click()
     await page.getByLabel("Color").fill("#b8c4ab")
     await page
@@ -83,12 +87,16 @@ test("Edit activity", async ({ page }) => {
       .filter({ hasText: /^Color$/ })
       .click()
     await page.getByRole("button", { name: "Submit" }).click()
+    await page.waitForTimeout(100)
     const result = await page.getByRole("cell", { name: activity + " edited" })
+    const resultColor = await page.getByRole("cell", { name: "#b8c4ab" }).nth(i)
     expect(result).toContainText(activity + " edited")
+    await page.waitForTimeout(300)
+    expect(resultColor).toContainText("#b8c4ab")
   }
 })
 
-test("Edit activity filter params", async ({ page }) => {
+test("Table filter pers", async ({ page }) => {
   const activities = [
     "activity 1",
     "activity 2",
@@ -105,7 +113,8 @@ test("Edit activity filter params", async ({ page }) => {
     await page.waitForTimeout(200)
 
     await page.getByRole("row", { name: activity }).getByRole("button").click()
-    await page.getByRole("link", { name: "Edit" }).click()
+    await page.waitForTimeout(100)
+    await page.getByRole("menuitem", { name: "Edit" }).click()
     await page.getByLabel("Activity Name").click()
     await page.getByLabel("Activity Name").fill("")
     await page.getByLabel("Activity Name").fill(activity + " edited")
@@ -116,11 +125,13 @@ test("Edit activity filter params", async ({ page }) => {
       .filter({ hasText: /^Color$/ })
       .click()
     await page.getByRole("button", { name: "Submit" }).click()
+    await page.waitForTimeout(100)
 
     const currentUrl = await page.url()
-    const searchParams = new URLSearchParams(currentUrl)
-    const searchParamsKey = searchParams.keys()
-    expect(searchParamsKey).toContain("showDeleted")
+    const queryString = currentUrl.split("?")[1]
+    const url = new URLSearchParams(queryString)
+    const searchParamsKey = url.get("showDeleted")
+    expect(searchParamsKey).toBeTruthy()
   }
 })
 
