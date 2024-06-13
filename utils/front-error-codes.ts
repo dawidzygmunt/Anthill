@@ -13,6 +13,7 @@ export const frontErrorCodes: Record<string, string> = {
   2000: "Track with this name already exists!",
   2001: "Cannot update if it not exists",
   2002: "track row already exists",
+  2003: "Cannot delete track row with tracks",
 
   // general
   9000: "Something went wrong",
