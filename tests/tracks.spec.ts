@@ -47,6 +47,59 @@ test("Add same tracks", async ({ page }) => {
   )
 })
 
+test("Delete Tracks", async ({ page }) => {
+  await page.goto("http://localhost:3000/")
+  await page.getByRole("link", { name: "Settings" }).click()
+  await page.getByRole("button", { name: "Add new" }).click()
+  await page.getByPlaceholder("Add your activity...").fill("activity 1")
+  await page.getByPlaceholder("Add your activity...").press("Enter")
+  await page.getByRole("button", { name: "Add new" }).click()
+  await page.getByPlaceholder("Add your activity...").fill("activity 2")
+  await page.getByText("Submit").click()
+  await page.getByRole("link", { name: "Home" }).click()
+  await page.getByRole("combobox").selectOption("activity 1")
+  await page.getByRole("button", { name: "Add" }).click()
+  await page.getByRole("combobox").nth(1).selectOption("activity 2")
+
+  await page.locator('[id="\\:rb\\:-form-item"]').click()
+  await page.waitForTimeout(100)
+  await page.locator('[id="\\:rb\\:-form-item"]').fill("1440")
+
+  await page.locator('[id="\\:rc\\:-form-item"]').click()
+  await page.waitForTimeout(100)
+  await page.locator('[id="\\:rc\\:-form-item"]').fill("1441")
+
+  await page.locator('[id="\\:ri\\:-form-item"]').click()
+  await page.waitForTimeout(100)
+  await page.locator('[id="\\:ri\\:-form-item"]').fill("30")
+
+  await page.locator('[id="\\:rj\\:-form-item"]').click()
+  await page.waitForTimeout(100)
+  await page.locator('[id="\\:rj\\:-form-item"]').fill("30")
+
+  // Choose existing tracktrow activity and try delete it
+})
+
+test("Delete tracks validation", async ({ page }) => {
+  await page.goto("http://localhost:3000/")
+  await page.getByRole("link", { name: "Settings" }).click()
+  await page.getByRole("button", { name: "Add new" }).click()
+  await page.getByPlaceholder("Add your activity...").fill("activity 1")
+  await page.getByPlaceholder("Add your activity...").press("Enter")
+  await page.getByRole("button", { name: "Add new" }).click()
+  await page.getByPlaceholder("Add your activity...").fill("activity 2")
+  await page.getByText("Submit").click()
+  await page.getByRole("link", { name: "Home" }).click()
+  await page.getByRole("combobox").selectOption("activity 1")
+  await page.getByRole("button", { name: "Add" }).click()
+  await page.getByRole("combobox").nth(1).selectOption("activity 1")
+  await page.waitForTimeout(400)
+
+  expect(page.getByRole("combobox").nth(1)).toContainText(
+    "Select your activity"
+  )
+})
+
 test("Add new week & trackRow & track", async ({ page }) => {
   await page.goto("http://localhost:3000/")
   await page.getByRole("link", { name: "Settings" }).click()

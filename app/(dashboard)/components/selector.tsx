@@ -1,7 +1,5 @@
 "use client"
 
-
-
 import { Activity } from "@prisma/client"
 import changeActivityForTrackRow from "../../../actions/tracks/change-activity-for-track-row"
 import revalidateTracks from "../../../actions/tracks/revalidate"
@@ -32,7 +30,7 @@ export function ActivitySelector({
     if (onChange) onChange(value)
     else if (trackRowId) {
       const result = await changeActivityForTrackRow(trackRowId, value)
-      if ("error" in result) {
+      if (result && "error" in result) {
         DisplayError(result.error)
         setSelectedActivity(activityId)
       } else {
@@ -55,6 +53,7 @@ export function ActivitySelector({
               {activity.name}
             </option>
           ))}
+          <option value="DELETE">Remove this track --</option>
         </select>
       </form>
     </div>
