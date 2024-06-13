@@ -19,6 +19,7 @@ import handleTrackChange from "../../../actions/tracks/handle-track-change"
 import revalidateTracks from "../../../actions/tracks/revalidate"
 import deleteTrack from "../../../actions/tracks/delete-track"
 import DisplayError from "@/utils/display-error"
+import { parseTime } from "@/lib/utils"
 
 const FormSchema = z.object({
   trackInput: z.string(),
@@ -32,23 +33,6 @@ export interface EmptyTrack {
 
 interface Props {
   track: Track | EmptyTrack
-}
-
-const myParse = (number: string) => {
-  const result = number.replace(",", ".")
-  const hours = parseFloat(result)
-  const minutes = hours * 60
-
-  const integerPart = Math.floor(hours)
-  const decimalPart = hours - integerPart
-
-  if (decimalPart >= 0.1 && decimalPart <= 0.5) {
-    return minutes + 30 - decimalPart * 60
-  } else if (decimalPart >= 0.6 && decimalPart <= 0.9) {
-    return Math.floor(minutes + 60 - decimalPart * 60)
-  } else {
-    return minutes - decimalPart * 60
-  }
 }
 
 const TrackInput = ({ track }: Props) => {
@@ -70,7 +54,7 @@ const TrackInput = ({ track }: Props) => {
     if ("id" in track && data.trackInput === "") {
       const result = await deleteTrack(track.id)
       if ("error" in result) {
-        DisplayError(result.error)
+        // DisplayError(result.error)
         return form.setValue(
           "trackInput",
           track.minutes ? (track.minutes / 60).toString() : ""
@@ -81,7 +65,7 @@ const TrackInput = ({ track }: Props) => {
 
     if (data.trackInput.length < 1) return
 
-    const minutes = parseInt(myParse(data.trackInput).toString(), 10)
+    const minutes = parseInt(parseTime(data.trackInput).toString(), 10)
 
     const result = await handleTrackChange(
       track.trackRowId,
@@ -89,7 +73,7 @@ const TrackInput = ({ track }: Props) => {
       minutes
     )
     if ("error" in result) {
-      DisplayError(result.error)
+      // DisplayError(result.error)
       return form.setValue(
         "trackInput",
         track.minutes ? (track.minutes / 60).toString() : ""
