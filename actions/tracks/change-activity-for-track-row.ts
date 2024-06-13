@@ -32,8 +32,6 @@ const changeActivityForTrackRow = async (
       where: { id: trackRowId },
     })
   } catch (error) {
-    console.log(error)
-
     return handleError(error, tracksPrismaCodesMap)
   }
 }

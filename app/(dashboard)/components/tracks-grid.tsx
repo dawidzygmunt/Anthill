@@ -29,8 +29,6 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
 
   if ("error" in weeks) {
     DisplayError(weeks.error)
-    console.log("1")
-
     return
   }
 
