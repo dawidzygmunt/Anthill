@@ -60,7 +60,7 @@ export const getWeeks = async (from: Date, to: Date) => {
             maxMinutesActivityId = activityId
           }
         })
-
+        if (!maxMinutesActivityId) return week
         const mostActivity = await getSingleActivity(maxMinutesActivityId)
         if ("error" in mostActivity) {
           return
