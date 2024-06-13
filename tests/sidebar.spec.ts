@@ -32,6 +32,7 @@ test("Adding week", async ({ page }) => {
   await page.locator('[id="\\:r4\\:-form-item"]').fill("30")
   await page.waitForTimeout(100)
   await page.locator('[id="\\:r5\\:-form-item"]').click()
+  await page.waitForTimeout(300)
 
   const week = await page.getByRole("link", {
     name: "10 Jun - 16 Jun 2024 activity",

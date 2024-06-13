@@ -29,8 +29,6 @@ export const handleError = (
   }
 
   if (error instanceof ZodError) {
-    console.log("ZodError", error.errors[0].message)
-
     return { error: { message: error.errors[0].message } }
   }
 
