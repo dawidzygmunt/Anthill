@@ -12,7 +12,9 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
   const weeks = await getTrackRowsForPeriod(from)
   const allActivities = await getActivities()
   if ("error" in allActivities) {
-    DisplayError(allActivities.error)
+    if (typeof DisplayError === "function") {
+      DisplayError(allActivities.error)
+    }
     return
   }
 
@@ -28,7 +30,9 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
     )
 
   if ("error" in weeks) {
-    DisplayError(weeks.error)
+    if (typeof DisplayError === "function") {
+      DisplayError(weeks.error)
+    }
     return
   }
 

@@ -31,7 +31,9 @@ export const EditActivityFormv2 = ({ activity }: { activity: Activity }) => {
   const handleDelete = async (activityId: string) => {
     const result = await deleteActivity(activityId)
     if ("error" in result) {
-      DisplayError(result.error)
+      if (typeof DisplayError === "function") {
+        DisplayError(result.error)
+      }
       return
     }
     toast.success("Activity deleted")
@@ -40,7 +42,9 @@ export const EditActivityFormv2 = ({ activity }: { activity: Activity }) => {
   const handleHardDelete = async (activityId: string) => {
     const result = await hardDeleteActivity(activityId)
     if ("error" in result) {
-      DisplayError(result.error)
+      if (typeof DisplayError === "function") {
+        DisplayError(result.error)
+      }
       return
     }
     toast.success("Activity deleted")
@@ -49,7 +53,9 @@ export const EditActivityFormv2 = ({ activity }: { activity: Activity }) => {
   const handleRestore = async (activity: Activity) => {
     const result = await patchActivity({ ...activity, deletedAt: null })
     if ("error" in result) {
-      DisplayError(result.error)
+      if (typeof DisplayError === "function") {
+        DisplayError(result.error)
+      }
       return
     }
     toast.success("Activity restored")
