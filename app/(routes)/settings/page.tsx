@@ -15,13 +15,17 @@ const Settings = async ({ searchParams }: SettingsProps) => {
   if (searchParams.showDeleted === "true") {
     activitiesList = await getAllActivities()
     if ("error" in activitiesList) {
-      DisplayError(activitiesList.error)
+      if (typeof DisplayError === "function") {
+        DisplayError(activitiesList.error)
+      }
       return
     }
   } else {
     activitiesList = await getActivities()
     if ("error" in activitiesList) {
-      DisplayError(activitiesList.error)
+      if (typeof DisplayError === "function") {
+        DisplayError(activitiesList.error)
+      }
       return
     }
   }

@@ -12,7 +12,9 @@ const SideBar = async () => {
   const weeks = await getWeeks(from, to)
 
   if ("error" in weeks) {
-    DisplayError(weeks.error)
+    if (typeof DisplayError === "function") {
+      DisplayError(weeks.error)
+    }
     return
   }
 
