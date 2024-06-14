@@ -19,6 +19,7 @@ import handleTrackChange from "../../../actions/tracks/handle-track-change"
 import revalidateTracks from "../../../actions/tracks/revalidate"
 import deleteTrack from "../../../actions/tracks/delete-track"
 import DisplayError from "@/utils/display-error"
+import { parseTime } from "@/lib/utils"
 
 const FormSchema = z.object({
   trackInput: z.string(),
@@ -38,36 +39,47 @@ const TrackInput = ({ track }: Props) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      trackInput: track.minutes?.toString() ?? "",
+      trackInput: track.minutes ? (track.minutes / 60).toString() : "",
     },
   })
 
   useEffect(() => {
-    form.setValue("trackInput", track.minutes?.toString() ?? "")
+    form.setValue(
+      "trackInput",
+      track.minutes ? (track.minutes / 60).toString() : ""
+    )
   }, [track, form])
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     if ("id" in track && data.trackInput === "") {
       const result = await deleteTrack(track.id)
       if ("error" in result) {
-        DisplayError(result.error)
-        return form.setValue("trackInput", track.minutes?.toString() ?? "")
+        // DisplayError(result.error)
+        return form.setValue(
+          "trackInput",
+          track.minutes ? (track.minutes / 60).toString() : ""
+        )
       }
       return revalidateTracks()
     }
 
     if (data.trackInput.length < 1) return
 
+    const minutes = parseInt(parseTime(data.trackInput).toString(), 10)
+
     const result = await handleTrackChange(
       track.trackRowId,
       track.date,
-      parseInt(data.trackInput, 10)
+      minutes
     )
     if ("error" in result) {
-      DisplayError(result.error)
-      return form.setValue("trackInput", track.minutes?.toString() ?? "")
+      // DisplayError(result.error)
+      return form.setValue(
+        "trackInput",
+        track.minutes ? (track.minutes / 60).toString() : ""
+      )
     }
-    form.setValue("trackInput", result.minutes.toString())
+    form.setValue("trackInput", (result.minutes / 60).toString())
     revalidateTracks()
   }
   return (
