@@ -1,7 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,45 +11,56 @@ model Activity {
   id        String     @id @default(cuid())
   name      String     @unique
   color     String     @default("#fefefe")
-  TrackRow  TrackRow[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   deletedAt DateTime?
+  TrackRow  TrackRow[]
 }
 
 model Track {
-  id        String    @id @default(cuid())
-  minutes   Int
-  date      DateTime
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  trackRow   TrackRow @relation(fields: [trackRowId], references: [id])
+  id         String    @id @default(cuid())
+  minutes    Int
+  date       DateTime
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
   trackRowId String
+  trackRow   TrackRow  @relation(fields: [trackRowId], references: [id])
 
-  @@unique(name: "rowDatePair", [date, trackRowId])
+  @@unique([date, trackRowId], name: "rowDatePair")
 }
 
 model TrackRow {
   id         String    @id @default(cuid())
-  activity   Activity  @relation(fields: [activityId], references: [id])
   activityId String
-  Track      Track[]
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   deletedAt  DateTime?
   weekId     String?
+  Track      Track[]
+  activity   Activity  @relation(fields: [activityId], references: [id])
   Week       Week?     @relation(fields: [weekId], references: [id])
 }
 
 model Week {
-  id       String     @id @default(cuid())
-  from     DateTime
-  isClosed Boolean    @default(false)
-  TrackRow TrackRow[]
+  id        String     @id @default(cuid())
+  from      DateTime
+  isClosed  Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+  TrackRow  TrackRow[]
+  userId    String
+  User      User       @relation(fields: [userId], references: [clerkId])
+}
 
+model User {
+  id        String    @id @default(cuid())
+  clerkId   String    @unique
+  role      String    @default("user")
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  Week Week[]
 }

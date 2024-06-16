@@ -16,7 +16,9 @@ import DisplayError from "@/utils/display-error"
 const EditActivity = async ({ params }: { params: { activityId: string } }) => {
   const activity = await getSingleActivity(params.activityId)
   if ("error" in activity) {
-    DisplayError(activity.error)
+    if (typeof DisplayError === "function") {
+      DisplayError(activity.error)
+    }
     return
   }
   return (

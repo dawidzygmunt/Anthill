@@ -53,8 +53,23 @@ export async function POST(req: Request) {
   // For this guide, you simply log the payload to the console
   const { id } = evt.data
   const eventType = evt.type
+
   if (evt.type === "user.updated") {
     console.log("userId:", evt.data.id)
+
+    const user = await prisma.user.findUnique({
+      where: {
+        clerkId: evt.data.id,
+      },
+    })
+
+    if (!user) {
+      await prisma.user.create({
+        data: {
+          clerkId: evt.data.id,
+        },
+      })
+    }
 
     await prisma.user.update({
       where: {
@@ -72,8 +87,6 @@ export async function POST(req: Request) {
     await prisma.user.create({
       data: {
         clerkId: evt.data.id,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
     })
   }

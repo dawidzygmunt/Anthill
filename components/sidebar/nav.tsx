@@ -3,6 +3,7 @@
 import { Home, Settings } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs"
 
 export const Nav = () => {
   const pathName = usePathname()
@@ -34,6 +35,14 @@ export const Nav = () => {
           </Link>
         </div>
       ))}
+      <div>
+        <SignedOut>
+          <SignInButton />
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+      </div>
     </div>
   )
 }

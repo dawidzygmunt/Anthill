@@ -32,8 +32,8 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
   const handleButtonClick = async () => {
     setIsDone(!isDone)
     updateSingleWeek(from, !isDone)
-    const response = await updateSingleWeek(from, !isDone)
-    if ("error" in response) {
+    const result = await updateSingleWeek(from, !isDone)
+    if ("error" in result) {
       if (typeof DisplayError === "function") {
         DisplayError(result.error)
       }

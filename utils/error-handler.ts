@@ -3,6 +3,7 @@ import { ZodError } from "zod"
 
 const errorDefaultCodeMap: Record<string, string> = {
   NOT_FOUND: "9001",
+  NOT_AUTHENTICATED: "9002",
 }
 
 export class CustomError extends Error {
