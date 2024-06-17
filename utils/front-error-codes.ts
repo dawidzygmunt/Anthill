@@ -19,4 +19,5 @@ export const frontErrorCodes: Record<string, string> = {
   9000: "Something went wrong",
   9001: "Not Found",
   9002: "Not Authenticated",
+  9003: "Not Authorized",
 }

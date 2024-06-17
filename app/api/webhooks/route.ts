@@ -1,6 +1,6 @@
 import { Webhook } from "svix"
 import { headers } from "next/headers"
-import { WebhookEvent } from "@clerk/nextjs/server"
+import { auth, WebhookEvent } from "@clerk/nextjs/server"
 import prisma from "@/lib/db"
 
 export async function POST(req: Request) {
@@ -51,45 +51,68 @@ export async function POST(req: Request) {
 
   // Do something with the payload
   // For this guide, you simply log the payload to the console
-  const { id } = evt.data
-  const eventType = evt.type
-
-  if (evt.type === "user.updated") {
-    console.log("userId:", evt.data.id)
-
-    const user = await prisma.user.findUnique({
-      where: {
-        clerkId: evt.data.id,
-      },
-    })
-
-    if (!user) {
-      await prisma.user.create({
-        data: {
-          clerkId: evt.data.id,
-        },
-      })
-    }
-
-    await prisma.user.update({
-      where: {
-        clerkId: evt.data.id,
-      },
-      data: {
-        updatedAt: new Date(),
-      },
-    })
-  }
 
   if (evt.type === "user.created") {
-    console.log("userId:", evt.data)
-
     await prisma.user.create({
       data: {
         clerkId: evt.data.id,
       },
     })
   }
+
+  if (evt.type === "user.updated") {
+    const role = evt.data.public_metadata.role
+    await prisma.user.upsert({
+      where: {
+        clerkId: evt.data.id,
+      },
+      update: {
+        clerkId: evt.data.id,
+        role: role === "admin" ? role : "user",
+      },
+      create: {
+        clerkId: evt.data.id,
+        role: role === "admin" ? role : "user",
+      },
+    })
+  }
+
+  if (evt.type === "user.deleted") {
+    await prisma.user.delete({
+      where: { clerkId: evt.data.id },
+    })
+  }
+
+  if (
+    evt.type === "organizationMembership.updated" ||
+    evt.type === "organizationMembership.created"
+  ) {
+    const userId = evt.data.public_user_data.user_id
+
+    await prisma.user.update({
+      where: {
+        clerkId: userId,
+      },
+      data: {
+        role: evt.data.role,
+      },
+    })
+  }
+
+  if (evt.type === "organizationMembership.deleted") {
+    const userId = evt.data.public_user_data.user_id
+
+    await prisma.user.update({
+      where: {
+        clerkId: userId,
+      },
+      data: {
+        role: "org:user",
+      },
+    })
+  }
+
+  console.log("Event type:", evt.type)
 
   return new Response("", { status: 200 })
 }

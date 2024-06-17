@@ -1,9 +1,9 @@
 import { getWeeks } from "@/actions/weeks/get-weeks"
+import DisplayError from "@/utils/display-error"
 import { addDays, subDays } from "date-fns"
 import { ListWeeks } from "./list-weeks"
 import { MobileSidebar } from "./mobile-sidebar"
 import { Nav } from "./nav"
-import DisplayError from "@/utils/display-error"
 
 const SideBar = async () => {
   const today = new Date()

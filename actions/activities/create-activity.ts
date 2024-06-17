@@ -5,6 +5,7 @@ import { ActivitiesProps } from "@/lib/types"
 import { getRandomHexColor } from "@/lib/utils"
 import { CustomError, handleError } from "@/utils/error-handler"
 import activitiesPrismaCodesMap from "@/utils/prisma-codes/activities-prisma-codes"
+import { currentUser } from "@clerk/nextjs/server"
 import { z } from "zod"
 
 const activitySchema = z.object({
@@ -16,8 +17,10 @@ const activitySchema = z.object({
 
 export const createActivity = async (data: ActivitiesProps) => {
   try {
-    if (data.name === "xd")
-      throw new CustomError("Activity Name is required", "TEST")
+    const user = await currentUser()
+    if (!user?.id || user.publicMetadata?.role !== "admin") {
+      throw new CustomError("User not authorized", "NOT_AUTH")
+    }
     const parsedData = activitySchema.parse(data)
     const activity = await prisma.activity.create({
       data: { name: parsedData.name, color: getRandomHexColor() },
