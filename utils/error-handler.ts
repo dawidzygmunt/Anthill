@@ -23,6 +23,8 @@ export const handleError = (
   customPrismaMap: Record<string, string> = errorDefaultCodeMap
 ): { error: { code: string } | { message: string } } => {
   // To translate Prisma errors
+  console.log(error)
+
   if (
     error instanceof Prisma.PrismaClientKnownRequestError ||
     (error instanceof CustomError && error.code in customPrismaMap)

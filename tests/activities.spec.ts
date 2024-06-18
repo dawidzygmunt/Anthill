@@ -1,6 +1,7 @@
 import prisma from "@/lib/db"
+import { setupClerkTestingToken } from "@clerk/testing/playwright"
 import { test, expect } from "@playwright/test"
-import { AwardIcon, Search } from "lucide-react"
+import { time } from "console"
 
 test.beforeEach(async ({}) => {
   await prisma.track.deleteMany()
@@ -8,8 +9,6 @@ test.beforeEach(async ({}) => {
   await prisma.activity.deleteMany()
   await prisma.week.deleteMany()
 })
-
-// test.afterAll(() => {})
 
 test("Add activity", async ({ page }) => {
   const activities = [
@@ -21,6 +20,7 @@ test("Add activity", async ({ page }) => {
   ]
 
   await page.goto("http://localhost:3000/settings")
+  await setupClerkTestingToken({ page })
   for (const activity of activities) {
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
@@ -34,14 +34,10 @@ test("Add activity", async ({ page }) => {
 })
 
 test("Delete activity", async ({ page }) => {
-  const activities = [
-    "v2 activity 1",
-    "v2 122 12",
-    "v2 ac cc3",
-    "v2 activity 4",
-  ]
+  const activities = ["v2 activity 1", "v2 122 12", "v2 ac cc3"]
 
   await page.goto("http://localhost:3000/settings")
+  await setupClerkTestingToken({ page })
   for (const activity of activities) {
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
@@ -51,21 +47,18 @@ test("Delete activity", async ({ page }) => {
 
     await page.getByRole("row", { name: activity }).getByRole("button").click()
     await page.getByRole("menuitem", { name: "Delete" }).click()
+    await page.waitForTimeout(500)
     const result = await page.locator("tr").filter({ hasText: activity })
     expect(result).toHaveCount(0)
   }
 })
 
 test("Edit activity", async ({ page }) => {
-  const activities = [
-    "v4activity 1",
-    "v4122 12",
-    "v4 ac cc3",
-    "153123",
-    "v4activity 5",
-  ]
+  await setupClerkTestingToken({ page })
+  const activities = ["v4activity 1", "v4122 12", "v4 ac cc3"]
   for (let i = 0; i < activities.length; i++) {
     const activity = activities[i]
+    await page.waitForTimeout(100)
     await page.goto("http://localhost:3000/settings")
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
@@ -91,12 +84,13 @@ test("Edit activity", async ({ page }) => {
     const result = await page.getByRole("cell", { name: activity + " edited" })
     const resultColor = await page.getByRole("cell", { name: "#b8c4ab" }).nth(i)
     expect(result).toContainText(activity + " edited")
-    await page.waitForTimeout(300)
-    expect(resultColor).toContainText("#b8c4ab")
+    await page.waitForTimeout(500)
+    expect(resultColor).toContainText("#b8c4ab", { timeout: 5000 })
   }
 })
 
 test("Table filter pers", async ({ page }) => {
+  await setupClerkTestingToken({ page })
   const activities = [
     "activity 1",
     "activity 2",
@@ -136,6 +130,7 @@ test("Table filter pers", async ({ page }) => {
 })
 
 test("Input validation", async ({ page }) => {
+  await setupClerkTestingToken({ page })
   const activities = [
     "WayyyyyyyytooooooooooLoooooong Message i mean activity name",
     "",

@@ -4,8 +4,8 @@ import weeksPrismaCodesMap from "@/utils/prisma-codes/weeks-prisma-codes"
 import { auth } from "@clerk/nextjs/server"
 
 export const CloseWeek = async (weekId: string, isClosed: boolean) => {
-  const { userId } = auth()
   try {
+    const { userId } = await auth()
     if (!userId) {
       throw new CustomError("User not authenticated", "NOT_AUTHENTICATED")
     }
