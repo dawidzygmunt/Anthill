@@ -1,9 +1,16 @@
+import { auth } from "@clerk/nextjs/server"
 import prisma from "../../lib/db"
 import { faker } from "@faker-js/faker"
 import { Activity } from "@prisma/client"
 import { addDays, subDays, startOfWeek, setDefaultOptions } from "date-fns"
+import { CustomError } from "@/utils/error-handler"
 
 setDefaultOptions({ weekStartsOn: 1 })
+
+const { userId } = auth()
+if (!userId) {
+  throw new CustomError("User not found", "NOT_FOUND")
+}
 
 const randomActivities = (n = 100) => {
   const names = Array.from(Array(n).keys()).map(() => faker.company.name())
@@ -34,6 +41,7 @@ const randomTrackRowsForWeek = async (
     week = await prisma.week.create({
       data: {
         from: weekStart,
+        userId,
       },
     })
   }

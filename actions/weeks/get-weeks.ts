@@ -1,18 +1,25 @@
 "use server"
 import prisma from "@/lib/db"
-import { handleError } from "@/utils/error-handler"
+import { CustomError, handleError } from "@/utils/error-handler"
 import weeksPrismaCodesMap from "@/utils/prisma-codes/weeks-prisma-codes"
 import { getSingleActivity } from "../activities/get-single-activity"
 import { ExtendedWeek } from "@/lib/types"
+import { auth } from "@clerk/nextjs/server"
 
 export const getWeeks = async (from: Date, to: Date) => {
   try {
+    const { userId } = auth()
+    if (!userId) {
+      throw new CustomError("User not authenticated", "NOT_AUTHENTICATED")
+    }
+
     const weeks = await prisma.week.findMany({
       where: {
         from: {
           gte: from,
           lt: to,
         },
+        userId,
       },
       include: {
         TrackRow: {

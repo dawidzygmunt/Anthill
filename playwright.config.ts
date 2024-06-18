@@ -10,6 +10,7 @@ import { defineConfig, devices } from "@playwright/test"
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  globalSetup: "./global-setup",
   testDir: "./tests",
   /* Run tests in files in parallel */
   fullyParallel: false,
@@ -29,14 +30,19 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
+    storageState: "./LoginAuth.json",
   },
 
   /* Configure projects for major browsers */
   projects: [
-    {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-    },
+    // {
+    //   name: "auth",
+    //   testMatch: /global\.auth\.ts/,
+    //   use: {
+    //     ...devices["Desktop Chrome"],
+    //   },
+    //   timeout: 5 * 60 * 1000,
+    // },
 
     {
       name: "firefox",
@@ -47,6 +53,10 @@ export default defineConfig({
       name: "webkit",
       use: { ...devices["Desktop Safari"] },
     },
+    // {
+    //   name: "global setup",
+    //   testMatch: "global.setup.ts",
+    // },
 
     /* Test against mobile viewports. */
     // {
@@ -71,8 +81,8 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://127.0.0.1:3000',
+  //   command: "npm run dev",
+  //   url: "http://127.0.0.1:3000",
   //   reuseExistingServer: !process.env.CI,
   // },
 })

@@ -1,7 +1,6 @@
 import prisma from "@/lib/db"
-import { test, expect } from "@playwright/test"
-import exp from "constants"
-import { exitCode } from "process"
+import { setupClerkTestingToken } from "@clerk/testing/playwright"
+import { expect, test } from "@playwright/test"
 
 test.beforeEach(async ({}) => {
   await prisma.track.deleteMany()
@@ -12,6 +11,7 @@ test.beforeEach(async ({}) => {
 
 // test.afterAll(() => {})
 test("Adding week", async ({ page }) => {
+  await setupClerkTestingToken({ page })
   await page.goto("http://localhost:3000?from=2024-06-10")
   await page.getByRole("link", { name: "Settings" }).click()
   await page.getByRole("button", { name: "Add new" }).click()
@@ -25,12 +25,12 @@ test("Adding week", async ({ page }) => {
 
   await page.waitForTimeout(100)
   await page.locator('[id="\\:r3\\:-form-item"]').click()
-  await page.locator('[id="\\:r3\\:-form-item"]').fill("20")
+  await page.locator('[id="\\:r3\\:-form-item"]').fill("2")
   await page.waitForTimeout(200)
   await page.locator('[id="\\:r4\\:-form-item"]').click()
-  await page.waitForTimeout(100)
-  await page.locator('[id="\\:r4\\:-form-item"]').fill("30")
-  await page.waitForTimeout(100)
+  await page.waitForTimeout(200)
+  await page.locator('[id="\\:r4\\:-form-item"]').fill("4")
+  await page.waitForTimeout(210)
   await page.locator('[id="\\:r5\\:-form-item"]').click()
   await page.waitForTimeout(300)
 
@@ -39,7 +39,7 @@ test("Adding week", async ({ page }) => {
   })
   expect(week).toContainText("10 Jun - 16 Jun 2024")
   expect(week).toContainText("In progress")
-  expect(week).toContainText("1:00")
+  expect(week).toContainText("6:00")
 })
 
 test("In progress change", async ({ page }) => {
@@ -56,15 +56,15 @@ test("In progress change", async ({ page }) => {
 
   await page.waitForTimeout(100)
   await page.locator('[id="\\:r3\\:-form-item"]').click()
-  await page.locator('[id="\\:r3\\:-form-item"]').fill("20")
+  await page.locator('[id="\\:r3\\:-form-item"]').fill("1")
 
   await page.waitForTimeout(100)
   await page.locator('[id="\\:r4\\:-form-item"]').click()
-  await page.locator('[id="\\:r4\\:-form-item"]').fill("30")
+  await page.locator('[id="\\:r4\\:-form-item"]').fill("2")
 
   await page.waitForTimeout(100)
   await page.locator('[id="\\:r5\\:-form-item"]').click()
-  await page.locator('[id="\\:r5\\:-form-item"]').fill("40")
+  await page.locator('[id="\\:r5\\:-form-item"]').fill("4")
   await page.waitForTimeout(100)
   await page.locator('[id="\\:r4\\:-form-item"]').click()
 
@@ -133,17 +133,17 @@ test("Sync closing weeks", async ({ page }) => {
 
   await page.waitForTimeout(100)
   await page.locator('[id="\\:r3\\:-form-item"]').click()
-  await page.locator('[id="\\:r3\\:-form-item"]').fill("20")
+  await page.locator('[id="\\:r3\\:-form-item"]').fill("1")
 
   await page.waitForTimeout(100)
   await page.locator('[id="\\:r4\\:-form-item"]').click()
   await page.waitForTimeout(100)
-  await page.locator('[id="\\:r4\\:-form-item"]').fill("30")
+  await page.locator('[id="\\:r4\\:-form-item"]').fill("2")
   await page.waitForTimeout(100)
 
   await page.waitForTimeout(100)
   await page.locator('[id="\\:r5\\:-form-item"]').click()
-  await page.locator('[id="\\:r5\\:-form-item"]').fill("40")
+  await page.locator('[id="\\:r5\\:-form-item"]').fill("3")
   await page.locator('[id="\\:r5\\:-form-item"]').press("Tab")
   await page.waitForTimeout(100)
 
