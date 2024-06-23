@@ -7,13 +7,8 @@ import { auth } from "@clerk/nextjs/server"
 
 export const createWeek = async (from: Date, to: Date, TrackRows: any) => {
   try {
-    const { userId } = auth()
-    if (!userId) {
-      throw new CustomError("User not authenticated", "NOT_AUTHENTICATED")
-    }
-
     const week = await prisma.week.findFirst({
-      where: { from, userId },
+      where: { from },
     })
 
     if (!week) {
@@ -21,7 +16,6 @@ export const createWeek = async (from: Date, to: Date, TrackRows: any) => {
         data: {
           from,
           TrackRow: TrackRows,
-          userId,
         },
       })
     }

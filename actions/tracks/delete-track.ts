@@ -7,10 +7,6 @@ import { auth } from "@clerk/nextjs/server"
 
 const deleteTrack = async (trackId: string) => {
   try {
-    const { userId } = auth()
-    if (!userId) {
-      throw new CustomError("User not authenticated", "NOT_AUTHENTICATED")
-    }
     return await prisma.track.delete({ where: { id: trackId } })
   } catch (error) {
     return handleError(error, tracksPrismaCodesMap)

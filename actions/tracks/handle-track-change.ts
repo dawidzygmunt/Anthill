@@ -21,11 +21,6 @@ const handleTrackChange = async (
   minutes: number
 ) => {
   try {
-    const { userId } = auth()
-    if (!userId) {
-      throw new CustomError("User not authenticated", "NOT_AUTHENTICATED")
-    }
-
     const data = trackSchema.parse({ trackRowId, date, minutes })
 
     const track = await prisma.track.findFirst({ where: { trackRowId, date } })

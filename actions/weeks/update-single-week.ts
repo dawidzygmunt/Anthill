@@ -6,21 +6,15 @@ import { auth } from "@clerk/nextjs/server"
 
 export const updateSingleWeek = async (from: Date, isDone: boolean) => {
   try {
-    const { userId } = auth()
-    if (!userId) {
-      throw new CustomError("User not authenticated", "NOT_AUTHENTICATED")
-    }
-
     const week = await prisma.week.findFirst({
       where: {
         from,
-        userId,
       },
     })
 
     if (!week) throw new CustomError("Week not found", "NOT_FOUND")
     return await prisma.week.update({
-      where: { id: week.id, userId },
+      where: { id: week.id },
       data: {
         isClosed: isDone,
       },

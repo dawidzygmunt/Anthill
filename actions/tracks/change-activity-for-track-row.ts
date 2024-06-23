@@ -11,11 +11,6 @@ const changeActivityForTrackRow = async (
   activityId: string
 ) => {
   try {
-    const { userId } = auth()
-    if (!userId) {
-      throw new CustomError("User not authenticated", "NOT_AUTHENTICATED")
-    }
-
     if (activityId === "DELETE") {
       const tracks = await prisma.track.findMany({
         where: { trackRowId },
