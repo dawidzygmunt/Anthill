@@ -50,17 +50,4 @@ model Week {
   updatedAt DateTime   @updatedAt
   deletedAt DateTime?
   TrackRow  TrackRow[]
-  userId    String
-  User      User       @relation(fields: [userId], references: [clerkId])
-}
-
-model User {
-  id        String    @id @default(cuid())
-  clerkId   String    @unique
-  role      String    @default("org:member")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  Week Week[]
 }

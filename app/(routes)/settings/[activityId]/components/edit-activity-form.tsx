@@ -1,9 +1,7 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { patchActivity } from "@/actions/activities/update-activity"
+import revalidate from "@/actions/tracks/revalidate"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -14,13 +12,15 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import toast from "react-hot-toast"
-import { useRouter, useSearchParams } from "next/navigation"
-import revalidate from "@/actions/tracks/revalidate"
 import { editFormSchema } from "@/schemas/edit-form-schema"
-import { X } from "lucide-react"
-import { Activity } from "@prisma/client"
 import DisplayError from "@/utils/display-error"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Activity } from "@prisma/client"
+import { X } from "lucide-react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useForm } from "react-hook-form"
+import toast from "react-hot-toast"
+import { z } from "zod"
 
 export function EditActivityForm({ initialData }: { initialData: Activity }) {
   const router = useRouter()

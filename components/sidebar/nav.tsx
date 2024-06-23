@@ -35,9 +35,6 @@ export const Nav = () => {
           </Link>
         </div>
       ))}
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
     </div>
   )
 }

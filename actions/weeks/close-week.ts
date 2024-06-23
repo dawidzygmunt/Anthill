@@ -5,13 +5,8 @@ import { auth } from "@clerk/nextjs/server"
 
 export const CloseWeek = async (weekId: string, isClosed: boolean) => {
   try {
-    const { userId } = await auth()
-    if (!userId) {
-      throw new CustomError("User not authenticated", "NOT_AUTHENTICATED")
-    }
-
     return await prisma.week.update({
-      where: { id: weekId, userId },
+      where: { id: weekId },
       data: {
         isClosed: isClosed,
       },

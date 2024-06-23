@@ -7,11 +7,6 @@ import { auth } from "@clerk/nextjs/server"
 
 const getTrackRowsForPeriod = async (from: Date) => {
   try {
-    // const { userId } = auth()
-    // if (!userId) {
-    //   throw new CustomError("User not authenticated", "NOT_AUTHENTICATED")
-    // }
-
     return await prisma.week.findFirst({
       where: { from },
       include: { TrackRow: { include: { Track: true } } },
