@@ -8,6 +8,7 @@ import { SkeletonLoader } from "@/components/skeleton-lodaer"
 import { TopBar } from "../../components/top-bar"
 import { Metadata } from "next"
 import { auth } from "@clerk/nextjs/server"
+import { handleError } from "@/utils/error-handler"
 
 interface HomeProps {
   searchParams: { from: string }
@@ -43,6 +44,6 @@ export default function Home({ searchParams }: HomeProps) {
       </main>
     )
   } catch (error) {
-    console.log(error)
+    handleError(error)
   }
 }

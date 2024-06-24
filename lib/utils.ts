@@ -25,14 +25,12 @@ export const parseTime = (input: string) => {
   }
   const hours = parseFloat(result)
   const minutes = hours * 60
-  console.log(hours, minutes)
 
   const integerPart = Math.floor(hours)
 
   const decimalPart = result.split(".")[1]
     ? parseFloat(`0.${result.split(".")[1]}`)
     : 0
-  console.log(integerPart, decimalPart)
 
   if (decimalPart >= 0.1 && decimalPart <= 0.5) {
     return minutes + 30 - decimalPart * 60

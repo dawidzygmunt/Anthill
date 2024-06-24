@@ -5,19 +5,17 @@ import React from "react"
 const Playground = () => {
   const notifyMe = () => {
     if (!("Notification" in window)) {
-      // Check if the browser supports notifications
       alert("This browser does not support desktop notification")
     } else if (Notification.permission === "granted") {
-      // Check whether notification permissions have already been granted;
       // if so, create a notification
-      const notification = new Notification("Fill in your hours")
+      const notification = new Notification("Test notification!")
       // …
     } else if (Notification.permission !== "denied") {
       // We need to ask the user for permission
       Notification.requestPermission().then((permission) => {
         // If the user accepts, let's create a notification
         if (permission === "granted") {
-          const notification = new Notification("Hi there!")
+          const notification = new Notification("Access granted!")
           // …
         }
       })

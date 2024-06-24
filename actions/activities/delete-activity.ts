@@ -5,14 +5,9 @@ import prisma from "@/lib/db"
 import { idSchema } from "@/schemas/activities/id-schema"
 import revalidate from "../tracks/revalidate"
 import { CustomError, handleError } from "@/utils/error-handler"
-import { currentUser } from "@clerk/nextjs/server"
 
 export const deleteActivity = async (id: string) => {
   try {
-    const user = await currentUser()
-    if (!user?.id || user.publicMetadata?.role !== "admin") {
-      throw new CustomError("User not authorized", "NOT_AUTH")
-    }
     if (!id) throw new CustomError("activity ID is required", "ID_REQUIRED")
     const parsedData = idSchema.parse({ id: id })
 
