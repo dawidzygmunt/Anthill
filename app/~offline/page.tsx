@@ -6,7 +6,8 @@ const XddPage = () => {
   return (
     <div className="text-4xl flex justify-center items-center min-h-screen">
       <OfflineNotification />
-      No internet connection <WifiOffIcon />
+      <span className="m-2">No internet connection </span>
+      <WifiOffIcon />
     </div>
   )
 }
