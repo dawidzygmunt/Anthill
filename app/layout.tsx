@@ -66,7 +66,7 @@ export default function RootLayout({
         <OfflineNotification />
         <div className="flex">
           <SideBar />
-          <main className="flex flex-col w-full min-h-screen items-center mt-5 lg:mt-0">
+          <main className="flex flex-col w-full min-h-screen items-center pt-5 ">
             {children}
           </main>
         </div>

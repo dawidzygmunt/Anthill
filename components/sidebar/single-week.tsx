@@ -5,6 +5,7 @@ import { timeFormatter } from "@/lib/utils"
 import Link from "next/link"
 import { SingleWeekProps } from "@/lib/types"
 import { useSearchParams } from "next/navigation"
+import { TriangleAlert } from "lucide-react"
 
 export const SingleWeek: React.FC<SingleWeekProps> = ({ week }) => {
   const from = startOfWeek(new Date(week.from), { weekStartsOn: 1 })
@@ -28,11 +29,23 @@ export const SingleWeek: React.FC<SingleWeekProps> = ({ week }) => {
   return (
     <Link href={`/?${weekUrl}`}>
       <div
-        className={`px-5 py-5 flex flex-col justify-center my-4 shadow-md bg-[#f1f0f0] 
-        hover:bg-slate-200 transition-all ${search == formattedDate ? "border border-gray-600 shadow-xl" : ""}`}
+        className={`px-5 py-5 flex flex-col justify-center mb-4 shadow-md bg-[#f1f0f0] relative cursor-pointer
+        hover:bg-slate-200 transition-all ${search == formattedDate ? "border-2 border-gray-600 shadow-xl" : ""}`}
       >
         <span className="text-md">{formattedDateRange}</span>
-        <div className="font-bold my-1">{week.mostActiveActivities}</div>
+        <div className="font-bold my-1">
+          {week.mostActiveActivities ? (
+            week.mostActiveActivities
+          ) : (
+            <p className="text-[#305aaa] flex">
+              {"Fill your hours"}
+              <TriangleAlert
+                className="absolute top-3 right-3 text-red-500"
+                size={20}
+              />
+            </p>
+          )}
+        </div>
         <div className="flex justify-between items-center">
           <DoneIndicator isDone={week.isClosed} />
           <div className="text-sm bg-slate-300 px-2 rounded-xl mr-3">

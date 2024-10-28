@@ -25,6 +25,9 @@ const SideBar = async () => {
       justify-between`}
       >
         <div className="overflow-auto">
+          <div className="py-2 border-b-2 border-[#0d1321] text-[#0d1321]">
+            <h1 className="text-center text-xl font-bold">Latest weeks</h1>
+          </div>
           <ListWeeks weeks={weeks} />
         </div>
 
