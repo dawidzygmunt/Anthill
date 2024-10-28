@@ -8,16 +8,6 @@ let isSendDay = false
 let isSendWeek = false
 let isSendMonth = false
 
-// Every day notification
-function calculateTimeUntilEndOfDay() {
-  const now = new Date()
-  const endOfDay = new Date(now)
-
-  endOfDay.setHours(14, 38, 0, 0)
-
-  return endOfDay.getTime() - now.getTime()
-}
-
 // Once a week notification
 function calculateNextFriday16() {
   const now = new Date()
@@ -59,18 +49,8 @@ function sendNotification(message: string) {
 async function startInterval() {
   setInterval(
     () => {
-      const timeToNextDay = calculateTimeUntilEndOfDay()
       const timeToNextFriday = calculateNextFriday16()
       const timeToNextMonth = calculateTimeUntilEndOfMonth()
-
-      // Day
-      const timeWindowDay = 1000 * 60 * 60 // 1 hour
-      if (timeToNextDay <= timeWindowDay && !isSendDay) {
-        sendNotification("Fill your hours")
-        isSendDay = true
-      } else if (timeToNextDay > timeWindowDay) {
-        isSendDay = false
-      }
 
       // Week
       const timeWindowWeek = 1000 * 60 * 60 // 1 hour

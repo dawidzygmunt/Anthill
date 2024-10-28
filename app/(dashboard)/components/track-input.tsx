@@ -44,21 +44,6 @@ const TrackInput = ({ track }: Props) => {
   })
 
   useEffect(() => {
-    if (!("Notification" in window)) {
-      // Check if the browser supports notifications
-      alert("This browser does not support desktop notification")
-    } else if (Notification.permission === "granted") {
-      return
-    } else if (Notification.permission !== "denied") {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          const notification = new Notification("permission granted")
-        }
-      })
-    }
-  }, [])
-
-  useEffect(() => {
     form.setValue(
       "trackInput",
       track.minutes ? (track.minutes / 60).toString() : ""
