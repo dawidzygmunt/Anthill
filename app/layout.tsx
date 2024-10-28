@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: APP_TITLE_TEMPLATE,
   },
   description: APP_DESCRIPTION,
-  manifest: "/manifest.json",
+  manifest: `${process.env.NEXT_PUBLIC_BASE_PATH}/manifest.json`,
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -66,7 +66,7 @@ export default function RootLayout({
         <OfflineNotification />
         <div className="flex">
           <SideBar />
-          <main className="flex flex-col w-full min-h-screen items-center pt-5 ">
+          <main className="flex flex-col w-full min-h-screen items-center pt-5">
             {children}
           </main>
         </div>

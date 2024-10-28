@@ -2,8 +2,9 @@
 import withPWAInit from "@ducanh2912/next-pwa"
 
 const withPWA = withPWAInit({
+  basePath: process.env.BASE_PATH,
   dest: "public",
-  // scope: "/app",
+  // scope: "/anthill-v2/",
   // fallbacks: {
   //   // Failed page requests fallback to this.
   //   document: "/~offline",
@@ -22,6 +23,12 @@ const withPWA = withPWAInit({
 
 export default withPWA({
   basePath: process.env.BASE_PATH,
+  // pwa: {
+  //   disable: process.env.NODE_ENV === "development",
+  //   register: true,
+  //   scope: "/anthill-v2/",
+  //   sw: "service-worker.js",
+  // },
   async rewrites() {
     return [
       {
