@@ -7,10 +7,11 @@ import { columns } from "./components/data-table/columns"
 import DisplayError from "@/utils/display-error"
 
 interface SettingsProps {
-  searchParams: { showDeleted: string }
+  searchParams: Promise<{ showDeleted: string }>
 }
 
-const Settings = async ({ searchParams }: SettingsProps) => {
+const Settings = async (props: SettingsProps) => {
+  const searchParams = await props.searchParams;
   let activitiesList
   if (searchParams.showDeleted === "true") {
     activitiesList = await getAllActivities()

@@ -11,7 +11,7 @@ import { auth } from "@clerk/nextjs/server"
 import { handleError } from "@/utils/error-handler"
 
 interface HomeProps {
-  searchParams: { from: string }
+  searchParams: Promise<{ from: string }>
 }
 
 // export const generateMetadata = ({ searchParams }: HomeProps): Metadata => {
@@ -20,7 +20,8 @@ interface HomeProps {
 //   }
 // }
 
-export default function Home({ searchParams }: HomeProps) {
+export default async function Home(props: HomeProps) {
+  const searchParams = await props.searchParams;
   try {
     const paramDate = new Date(searchParams.from)
     const from = isValid(paramDate)
