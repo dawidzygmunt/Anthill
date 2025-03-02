@@ -2,7 +2,6 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { Toaster as BetterToast } from "react-hot-toast"
 import SideBar from "@/components/sidebar/sidebar"
-import { ClerkProvider } from "@clerk/nextjs"
 
 const inter = Inter({ subsets: ["latin"] })
 
