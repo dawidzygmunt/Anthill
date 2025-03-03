@@ -13,7 +13,7 @@ export const SingleWeek: React.FC<SingleWeekProps> = ({ week }) => {
   const searchParams = useSearchParams()
   const search = searchParams.get("from")
 
-  const formattedDateRange = `${format(from, "dd MMM")} - ${format(to, "dd MMM yyyy")}`
+  const formattedDateRange = `${format(from, "dd MMM")} - ${format(to, "dd MMM")}`
 
   const weekUrl = new URLSearchParams()
   weekUrl.set("from", addDays(from, 1).toISOString().split("T")[0])
@@ -29,13 +29,14 @@ export const SingleWeek: React.FC<SingleWeekProps> = ({ week }) => {
   return (
     <Link href={`/?${weekUrl}`}>
       <div
-        className={`px-5 py-5 flex flex-col justify-center mb-4 shadow-md bg-[#f1f0f0] relative cursor-pointer
-        hover:bg-slate-200 transition-all ${search == formattedDate ? "border-2 border-gray-600 shadow-xl" : ""}`}
+        className={`p-3 pt-2 flex flex-col justify-center mb-4 shadow-md bg-white/75 relative cursor-pointer rounded-lg ${
+          search == formattedDate ? "!bg-white/90 " : ""
+        }`}
       >
-        <span className="text-md">{formattedDateRange}</span>
+        <span className="text-md font-bold">{formattedDateRange}</span>
         <div className="font-bold my-1">
           {week.mostActiveActivities ? (
-            week.mostActiveActivities
+            <span className="font-normal">{week.mostActiveActivities}</span>
           ) : (
             <p className="text-[#305aaa] flex">
               {"Fill your hours"}
@@ -48,7 +49,7 @@ export const SingleWeek: React.FC<SingleWeekProps> = ({ week }) => {
         </div>
         <div className="flex justify-between items-center">
           <DoneIndicator isDone={week.isClosed} />
-          <div className="text-sm bg-slate-300 px-2 rounded-xl mr-3">
+          <div className="text-xs bg-emerald-900 text-white px-2 rounded-xl">
             {timeFormatter(week.totalMinutes)}
           </div>
         </div>

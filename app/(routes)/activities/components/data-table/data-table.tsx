@@ -5,8 +5,10 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
 import {
   ColumnDef,
   flexRender,
@@ -106,7 +108,7 @@ export function DataTable<TData, TValue>({
             </Link>
           </div>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger>
               <Button variant="outline" className="ml-auto">
                 Columns
               </Button>
@@ -126,7 +128,7 @@ export function DataTable<TData, TValue>({
                         column.toggleVisibility(!!value)
                       }
                     >
-                      {column.id}
+                      <DropdownMenuLabel>{column.id}</DropdownMenuLabel>
                     </DropdownMenuCheckboxItem>
                   )
                 })}

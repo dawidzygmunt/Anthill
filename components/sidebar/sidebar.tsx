@@ -20,23 +20,15 @@ const SideBar = async () => {
 
   return (
     <>
-      <aside
-        className={`w-[250px] hidden bg-[#e6e6e6] lg:flex flex-col sticky top-0 h-screen 
-      justify-between`}
-      >
-        <div className="overflow-auto">
-          <div className="py-2 border-b-2 border-[#0d1321] text-[#0d1321]">
-            <h1 className="text-center text-xl font-bold">Latest weeks</h1>
-          </div>
-          <ListWeeks weeks={weeks} />
-        </div>
-
-        <div className="p-4 bg-[#0d1321] text-[#8d8d8d] flex">
+      <aside className="w-[250px] bg-[#072b2b] p-3 flex flex-col justify-between">
+        <div className="">
+          <h1 className="text-md text-gray-100 pb-10">Anthill</h1>
+          {/* <ListWeeks weeks={weeks} /> */}
           <Nav />
         </div>
       </aside>
 
-      <MobileSidebar weeks={weeks} />
+      {/* <MobileSidebar weeks={weeks} /> */}
     </>
   )
 }
