@@ -33,7 +33,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { AddActivityForm } from "../add-activity-form"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
@@ -109,9 +109,7 @@ export function DataTable<TData, TValue>({
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button variant="outline" className="ml-auto">
-                Columns
-              </Button>
+              <p className={buttonVariants({ variant: "ghost" })}>Columns</p>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">

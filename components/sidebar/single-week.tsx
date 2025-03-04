@@ -29,7 +29,7 @@ export const SingleWeek: React.FC<SingleWeekProps> = ({ week }) => {
   return (
     <Link href={`/?${weekUrl}`}>
       <div
-        className={`p-3 pt-2 flex flex-col justify-center mb-4 shadow-md bg-white/75 relative cursor-pointer rounded-lg ${
+        className={`p-3 pt-2 min-w-[180px] flex flex-col justify-center mb-4 shadow-md bg-white/75 relative cursor-pointer rounded-lg ${
           search == formattedDate ? "!bg-white/90 " : ""
         }`}
       >
@@ -47,7 +47,7 @@ export const SingleWeek: React.FC<SingleWeekProps> = ({ week }) => {
             </p>
           )}
         </div>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center space-x-2">
           <DoneIndicator isDone={week.isClosed} />
           <div className="text-xs bg-emerald-900 text-white px-2 rounded-xl">
             {timeFormatter(week.totalMinutes)}

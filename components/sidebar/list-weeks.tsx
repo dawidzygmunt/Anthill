@@ -9,7 +9,7 @@ export const ListWeeks = ({ weeks }: ListWeeksProps) => {
   }
 
   return (
-    <div>
+    <div className="">
       {weeks.map((week) => (
         <Suspense key={week.id} fallback={<SkeletonLoader />}>
           <SingleWeek key={week.id} week={week} />

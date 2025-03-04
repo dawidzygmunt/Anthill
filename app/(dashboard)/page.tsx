@@ -50,18 +50,12 @@ export default async function Home(props: HomeProps) {
     const to = addDays(from, 6)
 
     return (
-      <main className="py-3 px-7 flex gap-5 justify-center">
-        {/* <Card className="bg-emerald-600">
-          <CardHeader>Latest weeks</CardHeader>
-          <CardContent>
-            <ListWeeks weeks={weeks} />
-          </CardContent>
-        </Card> */}
-        <Card>
+      <main className="py-3 md:px-7 flex gap-5">
+        <Card className="px-0">
           <CardHeader>
             <TopBar from={from} to={to} />
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-1 md:px-4 lg:px-7">
             <div className="grid grid-cols-9 lg:gap-1 px-0 max-w-[900px]">
               <WeekToggler from={addDays(from, 1)} />
               <WeekRow from={from} />
@@ -69,6 +63,11 @@ export default async function Home(props: HomeProps) {
                 <TracksGrid from={from} to={addDays(to, 1)} />
               </Suspense>
             </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-black/5 hidden lg:flex pt-4">
+          <CardContent>
+            <ListWeeks weeks={weeks} />
           </CardContent>
         </Card>
       </main>
