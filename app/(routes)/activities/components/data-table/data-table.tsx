@@ -5,8 +5,10 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
 import {
   ColumnDef,
   flexRender,
@@ -31,7 +33,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { AddActivityForm } from "../add-activity-form"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
@@ -106,10 +108,8 @@ export function DataTable<TData, TValue>({
             </Link>
           </div>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
-                Columns
-              </Button>
+            <DropdownMenuTrigger>
+              <p className={buttonVariants({ variant: "ghost" })}>Columns</p>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">
@@ -126,7 +126,7 @@ export function DataTable<TData, TValue>({
                         column.toggleVisibility(!!value)
                       }
                     >
-                      {column.id}
+                      <DropdownMenuLabel>{column.id}</DropdownMenuLabel>
                     </DropdownMenuCheckboxItem>
                   )
                 })}

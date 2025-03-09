@@ -4,7 +4,7 @@ import populateWithNewTracks from "../../../utils/populate-with-new-tracks"
 import NewTracksRow from "./new-tracks-row"
 import Selector from "./selector"
 import TracksRow from "./tracks-row"
-import { Suspense } from "react"
+import React, { Suspense } from "react"
 import { SkeletonLoader } from "@/components/skeleton-lodaer"
 import DisplayError from "@/utils/display-error"
 
@@ -41,7 +41,7 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
       <Suspense fallback={<SkeletonLoader />}>
         {weeks.TrackRow.map((trackRow) => {
           return (
-            <>
+            <React.Fragment key={trackRow.id}>
               <Selector
                 key={trackRow.activityId}
                 trackRowId={trackRow.id}
@@ -58,7 +58,7 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
                 )}
                 key={trackRow.id}
               />
-            </>
+            </React.Fragment>
           )
         })}
         <NewTracksRow

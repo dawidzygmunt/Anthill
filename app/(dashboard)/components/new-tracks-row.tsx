@@ -46,7 +46,12 @@ function NewTracksRow({ allActivities, from, to, opened = false }: Props) {
         activities={allActivities}
       />
       {Array.from(Array(7).keys()).map((number) => (
-        <Input disabled key={number}></Input>
+        <div className="mx-2" key={number}>
+          <Input
+            className="p-0 text-center md:text-left md:px-2"
+            disabled
+          ></Input>
+        </div>
       ))}
     </>
   )

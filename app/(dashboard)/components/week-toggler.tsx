@@ -21,13 +21,13 @@ const WeekToggler: React.FC<WeekToggler> = ({ from: date }) => {
         href={`/?${searchParamsPrev}`}
         className="flex justify-start items-center m-0 p-0"
       >
-        <Button className="m-0 sm:p-4 ">{"<"}</Button>
+        <Button className="m-0 px-2 sm:p-4 ">{"<"}</Button>
       </Link>
       <Link
         href={`/?${searchParamsNext}`}
         className="flex justify-start items-center"
       >
-        <Button className="mx-1 sm:p-4 md:ml-1">{">"}</Button>
+        <Button className="mx-1 px-2 sm:p-4 md:ml-1">{">"}</Button>
       </Link>
     </div>
   )

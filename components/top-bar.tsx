@@ -46,8 +46,8 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
   const formattedDateRange = `${format(from, "dd MMM")} - ${format(to, "dd MMM yyyy")}`
 
   return (
-    <div className="w-full flex justify-between mb-10 mr-20 mt-0">
-      <div className="text-2xl font-bold">{formattedDateRange}</div>
+    <div className="w-full flex justify-between mb-3">
+      <div className="text-2xl font-bold text-center">{formattedDateRange}</div>
       <div>
         {isDone ? (
           <Button
@@ -59,7 +59,7 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
         ) : (
           <Button
             onClick={handleButtonClick}
-            className="bg-purple-600 w-[140px] hover:bg-purple-700"
+            className="bg-[#fca5a5] w-[140px] hover:bg-[#e29494]"
           >
             in progress
           </Button>
