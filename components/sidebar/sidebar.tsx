@@ -4,6 +4,7 @@ import { addDays, subDays } from "date-fns"
 import { ListWeeks } from "./list-weeks"
 import { MobileSidebar } from "./mobile-sidebar"
 import { Nav } from "./nav"
+import { Separator } from "../ui/separator"
 
 const SideBar = async () => {
   const today = new Date()
@@ -21,18 +22,12 @@ const SideBar = async () => {
   return (
     <>
       <aside
-        className={`w-[250px] hidden bg-[#e6e6e6] lg:flex flex-col sticky top-0 h-screen 
-      justify-between`}
+        className={`min-w-[250px] hidden bg-white lg:flex flex-col sticky top-0 h-full 
+      justify-between border-r`}
       >
-        <div className="overflow-auto">
-          <div className="py-2 border-b-2 border-[#0d1321] text-[#0d1321]">
-            <h1 className="text-center text-xl font-bold">Latest weeks</h1>
-          </div>
+        <div className="overflow-auto p-2">
+          <Separator />
           <ListWeeks weeks={weeks} />
-        </div>
-
-        <div className="p-4 bg-[#0d1321] text-[#8d8d8d] flex">
-          <Nav />
         </div>
       </aside>
 

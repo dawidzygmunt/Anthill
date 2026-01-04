@@ -69,7 +69,7 @@ if (!self.define) {
 }
 define(['./workbox-1e54d6fe'], (function (workbox) { 'use strict';
 
-  importScripts("/anthill-v2/fallback-development.js", "/anthill-v2/worker-development.js");
+  importScripts("/fallback-development.js", "/worker-development.js");
   self.skipWaiting();
   workbox.clientsClaim();
 
@@ -79,13 +79,13 @@ define(['./workbox-1e54d6fe'], (function (workbox) { 'use strict';
    * See https://goo.gl/S9QRab
    */
   workbox.precacheAndRoute([{
-    "url": "/anthill-v2/~offline",
+    "url": "/~offline",
     "revision": "development"
   }], {
     "ignoreURLParametersMatching": [/^utm_/, /^fbclid$/, /ts/]
   });
   workbox.cleanupOutdatedCaches();
-  workbox.registerRoute("/anthill-v2", new workbox.NetworkFirst({
+  workbox.registerRoute("/", new workbox.NetworkFirst({
     "cacheName": "start-url",
     plugins: [{
       cacheWillUpdate: async ({

@@ -1,3 +1,5 @@
+"use server"
+
 import prisma from "@/lib/db"
 import { CustomError, handleError } from "@/utils/error-handler"
 import weeksPrismaCodesMap from "@/utils/prisma-codes/weeks-prisma-codes"
