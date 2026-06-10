@@ -8,11 +8,17 @@ export const ListWeeks = ({ weeks }: ListWeeksProps) => {
     return <div>No data</div>
   }
 
+  // Sortuj tygodnie od najnowszego do najstarszego
+  const sortedWeeks = [...weeks].sort((a, b) => {
+    return new Date(b.from).getTime() - new Date(a.from).getTime()
+  })
+
   return (
-    <div>
-      {weeks.map((week) => (
+    <div className="ah-weeks">
+      <div className="ah-side-label">RECENT WEEKS</div>
+      {sortedWeeks.map((week) => (
         <Suspense key={week.id} fallback={<SkeletonLoader />}>
-          <SingleWeek key={week.id} week={week} />
+          <SingleWeek week={week} />
         </Suspense>
       ))}
     </div>

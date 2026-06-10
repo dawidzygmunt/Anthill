@@ -7,7 +7,6 @@ const inter = Inter({ subsets: ["latin"] })
 
 import type { Metadata, Viewport } from "next"
 import OfflineNotification from "@/components/offline-notification"
-import Navbar from "@/components/navbar"
 
 const APP_NAME = "Anthill v2"
 const APP_DEFAULT_TITLE = "App"
@@ -64,12 +63,11 @@ export default function RootLayout({
       <body className={inter.className}>
         <BetterToast />
         <OfflineNotification />
-        <div className="flex flex-col h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-          {/* <Navbar /> */}
-          <div className="flex h-full">
-            <SideBar />
-            <main className="flex flex-col items-center pt-5">{children}</main>
-          </div>
+        <div className="ah theme-light">
+          <SideBar />
+          <main className="ah-main">
+            <div className="ah-content">{children}</div>
+          </main>
         </div>
       </body>
     </html>

@@ -1,5 +1,4 @@
 "use client"
-import { DoneIndicator } from "./done-indicator"
 import { addDays, format, isSameWeek, parse, startOfWeek } from "date-fns"
 import { timeFormatter } from "@/lib/utils"
 import Link from "next/link"
@@ -22,65 +21,49 @@ export const SingleWeek: React.FC<SingleWeekProps> = ({ week }) => {
     router.refresh()
   }
 
-  const formattedDateRange = `${format(from, "dd")} - ${format(to, "dd MMM yyyy")}`
+  const currentYear = new Date().getFullYear()
+  const weekYear = from.getFullYear()
+
+  // Format bez roku jeśli bieżący rok
+  const formattedDateRange =
+    weekYear === currentYear
+      ? `${format(from, "dd")} - ${format(to, "dd MMM")}`
+      : `${format(from, "dd")} - ${format(to, "dd MMM yyyy")}`
 
   const weekUrl = new URLSearchParams()
   weekUrl.set("from", addDays(from, 1).toISOString().split("T")[0])
 
-  const parsedDate = parse(
-    week.from.toDateString(),
-    "EEE MMM dd yyyy",
-    new Date()
-  )
-
+  const parsedDate = parse(week.from.toDateString(), "EEE MMM dd yyyy", new Date())
   const formattedDate = format(parsedDate, "yyyy-MM-dd")
 
   const isCurrentWeek = isSameWeek(new Date(), from, { weekStartsOn: 1 })
   const isSelected = search == formattedDate
 
+  // Kropka: zielona = zamknięty, pomarańczowa = otwarty
+  const dotClass = week.isClosed ? "done" : "progress"
+
   return (
-    <Link href={`/?${weekUrl}`}>
-      <div className="relative mb-4">
-        <div
-          className={`px-5 py-2 flex flex-col justify-center shadow-sm bg-[#f9fafb] relative cursor-pointer border-2
-           transition-all rounded-xl
-          ${isCurrentWeek ? `outline outline-2 outline-green-500 ${isSelected ? "outline-offset-2" : "outline-offset-0"}` : ""}
-          ${
-            isSelected
-              ? `border-blue-600 ${isCurrentWeek ? "" : "bg-blue-600/10"}`
-              : "hover:bg-slate-100 border-[#f9fafb]"
-          }`}
-        >
-          <button
-            onClick={handleToggleLock}
-            className="absolute top-2 right-2 p-1 rounded-md hover:bg-slate-200 transition-colors cursor-pointer"
-            title={week.isClosed ? "Unlock week" : "Lock week"}
-          >
-            {week.isClosed ? (
-              <Lock size={16} className="text-red-500" />
-            ) : (
-              <LockOpen size={16} className="text-green-500" />
-            )}
-          </button>
-          <div className="flex justify-between items-center mb-2">
-            <p className="text-sm font-medium">{formattedDateRange}</p>
-          </div>
-          {isCurrentWeek && (
-            <span className="text-xs font-medium text-green-600">
-              Current week
-            </span>
-          )}
-          <div className="flex justify-between items-center text-sm my-1">
-            <p className="text-gray-700">Total hours: </p>
-            <span className="font-semibold text-sm">
-              {timeFormatter(week.totalMinutes)} h
-            </span>
-          </div>
-          <div className="flex justify-between items-center mt-1">
-            <DoneIndicator isDone={week.isClosed} />
-          </div>
-        </div>
-      </div>
+    <Link
+      href={`/?${weekUrl}`}
+      className={`ah-week group ${isSelected ? "selected" : ""}`}
+    >
+      <div className={`ah-week-dot ${dotClass}`} />
+      <span className="flex-1">{formattedDateRange}</span>
+
+      {/* Lock button - widoczny tylko na hover */}
+      <button
+        onClick={handleToggleLock}
+        className="opacity-0 group-hover:opacity-100 p-1 rounded-md hover:bg-[var(--surface-inset)] transition-all"
+        title={week.isClosed ? "Unlock week" : "Lock week"}
+      >
+        {week.isClosed ? (
+          <Lock size={12} className="text-[var(--warn)]" />
+        ) : (
+          <LockOpen size={12} className="text-[var(--good)]" />
+        )}
+      </button>
+
+      <span className="ah-week-h">{timeFormatter(week.totalMinutes)}h</span>
     </Link>
   )
 }
