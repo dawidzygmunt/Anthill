@@ -3,7 +3,6 @@ import DisplayError from "@/utils/display-error"
 import { addDays, subDays } from "date-fns"
 import { ListWeeks } from "./list-weeks"
 import { MobileSidebar } from "./mobile-sidebar"
-import { Nav } from "./nav"
 import { Separator } from "../ui/separator"
 
 const SideBar = async () => {
@@ -26,7 +25,6 @@ const SideBar = async () => {
       justify-between border-r`}
       >
         <div className="overflow-auto p-2">
-          <Separator />
           <ListWeeks weeks={weeks} />
         </div>
       </aside>

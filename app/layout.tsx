@@ -65,7 +65,7 @@ export default function RootLayout({
         <BetterToast />
         <OfflineNotification />
         <div className="flex flex-col h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-          <Navbar />
+          {/* <Navbar /> */}
           <div className="flex h-full">
             <SideBar />
             <main className="flex flex-col items-center pt-5">{children}</main>
