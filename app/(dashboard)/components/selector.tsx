@@ -41,9 +41,17 @@ export function ActivitySelector({
       }
     }
   }
+  const currentActivity = activities.find((a) => a.id === selectedActivity)
+
   return (
-    <div className="col-span-2 flex items-center text-[2px]">
-      <form className="w-[200px] space-y-6">
+    <div className="col-span-2 flex items-center gap-2 text-[2px]">
+      {currentActivity && (
+        <div
+          className="w-3 h-3 rounded-full flex-shrink-0"
+          style={{ backgroundColor: currentActivity.color || "#fefefe" }}
+        />
+      )}
+      <form className="flex-1">
         <select
           className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           value={selectedActivity}

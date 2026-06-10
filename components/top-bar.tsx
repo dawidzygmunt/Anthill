@@ -7,27 +7,32 @@ import { getSingleWeek } from "@/actions/weeks/get-single-week"
 import { format } from "date-fns"
 import revalidateTracks from "../actions/tracks/revalidate"
 import DisplayError from "@/utils/display-error"
+import getWeekTotalHours from "@/actions/weeks/get-week-total-hours"
 
 export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
   const [isDone, setIsDone] = useState(false)
+  const [totalHours, setTotalHours] = useState(0)
 
   useEffect(() => {
-    const getWeek = async () => {
+    const fetchWeekData = async () => {
       const response = await getSingleWeek(from)
       if (!response) {
         setIsDone(false)
-        return
-      }
-      if ("error" in response) {
+      } else if ("error" in response) {
         if (typeof DisplayError === "function") {
           DisplayError(response.error)
         }
-        return
+      } else {
+        setIsDone(response.isClosed)
       }
-      setIsDone(response.isClosed)
+
+      const hoursResponse = await getWeekTotalHours(from)
+      if (hoursResponse && "totalMinutes" in hoursResponse) {
+        setTotalHours(hoursResponse.totalMinutes / 60)
+      }
     }
-    getWeek()
-  })
+    fetchWeekData()
+  }, [from])
 
   const handleButtonClick = async () => {
     setIsDone(!isDone)
@@ -43,27 +48,40 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
     revalidateTracks("/")
   }
 
-  const formattedDateRange = `${format(from, "dd MMM")} - ${format(to, "dd MMM yyyy")}`
+  const formattedDateRange = `${format(from, "dd")} - ${format(to, "dd MMM yyyy")}`
+  const targetHours = 40
+  const progressPercentage = Math.min((totalHours / targetHours) * 100, 100)
 
   return (
-    <div className="w-full flex justify-between mb-10 mr-20 mt-0">
+    <div className="w-full flex justify-between items-center">
       <div className="text-2xl font-bold">{formattedDateRange}</div>
-      <div>
-        {isDone ? (
-          <Button
-            onClick={handleButtonClick}
-            className="bg-green-600 w-[140px] hover:bg-green-700"
-          >
-            Done
-          </Button>
-        ) : (
-          <Button
-            onClick={handleButtonClick}
-            className="bg-purple-600 w-[140px] hover:bg-purple-700"
-          >
-            in progress
-          </Button>
-        )}
+      <div className="flex items-center gap-3">
+        <div className="flex flex-col items-end gap-1">
+          <span className="text-sm text-gray-500">
+            <span className="font-bold text-black">{totalHours.toFixed(1)}h</span> of {targetHours}h target
+          </span>
+          <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-brand to-orange-300 transition-all duration-300"
+              style={{ width: `${progressPercentage}%` }}
+            />
+          </div>
+        </div>
+        <span
+          className={`px-3 py-1 rounded-full text-sm font-medium ${
+            isDone
+              ? "bg-green-100 text-green-700"
+              : "bg-yellow-100 text-yellow-700"
+          }`}
+        >
+          {isDone ? "Done" : "In progress"}
+        </span>
+        <Button
+          onClick={handleButtonClick}
+          className="bg-brand w-[140px] hover:bg-brand-dark"
+        >
+          {isDone ? "Reopen week" : "Submit week"}
+        </Button>
       </div>
     </div>
   )

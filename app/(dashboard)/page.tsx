@@ -31,15 +31,21 @@ export default function Home({ searchParams }: HomeProps) {
 
     return (
       <main className="px-5 lg:p-24 lg:pt-2 ">
-        <TopBar from={from} to={to} />
-
-        <div className="grid grid-cols-9 lg:gap-1 px-0 mx-0">
+        <div className="flex items-center mb-3">
           <WeekToggler from={addDays(from, 1)} />
+          <TopBar from={from} to={to} />
+        </div>
 
-          <WeekRow from={from} />
-          <Suspense fallback={<SkeletonLoader />}>
-            <TracksGrid from={from} to={addDays(to, 1)} />
-          </Suspense>
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+          <div className="grid grid-cols-10 lg:gap-1 px-0 mx-0">
+            <div className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-wider pb-2">
+              Activity
+            </div>
+            <WeekRow from={from} />
+            <Suspense fallback={<SkeletonLoader />}>
+              <TracksGrid from={from} to={addDays(to, 1)} />
+            </Suspense>
+          </div>
         </div>
       </main>
     )

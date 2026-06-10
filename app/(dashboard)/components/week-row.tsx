@@ -12,38 +12,38 @@ const WeekRow = ({ from }: { from: Date }) => {
     "friday",
     "saturday",
   ]
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ]
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
   return (
     <>
-      {dates.map((day, index) => (
-        <div
-          key={index}
-          className={
-            day.getDay() === 0 || day.getDay() === 6
-              ? "text-gray-400 text-center text-[10px] sm:text-sm"
-              : "text-center text-[10px] sm:text-sm"
-          }
-        >
-          {/* <div>{days[day.getDay()]}</div> */}
-          <div>{days[day.getDay()].slice(0, 3).toUpperCase()}</div>
-          {/* {day.getDate()} {months[day.getMonth()]} */}
-          {format(day, "dd MMM")}
-        </div>
-      ))}
+      {dates.map((day, index) => {
+        const dayDate = new Date(day)
+        dayDate.setHours(0, 0, 0, 0)
+        const isToday = dayDate.getTime() === today.getTime()
+        const isWeekend = day.getDay() === 0 || day.getDay() === 6
+
+        return (
+          <div
+            key={index}
+            className={`text-center text-[10px] sm:text-sm pb-2 ${
+              isToday
+                ? "text-brand font-bold"
+                : isWeekend
+                ? "text-gray-400"
+                : ""
+            }`}
+          >
+            <div className="font-semibold uppercase">
+              {days[day.getDay()].slice(0, 3)}
+            </div>
+            <div className="text-xs">{format(day, "d")}</div>
+          </div>
+        )
+      })}
+      <div className="text-center text-[10px] sm:text-sm font-semibold text-gray-500 uppercase pb-2">
+        Total
+      </div>
     </>
   )
 }

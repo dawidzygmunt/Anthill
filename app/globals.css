@@ -52,7 +52,7 @@
 .ah {
   display: flex;
   height: 100vh;
-  background: var(--surface-inset);
+  background: #fcf9f5;
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
@@ -62,12 +62,14 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background: #fcf9f5;
 }
 
 .ah-content {
   flex: 1;
   overflow: auto;
   padding: 24px;
+  background: #fcf9f5;
 }
 
 /* Sidebar */
