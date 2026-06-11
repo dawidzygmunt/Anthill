@@ -46,10 +46,16 @@ export function ActivitySelector({
   return (
     <div className="col-span-2 flex items-center gap-2 text-[2px]">
       {currentActivity && (
-        <div
-          className="w-3 h-3 rounded-full flex-shrink-0"
-          style={{ backgroundColor: currentActivity.color || "#fefefe" }}
-        />
+        <div className="relative flex-shrink-0 w-3.5 h-3.5 flex items-center justify-center">
+          <div
+            className="absolute inset-0 rounded-full blur-sm opacity-60"
+            style={{ backgroundColor: currentActivity.color || "#fefefe" }}
+          />
+          <div
+            className="relative w-3 h-3 rounded-sm"
+            style={{ backgroundColor: currentActivity.color || "#fefefe" }}
+          />
+        </div>
       )}
       <form className="flex-1">
         <select

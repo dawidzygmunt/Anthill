@@ -24,8 +24,11 @@ function NewTracksRow({ allActivities, from, to, opened = false }: Props) {
   if (!add)
     return (
       <>
-        <div className="col-span-2 flex items-center gap-2 text-sm text-gray-500 cursor-pointer" onClick={() => setAdd(true)}>
-          <span className="text-lg">+</span> Add activity
+        <div className="col-span-2 flex items-center gap-3 cursor-pointer" onClick={() => setAdd(true)}>
+          <div className="flex items-center justify-center w-8 h-8 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-colors">
+            <span className="text-xl font-semibold text-gray-500 leading-none">+</span>
+          </div>
+          <span className="text-sm text-gray-500">Add activity</span>
         </div>
         {Array.from(Array(7).keys()).map((number) => (
           <div key={number}></div>

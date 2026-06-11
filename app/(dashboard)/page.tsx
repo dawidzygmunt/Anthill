@@ -31,7 +31,7 @@ export default function Home({ searchParams }: HomeProps) {
 
     return (
       <main className="px-5 lg:p-24 lg:pt-2 ">
-        <div className="flex items-center mb-3">
+        <div className="flex items-center mb-6 gap-6">
           <WeekToggler from={addDays(from, 1)} />
           <TopBar from={from} to={to} />
         </div>
