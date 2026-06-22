@@ -2,6 +2,7 @@ import { Hanken_Grotesk } from "next/font/google"
 import "./globals.css"
 import { Toaster as BetterToast } from "react-hot-toast"
 import SideBar from "@/components/sidebar/sidebar"
+import MobileBottomNav from "@/components/mobile/mobile-bottom-nav"
 
 const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"] })
 
@@ -68,6 +69,7 @@ export default function RootLayout({
           <main className="ah-main">
             <div className="ah-content">{children}</div>
           </main>
+          <MobileBottomNav />
         </div>
       </body>
     </html>
