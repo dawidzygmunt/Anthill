@@ -1,9 +1,9 @@
-import { Inter } from "next/font/google"
+import { Hanken_Grotesk } from "next/font/google"
 import "./globals.css"
 import { Toaster as BetterToast } from "react-hot-toast"
 import SideBar from "@/components/sidebar/sidebar"
 
-const inter = Inter({ subsets: ["latin"] })
+const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"] })
 
 import type { Metadata, Viewport } from "next"
 import OfflineNotification from "@/components/offline-notification"
@@ -60,7 +60,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={hankenGrotesk.className}>
         <BetterToast />
         <OfflineNotification />
         <div className="ah theme-light">

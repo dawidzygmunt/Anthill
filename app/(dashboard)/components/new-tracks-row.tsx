@@ -21,7 +21,21 @@ function NewTracksRow({ allActivities, from, to, opened = false }: Props) {
   const [add, setAdd] = useState(opened)
   const [activityId, setActivityId] = useState("")
 
-  if (!add) return <Button onClick={() => setAdd(true)}>Add</Button>
+  if (!add)
+    return (
+      <>
+        <div className="col-span-2 flex items-center gap-3 cursor-pointer" onClick={() => setAdd(true)}>
+          <div className="flex items-center justify-center w-8 h-8 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-colors">
+            <span className="text-xl font-semibold text-gray-500 leading-none">+</span>
+          </div>
+          <span className="text-sm text-gray-500">Add activity</span>
+        </div>
+        {Array.from(Array(7).keys()).map((number) => (
+          <div key={number}></div>
+        ))}
+        <div></div>
+      </>
+    )
 
   return (
     <>
@@ -48,6 +62,7 @@ function NewTracksRow({ allActivities, from, to, opened = false }: Props) {
       {Array.from(Array(7).keys()).map((number) => (
         <Input disabled key={number}></Input>
       ))}
+      <div></div>
     </>
   )
 }
