@@ -7,9 +7,14 @@ import TracksRow from "./tracks-row"
 import { Suspense } from "react"
 import { SkeletonLoader } from "@/components/skeleton-lodaer"
 import DisplayError from "@/utils/display-error"
+import { getSingleWeek } from "@/actions/weeks/get-single-week"
 
 async function TracksGrid({ from, to }: { from: Date; to: Date }) {
   const weeks = await getTrackRowsForPeriod(from)
+
+  // Check if week is closed
+  const weekData = await getSingleWeek(from)
+  const isWeekClosed = weekData && !("error" in weekData) ? weekData.isClosed : false
   const allActivities = await getActivities()
   if ("error" in allActivities) {
     if (typeof DisplayError === "function") {
@@ -73,6 +78,7 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
                   to
                 )}
                 key={trackRow.id}
+                isWeekClosed={isWeekClosed}
               />
             </>
           )

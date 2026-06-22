@@ -1,7 +1,12 @@
 import { Track } from "@prisma/client"
 import TrackInput, { EmptyTrack } from "./track-input"
 
-const TracksRow = ({ trackData }: { trackData: (Track | EmptyTrack)[] }) => {
+interface TracksRowProps {
+  trackData: (Track | EmptyTrack)[]
+  isWeekClosed?: boolean
+}
+
+const TracksRow = ({ trackData, isWeekClosed = false }: TracksRowProps) => {
   const totalMinutes = trackData.reduce((sum, track) => {
     return sum + (track.minutes || 0)
   }, 0)
@@ -11,7 +16,7 @@ const TracksRow = ({ trackData }: { trackData: (Track | EmptyTrack)[] }) => {
     <>
       {trackData.map((track, index) => (
         <div key={index} className="text-center py-1 px-0.5 sm:px-2">
-          <TrackInput track={track} />
+          <TrackInput track={track} disabled={isWeekClosed} />
         </div>
       ))}
       <div className="text-center py-1 px-0.5 sm:px-2 font-semibold">

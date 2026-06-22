@@ -33,9 +33,10 @@ export interface EmptyTrack {
 
 interface Props {
   track: Track | EmptyTrack
+  disabled?: boolean
 }
 
-const TrackInput = ({ track }: Props) => {
+const TrackInput = ({ track, disabled = false }: Props) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -110,7 +111,9 @@ const TrackInput = ({ track }: Props) => {
                 <FormControl>
                   <Input
                     className={`p-0 text-center md:text-left md:px-2 ${
-                      isToday
+                      disabled
+                        ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                        : isToday
                         ? "bg-orange-50"
                         : isWeekend
                         ? "bg-gray-100"
@@ -119,6 +122,8 @@ const TrackInput = ({ track }: Props) => {
                     placeholder=""
                     {...field}
                     key={track.date.toString()}
+                    disabled={disabled}
+                    readOnly={disabled}
                   />
                 </FormControl>
                 <FormMessage />

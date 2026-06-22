@@ -303,7 +303,7 @@
 
       --border: 214.3 31.8% 91.4%;
       --input: 214.3 31.8% 91.4%;
-      --ring: 222.2 84% 4.9%;
+      --ring: 18 64% 45%;
 
       --radius: 0.5rem;
     }
@@ -412,4 +412,241 @@ Note: Beware of modifying this element as it can break the animations - you shou
 /* Styling of overlay */
 .bm-overlay {
   background: rgba(0, 0, 0, 0.3);
+}
+
+/* ===========================
+   WEEK STRIP COMPONENT
+   =========================== */
+
+.ah-week-strip {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.ah-week-strip.open {
+  border-left: 4px solid var(--warn);
+}
+
+.ah-week-strip.closed {
+  border-left: 4px solid var(--good);
+}
+
+/* Header line */
+.ah-week-strip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ah-week-strip-status-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.ah-week-strip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.ah-week-strip-dot.open {
+  background: var(--warn);
+}
+
+.ah-week-strip-dot.closed {
+  background: var(--good);
+}
+
+.ah-week-strip-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Main content line */
+.ah-week-strip-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Navigation buttons */
+.ah-week-strip-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.ah-week-strip-nav-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--surface-border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text-soft);
+  transition: all 0.15s ease;
+}
+
+.ah-week-strip-nav-btn:hover {
+  background: var(--surface-inset);
+  color: var(--text);
+  border-color: var(--text-muted);
+}
+
+/* Date */
+.ah-week-strip-date {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  min-width: 180px;
+}
+
+/* Progress section */
+.ah-week-strip-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.ah-week-strip-progress-text {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.ah-week-strip-hours {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ah-week-strip-target {
+  color: var(--text-muted);
+}
+
+.ah-week-strip-progress-bar {
+  width: 120px;
+  height: 8px;
+  background: #fee2e2;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ah-week-strip.open .ah-week-strip-progress-bar {
+  background: #fef3c7;
+}
+
+.ah-week-strip.closed .ah-week-strip-progress-bar {
+  background: #d1fae5;
+}
+
+.ah-week-strip-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.ah-week-strip.open .ah-week-strip-progress-fill {
+  background: linear-gradient(90deg, var(--brand), #f97316);
+}
+
+.ah-week-strip.closed .ah-week-strip-progress-fill {
+  background: var(--good);
+}
+
+/* Status badge */
+.ah-week-strip-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.ah-week-strip-badge.open {
+  background: #fffbeb;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.ah-week-strip-badge.closed {
+  background: #f0fdf4;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+/* Action button */
+.ah-week-strip-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid;
+}
+
+.ah-week-strip-action.close {
+  background: var(--brand);
+  color: white;
+  border-color: var(--brand);
+}
+
+.ah-week-strip-action.close:hover {
+  background: var(--brand-dark);
+  border-color: var(--brand-dark);
+}
+
+.ah-week-strip-action.reopen {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--surface-border);
+}
+
+.ah-week-strip-action.reopen:hover {
+  background: var(--surface-inset);
+  border-color: var(--text-muted);
+}
+
+.ah-week-strip-action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ah-week-strip-main {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .ah-week-strip-date {
+    font-size: 18px;
+    min-width: auto;
+  }
+
+  .ah-week-strip-progress {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .ah-week-strip-progress-bar {
+    flex: 1;
+  }
 }
