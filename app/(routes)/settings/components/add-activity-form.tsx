@@ -25,6 +25,7 @@ import { DialogClose } from "@radix-ui/react-dialog"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { z } from "zod"
+import { Plus } from "lucide-react"
 
 const FormSchema = z.object({
   name: z.string(),
@@ -56,7 +57,10 @@ export function AddActivityForm() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="w-[200px]">Add new</Button>
+        <Button className="bg-[#bd5629] hover:bg-[#9a4521] text-white flex items-center gap-2">
+          <Plus size={18} />
+          New activity
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
