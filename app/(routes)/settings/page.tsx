@@ -5,6 +5,7 @@ import {
 import { DataTable } from "./components/data-table/data-table"
 import { columns } from "./components/data-table/columns"
 import DisplayError from "@/utils/display-error"
+import { AddActivityForm } from "./components/add-activity-form"
 
 interface SettingsProps {
   searchParams: { showDeleted: string }
@@ -30,8 +31,22 @@ const Settings = async ({ searchParams }: SettingsProps) => {
     }
   }
 
+  const activeCount = activitiesList.filter((a) => !a.deletedAt).length
+
   return (
     <div className="container mx-auto py-10">
+      <div className="flex justify-between">
+        <div className="mb-4">
+          <h1 className="text-3xl font-bold text-gray-900">Projects</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            {activeCount} active {activeCount === 1 ? "activity" : "activities"}{" "}
+            · tracked across your team
+          </p>
+        </div>
+        <div className="flex items-end py-3">
+          <AddActivityForm />
+        </div>
+      </div>
       <DataTable columns={columns} data={activitiesList} />
     </div>
   )

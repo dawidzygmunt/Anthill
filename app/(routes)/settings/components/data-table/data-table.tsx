@@ -2,12 +2,6 @@
 
 import * as React from "react"
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
@@ -20,7 +14,6 @@ import {
   VisibilityState,
 } from "@tanstack/react-table"
 import { Input } from "@/components/ui/input"
-import { Switch } from "@/components/ui/switch"
 
 import {
   Table,
@@ -35,6 +28,7 @@ import { Button } from "@/components/ui/button"
 import { AddActivityForm } from "../add-activity-form"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
+import { Search } from "lucide-react"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -83,58 +77,50 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center gap-4 py-4 justify-between">
-        <div className="flex items-center gap-4 py-4">
+      <div className="flex justify-between pb-4">
+        <div className="relative flex">
+          <Search className="absolute h-4 w-4 text-gray-400 pointer-events-none top-3 left-3" />
           <Input
-            placeholder="Filter names..."
+            placeholder="Search activities..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("name")?.setFilterValue(event.target.value)
             }
-            className="max-w-sm"
+            className="pl-10 rounded-xl lg:min-w-80"
           />
-          <AddActivityForm />
         </div>
-        <div className="flex items-center gap-10">
-          <div className="flex justify-center items-center gap-4 border border-slate-200 p-2 px-4 rounded-lg text-sm ">
-            <span>Show deleted</span>
-            <Link href={`?showDeleted=${!switchValue}`}>
-              <Switch
-                onCheckedChange={(value) => setSwitchValue(value)}
-                checked={switchValue}
-              />
+        <div className="flex flex-col gap-2 items-end">
+          <div className="inline-flex items-center bg-[#f8f2ec] rounded-lg p-1">
+            <Link href="?showDeleted=false">
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`${
+                  !switchValue
+                    ? "bg-white shadow-sm text-gray-900 hover:bg-white"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-transparent"
+                }`}
+              >
+                Active
+              </Button>
+            </Link>
+            <Link href="?showDeleted=true">
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`${
+                  switchValue
+                    ? "bg-white shadow-sm text-gray-900 hover:bg-white"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-transparent"
+                }`}
+              >
+                Archived
+              </Button>
             </Link>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
-                Columns
-              </Button>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-2xl bg-white border border-gray-200 shadow-sm">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -183,24 +169,6 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
       </div>
     </div>
   )
