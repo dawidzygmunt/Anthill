@@ -45,10 +45,7 @@ export function AddActivityForm() {
       color: getRandomHexColor(),
     }
     const result = await createActivity(newData)
-    if ("error" in result) {
-      if (typeof DisplayError === "function") {
-        DisplayError(result.error)
-      }
+    if ("error" in result) {        DisplayError(result.error)
       return
     }
     toast.success("Activity added successfully")

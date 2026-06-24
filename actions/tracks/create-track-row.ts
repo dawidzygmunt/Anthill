@@ -22,13 +22,13 @@ const createTrackRow = async (activityId: string, from: Date) => {
         })
       }
 
-      const istTackRow = await prisma.trackRow.findFirst({
+      const existingTrackRow = await prisma.trackRow.findFirst({
         where: {
           activityId,
           weekId: week.id,
         },
       })
-      if (istTackRow) {
+      if (existingTrackRow) {
         throw new CustomError("Track row already exists", "ALREADY_EXISTS")
       }
 
@@ -38,9 +38,10 @@ const createTrackRow = async (activityId: string, from: Date) => {
           weekId: week.id,
         },
       })
-      revalidateTracks()
       return { week, trackRow }
     })
+
+    revalidateTracks()
     return result
   } catch (error) {
     console.log(error)

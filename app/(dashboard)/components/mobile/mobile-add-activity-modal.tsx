@@ -44,10 +44,7 @@ export default function MobileAddActivityModal({
       // Create TrackRow for this activity
       const result = await createTrackRow(activityId, from)
 
-      if ("error" in result) {
-        if (typeof DisplayError === "function") {
-          DisplayError(result.error)
-        }
+      if ("error" in result) {        DisplayError(result.error)
         setIsAdding(false)
         return
       }
@@ -59,10 +56,7 @@ export default function MobileAddActivityModal({
         30 // 30 minutes = 0.5h
       )
 
-      if ("error" in trackResult) {
-        if (typeof DisplayError === "function") {
-          DisplayError(trackResult.error)
-        }
+      if ("error" in trackResult) {        DisplayError(trackResult.error)
         setIsAdding(false)
         return
       }

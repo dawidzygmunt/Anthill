@@ -4,7 +4,6 @@ import {
 } from "@/actions/activities/get-activities"
 import { DataTable } from "./components/data-table/data-table"
 import { columns } from "./components/data-table/columns"
-import DisplayError from "@/utils/display-error"
 import { AddActivityForm } from "./components/add-activity-form"
 
 interface SettingsProps {
@@ -16,18 +15,18 @@ const Settings = async ({ searchParams }: SettingsProps) => {
   if (searchParams.showDeleted === "true") {
     activitiesList = await getAllActivities()
     if ("error" in activitiesList) {
-      if (typeof DisplayError === "function") {
-        DisplayError(activitiesList.error)
-      }
-      return
+      const errorMessage = "code" in activitiesList.error
+        ? `Failed to load activities: ${activitiesList.error.code}`
+        : `Failed to load activities: ${activitiesList.error.message}`
+      throw new Error(errorMessage)
     }
   } else {
     activitiesList = await getActivities()
     if ("error" in activitiesList) {
-      if (typeof DisplayError === "function") {
-        DisplayError(activitiesList.error)
-      }
-      return
+      const errorMessage = "code" in activitiesList.error
+        ? `Failed to load activities: ${activitiesList.error.code}`
+        : `Failed to load activities: ${activitiesList.error.message}`
+      throw new Error(errorMessage)
     }
   }
 

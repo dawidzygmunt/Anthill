@@ -6,8 +6,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const timeFormatter = (minutes: number) => {
-  if (minutes === undefined) return "0:00"
+export const timeFormatter = (minutes: number): string => {
+  if (!Number.isFinite(minutes) || minutes <= 0) {
+    return "0:00"
+  }
   const roundedMinutes = Math.round(minutes / 30) * 30
   const hours = Math.floor(roundedMinutes / 60)
   const remainingMinutes = roundedMinutes % 60
@@ -16,29 +18,24 @@ export const timeFormatter = (minutes: number) => {
   return formattedTime
 }
 
-export const parseTime = (input: string) => {
-  const result = input.replace(",", ".")
-
-  let commaCount = (result.match(/\,/g) || []).length
-  if (commaCount >= 1) {
+export const parseTime = (input: string): number => {
+  if (!input || !input.trim()) {
     return 0
   }
-  const hours = parseFloat(result)
-  const minutes = hours * 60
 
-  const integerPart = Math.floor(hours)
-
-  const decimalPart = result.split(".")[1]
-    ? parseFloat(`0.${result.split(".")[1]}`)
-    : 0
-
-  if (decimalPart >= 0.1 && decimalPart <= 0.5) {
-    return minutes + 30 - decimalPart * 60
-  } else if (decimalPart >= 0.6 && decimalPart <= 0.9) {
-    return Math.floor(minutes + 60 - decimalPart * 60)
-  } else {
-    return minutes - decimalPart * 60
+  const normalized = input.trim().replace(",", ".")
+  const dotCount = (normalized.match(/\./g) || []).length
+  if (dotCount > 1) {
+    return 0
   }
+
+  const hours = parseFloat(normalized)
+  if (!Number.isFinite(hours) || hours < 0) {
+    return 0
+  }
+
+  // Round to nearest 30 minutes
+  return Math.round((hours * 60) / 30) * 30
 }
 
 export const getRandomHexColor = () => {

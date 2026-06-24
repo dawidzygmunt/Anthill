@@ -1,5 +1,5 @@
 "use client"
-import { updateSingleWeek } from "@/actions/weeks/update-single-week"
+import { updateWeekStatus } from "@/actions/weeks/update-week-status"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
@@ -19,9 +19,7 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
       if (!response) {
         setIsDone(false)
       } else if ("error" in response) {
-        if (typeof DisplayError === "function") {
-          DisplayError(response.error)
-        }
+        DisplayError(response.error)
       } else {
         setIsDone(response.isClosed)
       }
@@ -36,12 +34,9 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
 
   const handleButtonClick = async () => {
     setIsDone(!isDone)
-    updateSingleWeek(from, !isDone)
-    const result = await updateSingleWeek(from, !isDone)
+    const result = await updateWeekStatus({ from, isClosed: !isDone })
     if ("error" in result) {
-      if (typeof DisplayError === "function") {
-        DisplayError(result.error)
-      }
+      DisplayError(result.error)
       return
     }
     !isDone && toast.success("Week closed")

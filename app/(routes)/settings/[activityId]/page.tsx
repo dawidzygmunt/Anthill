@@ -11,15 +11,13 @@ export const generateMetadata = ({
     title: `Anthill v2 - Edit activity ${params.activityId}`,
   }
 }
-import DisplayError from "@/utils/display-error"
-
 const EditActivity = async ({ params }: { params: { activityId: string } }) => {
   const activity = await getSingleActivity(params.activityId)
   if ("error" in activity) {
-    if (typeof DisplayError === "function") {
-      DisplayError(activity.error)
-    }
-    return
+    const errorMessage = "code" in activity.error
+      ? `Failed to load activity: ${activity.error.code}`
+      : `Failed to load activity: ${activity.error.message}`
+    throw new Error(errorMessage)
   }
   return (
     <div className="flex flex-col items-center m-24">

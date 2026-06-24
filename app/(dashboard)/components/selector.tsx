@@ -30,10 +30,7 @@ export function ActivitySelector({
     if (onChange) onChange(value)
     else if (trackRowId) {
       const result = await changeActivityForTrackRow(trackRowId, value)
-      if (result && typeof result === "object" && "error" in result) {
-        if (typeof DisplayError === "function") {
-          DisplayError(result.error)
-        }
+      if (result && typeof result === "object" && "error" in result) {        DisplayError(result.error)
         setSelectedActivity(activityId)
       } else {
         revalidateTracks()

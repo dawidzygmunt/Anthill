@@ -22,18 +22,27 @@ const handleTrackChange = async (
   try {
     const data = trackSchema.parse({ trackRowId, date, minutes })
 
-    const track = await prisma.track.findFirst({ where: { trackRowId, date } })
-    if (!track) {
-      await prisma.track.create({ data })
-      const trackRow = await prisma.trackRow.findFirst({
-        where: { id: trackRowId },
+    return await prisma.$transaction(async (tx) => {
+      // Validate trackRow exists BEFORE modification
+      const trackRow = await tx.trackRow.findUnique({
+        where: { id: data.trackRowId },
       })
-      if (!trackRow) throw new CustomError("Track row not found", "NOT_FOUND")
-    }
+      if (!trackRow) {
+        throw new CustomError("Track row not found", "NOT_FOUND")
+      }
 
-    return await prisma.track.update({
-      data: { minutes },
-      where: { rowDatePair: { trackRowId, date } },
+      // Use upsert for atomic create-or-update
+      return await tx.track.upsert({
+        where: {
+          rowDatePair: { trackRowId: data.trackRowId, date: data.date },
+        },
+        update: { minutes: data.minutes },
+        create: {
+          trackRowId: data.trackRowId,
+          date: data.date,
+          minutes: data.minutes,
+        },
+      })
     })
   } catch (error) {
     return handleError(error, tracksPrismaCodesMap)

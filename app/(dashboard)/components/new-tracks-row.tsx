@@ -49,10 +49,7 @@ function NewTracksRow({ allActivities, from, to, opened = false }: Props) {
           setActivityId(id)
           if (id) {
             const result = await createTrackRow(id, from)
-            if ("error" in result && result.error) {
-              if (typeof DisplayError === "function") {
-                DisplayError(result.error)
-              }
+            if ("error" in result && result.error) {        DisplayError(result.error)
               setActivityId("")
             }
           }
