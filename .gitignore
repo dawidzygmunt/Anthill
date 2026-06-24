@@ -44,3 +44,9 @@ next-env.d.ts
 /playwright/.cache/
 
 playwright/.auth
+
+# PWA build artifacts
+/public/sw.js*
+/public/workbox-*
+/public/worker-*
+/public/fallback-*

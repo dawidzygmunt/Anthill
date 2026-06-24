@@ -1,8 +1,4 @@
-import { util } from "./util"
-
-declare let self: ServiceWorkerGlobalScope
-
-util()
+const sw = self as unknown as ServiceWorkerGlobalScope
 
 let isSendDay = false
 let isSendWeek = false
@@ -40,7 +36,7 @@ function calculateTimeUntilEndOfMonth() {
 }
 
 function sendNotification(message: string) {
-  self.registration.showNotification("Anthill v2", {
+  sw.registration.showNotification("Anthill v2", {
     body: message,
     icon: "/icon512_rounded.png",
   })
@@ -75,15 +71,15 @@ async function startInterval() {
 }
 
 // Schedule notifications after Service Worker activation
-self.addEventListener("install", function (event) {
+sw.addEventListener("install", function (event) {
   if (event) {
-    event.waitUntil(self.skipWaiting())
+    event.waitUntil(sw.skipWaiting())
   }
 })
 
-self.addEventListener("activate", function (event) {
+sw.addEventListener("activate", function (event) {
   if (event) {
-    event.waitUntil(self.clients.claim())
+    event.waitUntil(sw.clients.claim())
     startInterval() // Start notifications every 5 minutes
   }
 })

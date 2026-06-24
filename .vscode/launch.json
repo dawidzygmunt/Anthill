@@ -9,7 +9,7 @@
       "type": "node",
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/dev/populateDb.ts",
+      "program": "${workspaceFolder}/prisma/dev/populateDb.ts",
       "outFiles": ["${workspaceFolder}/**/*.js"]
     }
   ]
