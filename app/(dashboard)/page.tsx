@@ -9,7 +9,6 @@ import MobileView from "./components/mobile/mobile-view"
 import getTrackRowsForPeriod from "@/actions/weeks/get-track-rows-for-period"
 import { getActivities } from "@/actions/activities/get-activities"
 import { getSingleWeek } from "@/actions/weeks/get-single-week"
-import DisplayError from "@/utils/display-error"
 
 interface HomeProps {
   searchParams: { from: string }
@@ -37,10 +36,10 @@ export default async function Home({ searchParams }: HomeProps) {
     const isWeekClosed = weekData && !("error" in weekData) ? weekData.isClosed : false
 
     if ("error" in allActivities) {
-      if (typeof DisplayError === "function") {
-        DisplayError(allActivities.error)
-      }
-      return null
+      const errorMessage = "code" in allActivities.error
+        ? `Failed to load activities: ${allActivities.error.code}`
+        : `Failed to load activities: ${allActivities.error.message}`
+      throw new Error(errorMessage)
     }
 
     const trackRows = weeks && !("error" in weeks) ? weeks.TrackRow : []

@@ -1,5 +1,5 @@
 "use client"
-import { updateSingleWeek } from "@/actions/weeks/update-single-week"
+import { updateWeekStatus } from "@/actions/weeks/update-week-status"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { getSingleWeek } from "@/actions/weeks/get-single-week"
@@ -27,9 +27,7 @@ export const WeekStrip = ({ from, to }: WeekStripProps) => {
       if (!response) {
         setIsClosed(false)
       } else if ("error" in response) {
-        if (typeof DisplayError === "function") {
-          DisplayError(response.error)
-        }
+        DisplayError(response.error)
       } else {
         setIsClosed(response.isClosed)
       }
@@ -46,11 +44,9 @@ export const WeekStrip = ({ from, to }: WeekStripProps) => {
   const handleToggleClose = async () => {
     const newState = !isClosed
     setIsClosed(newState)
-    const result = await updateSingleWeek(from, newState)
+    const result = await updateWeekStatus({ from, isClosed: newState })
     if ("error" in result) {
-      if (typeof DisplayError === "function") {
-        DisplayError(result.error)
-      }
+      DisplayError(result.error)
       setIsClosed(!newState)
       return
     }

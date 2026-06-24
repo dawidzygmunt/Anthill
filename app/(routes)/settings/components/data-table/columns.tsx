@@ -32,10 +32,7 @@ import { EditActivityFormv2 } from "./edit-activity-option"
 
 const handleDelete = async (activityId: string) => {
   const result = await deleteActivity(activityId)
-  if ("error" in result) {
-    if (typeof DisplayError === "function") {
-      DisplayError(result.error)
-    }
+  if ("error" in result) {        DisplayError(result.error)
     return
   }
   toast.success("Activity deleted")
@@ -43,10 +40,7 @@ const handleDelete = async (activityId: string) => {
 
 const handleHardDelete = async (activityId: string) => {
   const result = await hardDeleteActivity(activityId)
-  if ("error" in result) {
-    if (typeof DisplayError === "function") {
-      DisplayError(result.error)
-    }
+  if ("error" in result) {        DisplayError(result.error)
     return
   }
   toast.success("Activity deleted")
@@ -54,10 +48,7 @@ const handleHardDelete = async (activityId: string) => {
 
 const handleRestore = async (activity: Activity) => {
   const result = await patchActivity({ ...activity, deletedAt: null })
-  if ("error" in result) {
-    if (typeof DisplayError === "function") {
-      DisplayError(result.error)
-    }
+  if ("error" in result) {        DisplayError(result.error)
     return
   }
   toast.success("Activity restored")

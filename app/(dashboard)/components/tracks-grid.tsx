@@ -6,7 +6,6 @@ import Selector from "./selector"
 import TracksRow from "./tracks-row"
 import { Suspense } from "react"
 import { SkeletonLoader } from "@/components/skeleton-lodaer"
-import DisplayError from "@/utils/display-error"
 import { getSingleWeek } from "@/actions/weeks/get-single-week"
 
 async function TracksGrid({ from, to }: { from: Date; to: Date }) {
@@ -17,10 +16,10 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
   const isWeekClosed = weekData && !("error" in weekData) ? weekData.isClosed : false
   const allActivities = await getActivities()
   if ("error" in allActivities) {
-    if (typeof DisplayError === "function") {
-      DisplayError(allActivities.error)
-    }
-    return
+    const errorMessage = "code" in allActivities.error
+      ? `Failed to load activities: ${allActivities.error.code}`
+      : `Failed to load activities: ${allActivities.error.message}`
+    throw new Error(errorMessage)
   }
 
   if (!weeks)
@@ -35,10 +34,10 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
     )
 
   if ("error" in weeks) {
-    if (typeof DisplayError === "function") {
-      DisplayError(weeks.error)
-    }
-    return
+    const errorMessage = "code" in weeks.error
+      ? `Failed to load weeks: ${weeks.error.code}`
+      : `Failed to load weeks: ${weeks.error.message}`
+    throw new Error(errorMessage)
   }
 
   // Calculate daily totals

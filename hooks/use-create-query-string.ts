@@ -12,7 +12,7 @@ const useCreateQueryString = () => {
       }
       return params.toString()
     },
-    [Array.from(searchParams.entries())]
+    [searchParams]
   )
 
   return createQueryString

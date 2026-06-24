@@ -63,10 +63,7 @@ const TrackInput = ({ track, disabled = false }: Props) => {
 
     if ("id" in track && inputValue === "") {
       const result = await deleteTrack(track.id)
-      if ("error" in result) {
-        if (typeof DisplayError === "function") {
-          DisplayError(result.error)
-        }
+      if ("error" in result) {        DisplayError(result.error)
         return form.setValue(
           "trackInput",
           track.minutes ? `${(track.minutes / 60).toFixed(1)}h` : ""
@@ -84,10 +81,7 @@ const TrackInput = ({ track, disabled = false }: Props) => {
       track.date,
       minutes
     )
-    if ("error" in result) {
-      if (typeof DisplayError === "function") {
-        DisplayError(result.error)
-      }
+    if ("error" in result) {        DisplayError(result.error)
       return form.setValue(
         "trackInput",
         track.minutes ? `${(track.minutes / 60).toFixed(1)}h` : ""

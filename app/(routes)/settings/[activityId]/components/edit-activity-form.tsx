@@ -33,10 +33,7 @@ export function EditActivityForm({ initialData }: { initialData: Activity }) {
   async function onSubmit(data: { name: string; color: string }) {
     const newData = { ...data, id: initialData.id }
     const result = await patchActivity(newData)
-    if ("error" in result) {
-      if (typeof DisplayError === "function") {
-        DisplayError(result.error)
-      }
+    if ("error" in result) {        DisplayError(result.error)
       return
     }
     revalidate(`/settings/`)

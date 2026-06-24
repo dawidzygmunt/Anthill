@@ -12,10 +12,7 @@ const SideBar = async () => {
   const to = addDays(today, 180)
   const weeks = await getWeeks(from, to)
 
-  if ("error" in weeks) {
-    if (typeof DisplayError === "function") {
-      DisplayError(weeks.error)
-    }
+  if ("error" in weeks) {        DisplayError(weeks.error)
     return
   }
 

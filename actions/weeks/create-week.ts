@@ -1,23 +1,28 @@
 "use server"
 
 import prisma from "@/lib/db"
-import { CustomError, handleError } from "@/utils/error-handler"
+import { handleError } from "@/utils/error-handler"
 import weeksPrismaCodesMap from "@/utils/prisma-codes/weeks-prisma-codes"
+import { Prisma } from "@prisma/client"
 
-export const createWeek = async (from: Date, to: Date, TrackRows: any) => {
+type TrackRowsInput = Prisma.TrackRowCreateNestedManyWithoutWeekInput
+
+export const createWeek = async (from: Date, trackRows?: TrackRowsInput) => {
   try {
-    const week = await prisma.week.findFirst({
+    const existingWeek = await prisma.week.findFirst({
       where: { from },
     })
 
-    if (!week) {
-      return await prisma.week.create({
-        data: {
-          from,
-          TrackRow: TrackRows,
-        },
-      })
+    if (existingWeek) {
+      return existingWeek
     }
+
+    return await prisma.week.create({
+      data: {
+        from,
+        TrackRow: trackRows,
+      },
+    })
   } catch (error) {
     return handleError(error, weeksPrismaCodesMap)
   }
