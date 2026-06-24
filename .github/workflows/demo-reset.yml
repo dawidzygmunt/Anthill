@@ -1,0 +1,54 @@
+name: Daily Demo Reset
+
+on:
+  schedule:
+    # Run at 03:00 UTC daily
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    # Allow manual trigger from GitHub UI
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  reset-demo-database:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Reset and Seed Database
+        env:
+          DATABASE_URL: ${{ secrets.DEMO_DATABASE_URL }}
+        run: |
+          echo "Starting database reset..."
+          npx prisma migrate reset --force
+          echo "Running seed script..."
+          npm run seed
+          echo "Database reset complete."
+
+      - name: Verify Seed Success
+        env:
+          DATABASE_URL: ${{ secrets.DEMO_DATABASE_URL }}
+        run: |
+          echo "Verifying database seed..."
+          npx prisma db execute --stdin <<EOF
+          SELECT
+            (SELECT COUNT(*) FROM "Activity") as activities,
+            (SELECT COUNT(*) FROM "Week") as weeks,
+            (SELECT COUNT(*) FROM "TrackRow") as track_rows,
+            (SELECT COUNT(*) FROM "Track") as tracks;
+          EOF
