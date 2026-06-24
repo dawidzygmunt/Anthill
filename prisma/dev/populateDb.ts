@@ -1,4 +1,3 @@
-import { auth } from "@clerk/nextjs/server"
 import prisma from "../../lib/db"
 import { faker } from "@faker-js/faker"
 import { Activity } from "@prisma/client"

@@ -4,7 +4,6 @@ import { CustomError, handleError } from "@/utils/error-handler"
 import weeksPrismaCodesMap from "@/utils/prisma-codes/weeks-prisma-codes"
 import { getSingleActivity } from "../activities/get-single-activity"
 import { ExtendedWeek } from "@/lib/types"
-import { auth } from "@clerk/nextjs/server"
 
 export const getWeeks = async (from: Date, to: Date) => {
   try {
