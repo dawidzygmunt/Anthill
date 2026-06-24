@@ -1,5 +1,4 @@
 import prisma from "@/lib/db"
-import { setupClerkTestingToken } from "@clerk/testing/playwright"
 import { test, expect } from "@playwright/test"
 import { time } from "console"
 
@@ -20,7 +19,6 @@ test("Add activity", async ({ page }) => {
   ]
 
   await page.goto("http://localhost:3000/settings")
-  await setupClerkTestingToken({ page })
   for (const activity of activities) {
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
@@ -37,7 +35,6 @@ test("Delete activity", async ({ page }) => {
   const activities = ["v2 activity 1", "v2 122 12", "v2 ac cc3"]
 
   await page.goto("http://localhost:3000/settings")
-  await setupClerkTestingToken({ page })
   for (const activity of activities) {
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
@@ -54,7 +51,6 @@ test("Delete activity", async ({ page }) => {
 })
 
 test("Edit activity", async ({ page }) => {
-  await setupClerkTestingToken({ page })
   const activities = ["v4activity 1", "v4122 12", "v4 ac cc3"]
   for (let i = 0; i < activities.length; i++) {
     const activity = activities[i]
@@ -90,7 +86,6 @@ test("Edit activity", async ({ page }) => {
 })
 
 test("Table filter pers", async ({ page }) => {
-  await setupClerkTestingToken({ page })
   const activities = [
     "activity 1",
     "activity 2",
@@ -130,7 +125,6 @@ test("Table filter pers", async ({ page }) => {
 })
 
 test("Input validation", async ({ page }) => {
-  await setupClerkTestingToken({ page })
   const activities = [
     "WayyyyyyyytooooooooooLoooooong Message i mean activity name",
     "",

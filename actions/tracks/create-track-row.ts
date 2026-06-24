@@ -5,7 +5,6 @@ import prisma from "@/lib/db"
 import tracksPrismaCodesMap from "@/utils/prisma-codes/tracks-prisma-codes"
 import revalidateTracks from "./revalidate"
 import { CustomError, handleError } from "@/utils/error-handler"
-import { auth } from "@clerk/nextjs/server"
 
 const createTrackRow = async (activityId: string, from: Date) => {
   try {

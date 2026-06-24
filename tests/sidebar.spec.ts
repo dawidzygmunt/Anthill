@@ -1,5 +1,4 @@
 import prisma from "@/lib/db"
-import { setupClerkTestingToken } from "@clerk/testing/playwright"
 import { expect, test } from "@playwright/test"
 
 test.beforeEach(async ({}) => {
@@ -11,7 +10,6 @@ test.beforeEach(async ({}) => {
 
 // test.afterAll(() => {})
 test("Adding week", async ({ page }) => {
-  await setupClerkTestingToken({ page })
   await page.goto("http://localhost:3000?from=2024-06-10")
   await page.getByRole("link", { name: "Settings" }).click()
   await page.getByRole("button", { name: "Add new" }).click()
