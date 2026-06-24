@@ -1,6 +1,5 @@
 import prisma from "@/lib/db"
 import { test, expect } from "@playwright/test"
-import { time } from "console"
 
 test.beforeEach(async ({}) => {
   await prisma.track.deleteMany()
@@ -18,7 +17,7 @@ test("Add activity", async ({ page }) => {
     "activity 5",
   ]
 
-  await page.goto("http://localhost:3000/settings")
+  await page.goto("/settings")
   for (const activity of activities) {
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
@@ -34,7 +33,7 @@ test("Add activity", async ({ page }) => {
 test("Delete activity", async ({ page }) => {
   const activities = ["v2 activity 1", "v2 122 12", "v2 ac cc3"]
 
-  await page.goto("http://localhost:3000/settings")
+  await page.goto("/settings")
   for (const activity of activities) {
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
@@ -55,7 +54,7 @@ test("Edit activity", async ({ page }) => {
   for (let i = 0; i < activities.length; i++) {
     const activity = activities[i]
     await page.waitForTimeout(100)
-    await page.goto("http://localhost:3000/settings")
+    await page.goto("/settings")
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)
@@ -94,7 +93,7 @@ test("Table filter pers", async ({ page }) => {
     "activity 5",
   ]
   for (const activity of activities) {
-    await page.goto("http://localhost:3000/settings?showDeleted=true")
+    await page.goto("/settings?showDeleted=true")
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)
@@ -131,7 +130,7 @@ test("Input validation", async ({ page }) => {
     "/!?>?@>!?@>!?@>!@dsadsas?getToooo long 123123123123",
   ]
   for (const activity of activities) {
-    await page.goto("http://localhost:3000/settings")
+    await page.goto("/settings")
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)
@@ -152,7 +151,7 @@ test("Show deleted activities", async ({ page }) => {
   ]
 
   for (const activity of activities) {
-    await page.goto("http://localhost:3000/settings")
+    await page.goto("/settings")
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)
@@ -179,7 +178,7 @@ test("Restore deleted activities", async ({ page }) => {
   ]
 
   for (const activity of activities) {
-    await page.goto("http://localhost:3000/settings")
+    await page.goto("/settings")
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)

@@ -13,7 +13,9 @@
     "prisma:reset": "prisma migrate reset --force",
     "seed": "npx tsx prisma/seed.ts",
     "populate-db": "npm run clear-db && tsc prisma/dev/populateDb.ts && node prisma/dev/populateDb.js && rm ./prisma/dev/populateDb.js",
-    "clear-db": "npx prisma db push --force-reset"
+    "clear-db": "npx prisma db push --force-reset",
+    "test:e2e": "dotenv -e .env.test -- npx playwright test",
+    "db:test:push": "dotenv -e .env.test -- npx prisma db push"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
@@ -58,6 +60,7 @@
     "@types/react-burger-menu": "^2.8.7",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.5.0",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.3",
     "eslint-plugin-my-lint": "file:packages/eslint",
