@@ -7,6 +7,11 @@ import { getMonthlyStats } from "@/actions/reports/get-monthly-stats"
 import { getDailyBreakdown } from "@/actions/reports/get-daily-breakdown"
 import { getActivityDistribution } from "@/actions/reports/get-activity-distribution"
 import { getWeeklyTotals } from "@/actions/reports/get-weekly-totals"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Reports - Anthill",
+}
 
 interface ReportsPageProps {
   searchParams: {

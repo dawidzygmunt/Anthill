@@ -9,16 +9,15 @@ import MobileView from "./components/mobile/mobile-view"
 import getTrackRowsForPeriod from "@/actions/weeks/get-track-rows-for-period"
 import { getActivities } from "@/actions/activities/get-activities"
 import { getSingleWeek } from "@/actions/weeks/get-single-week"
+import { Metadata } from "next"
 
 interface HomeProps {
   searchParams: { from: string }
 }
 
-// export const generateMetadata = ({ searchParams }: HomeProps): Metadata => {
-//   return {
-//     title: `Anthill v2 - ${searchParams.from}`,
-//   }
-// }
+export const metadata: Metadata = {
+  title: "Time Sheet - Anthill",
+}
 
 export default async function Home({ searchParams }: HomeProps) {
   try {

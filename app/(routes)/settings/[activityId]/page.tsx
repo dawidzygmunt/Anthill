@@ -2,15 +2,16 @@ import { getSingleActivity } from "@/actions/activities/get-single-activity"
 import { EditActivityForm } from "./components/edit-activity-form"
 import { Metadata } from "next"
 
-export const generateMetadata = ({
+export function generateMetadata({
   params,
 }: {
   params: { activityId: string }
-}): Metadata => {
+}): Metadata {
   return {
-    title: `Anthill v2 - Edit activity ${params.activityId}`,
+    title: `Edit Activity - Anthill`,
   }
 }
+
 const EditActivity = async ({ params }: { params: { activityId: string } }) => {
   const activity = await getSingleActivity(params.activityId)
   if ("error" in activity) {
