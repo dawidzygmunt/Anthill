@@ -10,7 +10,7 @@ test.beforeEach(async ({}) => {
 
 // test.afterAll(() => {})
 test("Adding week", async ({ page }) => {
-  await page.goto("http://localhost:3000?from=2024-06-10")
+  await page.goto("/?from=2024-06-10")
   await page.getByRole("link", { name: "Settings" }).click()
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 1")
@@ -18,7 +18,7 @@ test("Adding week", async ({ page }) => {
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 2")
   await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.goto("http://localhost:3000?from=2024-06-10")
+  await page.goto("/?from=2024-06-10")
   await page.getByRole("combobox").selectOption("activity 1")
 
   await page.waitForTimeout(100)
@@ -41,7 +41,7 @@ test("Adding week", async ({ page }) => {
 })
 
 test("In progress change", async ({ page }) => {
-  await page.goto("http://localhost:3000?from=2024-06-10")
+  await page.goto("/?from=2024-06-10")
   await page.getByRole("link", { name: "Settings" }).click()
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 1")
@@ -49,7 +49,7 @@ test("In progress change", async ({ page }) => {
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 2")
   await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.goto("http://localhost:3000?from=2024-06-10")
+  await page.goto("/?from=2024-06-10")
   await page.getByRole("combobox").selectOption("activity 1")
 
   await page.waitForTimeout(100)
@@ -118,7 +118,7 @@ test("In progress change", async ({ page }) => {
 })
 
 test("Sync closing weeks", async ({ page }) => {
-  await page.goto("http://localhost:3000?from=2024-06-10")
+  await page.goto("/?from=2024-06-10")
   await page.getByRole("link", { name: "Settings" }).click()
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 1")
@@ -126,7 +126,7 @@ test("Sync closing weeks", async ({ page }) => {
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 2")
   await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.goto("http://localhost:3000?from=2024-06-10")
+  await page.goto("/?from=2024-06-10")
   await page.getByRole("combobox").selectOption("activity 1")
 
   await page.waitForTimeout(100)
@@ -152,7 +152,7 @@ test("Sync closing weeks", async ({ page }) => {
   await week.click()
   await button.click()
   await expect(week).toContainText("Done")
-  await page.goto("http://localhost:3000?from=2024-06-10")
+  await page.goto("/?from=2024-06-10")
   await expect(week).toContainText("Done")
   expect(await page.getByRole("button", { name: "Done" })).toBeVisible()
 

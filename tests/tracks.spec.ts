@@ -10,7 +10,7 @@ test.beforeEach(async ({}) => {
 
 // test.afterAll(() => {})
 test("Add Tracks", async ({ page }) => {
-  await page.goto("http://localhost:3000/")
+  await page.goto("/")
   await page.getByRole("link", { name: "Settings" }).click()
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 1")
@@ -28,7 +28,7 @@ test("Add Tracks", async ({ page }) => {
 })
 
 test("Add same tracks", async ({ page }) => {
-  await page.goto("http://localhost:3000/")
+  await page.goto("/")
   await page.getByRole("link", { name: "Settings" }).click()
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 1")
@@ -48,7 +48,7 @@ test("Add same tracks", async ({ page }) => {
 })
 
 test("Delete Tracks", async ({ page }) => {
-  await page.goto("http://localhost:3000/")
+  await page.goto("/")
   await page.getByRole("link", { name: "Settings" }).click()
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 1")
@@ -70,7 +70,7 @@ test("Delete Tracks", async ({ page }) => {
 })
 
 test("Delete tracks validation", async ({ page }) => {
-  await page.goto("http://localhost:3000/")
+  await page.goto("/")
   await page.getByRole("link", { name: "Settings" }).click()
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 1")
@@ -106,7 +106,7 @@ test("Delete tracks validation", async ({ page }) => {
 })
 
 test("Add new week & trackRow & track", async ({ page }) => {
-  await page.goto("http://localhost:3000/")
+  await page.goto("/")
   await page.getByRole("link", { name: "Settings" }).click()
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 1")
@@ -142,7 +142,7 @@ test("Add new week & trackRow & track", async ({ page }) => {
 })
 
 test("Add more than 24h", async ({ page }) => {
-  await page.goto("http://localhost:3000/")
+  await page.goto("/")
   await page.getByRole("link", { name: "Settings" }).click()
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 1")
@@ -178,7 +178,7 @@ test("Add more than 24h", async ({ page }) => {
 })
 
 test("Input validation", async ({ page }) => {
-  await page.goto("http://localhost:3000/")
+  await page.goto("/")
   await page.getByRole("link", { name: "Settings" }).click()
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 1")
@@ -225,7 +225,7 @@ test("Show deleted activities", async ({ page }) => {
   ]
 
   for (const activity of activities) {
-    await page.goto("http://localhost:3000/settings")
+    await page.goto("/settings")
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)
@@ -252,7 +252,7 @@ test("Restore deleted activities", async ({ page }) => {
   ]
 
   for (const activity of activities) {
-    await page.goto("http://localhost:3000/settings")
+    await page.goto("/settings")
     await page.getByRole("button", { name: "Add new" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)

@@ -37,7 +37,7 @@ test("Multiple scenario", async ({ page }) => {
     { test: "0,6", result: "1" },
   ]
 
-  await page.goto("http://localhost:3000/settings")
+  await page.goto("/settings")
   await page.getByRole("link", { name: "Settings" }).click()
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 1")
@@ -46,7 +46,7 @@ test("Multiple scenario", async ({ page }) => {
   await page.getByPlaceholder("Add your activity...").fill("activity 2")
   await page.getByText("Submit").click()
 
-  await page.goto("http://localhost:3000/")
+  await page.goto("/")
   await page.getByRole("combobox").selectOption("activity 1")
   await page.getByRole("button", { name: "Add" }).click()
   await page.getByRole("combobox").nth(1).selectOption("activity 2")
@@ -89,7 +89,7 @@ test("edge Case scenario", async ({ page }) => {
     { test: "12.34", result: "12.5" },
   ]
 
-  await page.goto("http://localhost:3000/settings")
+  await page.goto("/settings")
   await page.getByRole("link", { name: "Settings" }).click()
   await page.getByRole("button", { name: "Add new" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 1")
@@ -98,7 +98,7 @@ test("edge Case scenario", async ({ page }) => {
   await page.getByPlaceholder("Add your activity...").fill("activity 2")
   await page.getByText("Submit").click()
 
-  await page.goto("http://localhost:3000/")
+  await page.goto("/")
   await page.getByRole("combobox").selectOption("activity 1")
   await page.getByRole("button", { name: "Add" }).click()
   await page.getByRole("combobox").nth(1).selectOption("activity 2")
