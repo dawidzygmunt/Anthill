@@ -18,26 +18,26 @@ Instructions on how to install and set up the project.
 
 ```bash
 # Clone the repository
-git clone https://code.brainhub.dev/juniors24apr/anthill-v2.git
+git clone https://github.com/dawidzygmunt/Anthill.git
 
 # Navigate to the project directory
-cd anthill-v2
+cd Anthill
 
 # Install dependencies
 npm install
-```
 
-### Make sure to complete the configuration steps before continuing!
+# Copy environment file
+cp .env.example .env
+# Edit .env with your configuration
 
-```bash
-# run migrations
+# Start database
+docker-compose -f docker-compose.yaml up -d
+
+# Run migrations
 npx prisma migrate dev
 
-# You can populate database with example data with
-npm run populate-db
-
-# Run database
-docker-compose -f docker-compose.yml up -d
+# (Optional) Seed with example data
+npm run seed
 
 # Run project
 npm run dev
@@ -53,7 +53,15 @@ Copy .env.example to .env:
 cp .env.example .env
 ```
 
-Open the .env file and configure the necessary environment variables.
+### Required Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://postgres:postgres@localhost:5432/antnext?schema=public` |
+| `BASE_PATH` | (Optional) Base path for deployment | `/anthill` |
+| `NEXT_PUBLIC_BASE_PATH` | (Optional) Public base path for PWA manifest | `/anthill` |
+
+Open the .env file and configure these variables as needed.
 
 ## Usage
 

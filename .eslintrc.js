@@ -7,6 +7,9 @@ module.exports = {
     browser: true,
     node: true,
   },
+  plugins: ["my-lint"],
   extends: ["next/core-web-vitals"],
-  rules: {},
+  rules: {
+    "my-lint/enforce-page-metadata-format": "error",
+  },
 }

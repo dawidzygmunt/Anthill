@@ -8,6 +8,7 @@ const withPWA = withPWAInit({
 
 export default withPWA({
   basePath: process.env.BASE_PATH,
+  output: 'standalone',
   async rewrites() {
     return [
       {

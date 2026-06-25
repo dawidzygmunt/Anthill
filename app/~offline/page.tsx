@@ -1,6 +1,11 @@
 import OfflineNotification from "@/components/offline-notification"
 import { WifiOffIcon } from "lucide-react"
 import React from "react"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Offline - Anthill",
+}
 
 const XddPage = () => {
   return (

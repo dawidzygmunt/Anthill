@@ -5,6 +5,11 @@ import {
 import { DataTable } from "./components/data-table/data-table"
 import { columns } from "./components/data-table/columns"
 import { AddActivityForm } from "./components/add-activity-form"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Settings - Anthill",
+}
 
 interface SettingsProps {
   searchParams: { showDeleted: string }
