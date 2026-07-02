@@ -5,8 +5,13 @@ import prisma from "@/lib/db"
 import tracksPrismaCodesMap from "@/utils/prisma-codes/tracks-prisma-codes"
 import revalidateTracks from "./revalidate"
 import { CustomError, handleError } from "@/utils/error-handler"
+import { Result, ok } from "@/utils/result"
+import { Week, TrackRow } from "@prisma/client"
 
-const createTrackRow = async (activityId: string, from: Date) => {
+const createTrackRow = async (
+  activityId: string,
+  from: Date
+): Promise<Result<{ week: Week; trackRow: TrackRow }>> => {
   try {
     const result = await prisma.$transaction(async (prisma) => {
       let week = await prisma.week.findFirst({
@@ -42,10 +47,8 @@ const createTrackRow = async (activityId: string, from: Date) => {
     })
 
     revalidateTracks()
-    return result
+    return ok(result)
   } catch (error) {
-    console.log(error)
-
     return handleError(error, tracksPrismaCodesMap)
   }
 }

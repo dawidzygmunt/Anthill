@@ -6,6 +6,7 @@ import { SingleWeekProps } from "@/lib/types"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Lock, LockOpen } from "lucide-react"
 import { updateWeekStatus } from "@/actions/weeks/update-week-status"
+import DisplayError from "@/utils/display-error"
 
 export const SingleWeek: React.FC<SingleWeekProps> = ({ week }) => {
   const from = startOfWeek(new Date(week.from), { weekStartsOn: 1 })
@@ -17,7 +18,14 @@ export const SingleWeek: React.FC<SingleWeekProps> = ({ week }) => {
   const handleToggleLock = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    await updateWeekStatus({ weekId: week.id, isClosed: !week.isClosed })
+    const result = await updateWeekStatus({
+      weekId: week.id,
+      isClosed: !week.isClosed,
+    })
+    if (!result.ok) {
+      DisplayError(result.error)
+      return
+    }
     router.refresh()
   }
 

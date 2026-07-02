@@ -1,11 +1,15 @@
 "use server"
 import prisma from "@/lib/db"
-import { CustomError, handleError } from "@/utils/error-handler"
+import { handleError } from "@/utils/error-handler"
 import weeksPrismaCodesMap from "@/utils/prisma-codes/weeks-prisma-codes"
 import { getSingleActivity } from "../activities/get-single-activity"
 import { ExtendedWeek } from "@/lib/types"
+import { Result, ok } from "@/utils/result"
 
-export const getWeeks = async (from: Date, to: Date) => {
+export const getWeeks = async (
+  from: Date,
+  to: Date
+): Promise<Result<ExtendedWeek[]>> => {
   try {
     const weeks = await prisma.week.findMany({
       where: {
@@ -62,20 +66,22 @@ export const getWeeks = async (from: Date, to: Date) => {
         })
         if (!maxMinutesActivityId) return week
         const mostActivity = await getSingleActivity(maxMinutesActivityId)
-        if ("error" in mostActivity) {
+        if (!mostActivity.ok) {
           return
         }
 
         return {
           ...week,
           totalMinutes,
-          mostActiveActivities: mostActivity.name,
+          mostActiveActivities: mostActivity.data.name,
         } as ExtendedWeek
       })
     )
 
-    return weeksWithDetails.filter(
-      (week): week is ExtendedWeek => week !== undefined
+    return ok(
+      weeksWithDetails.filter(
+        (week): week is ExtendedWeek => week !== undefined
+      )
     )
   } catch (error) {
     return handleError(error, weeksPrismaCodesMap)

@@ -1,6 +1,7 @@
 "use server"
 import prisma from "@/lib/db"
 import { handleError } from "@/utils/error-handler"
+import { Result, ok } from "@/utils/result"
 import { startOfMonth, endOfMonth, subMonths, eachDayOfInterval, isWeekend } from "date-fns"
 
 export interface MonthlyStats {
@@ -24,7 +25,7 @@ const reportsPrismaCodesMap: Record<string, string> = {
   P2025: "5001",
 }
 
-export const getMonthlyStats = async (year: number, month: number): Promise<MonthlyStats | { error: { code: string } | { message: string } }> => {
+export const getMonthlyStats = async (year: number, month: number): Promise<Result<MonthlyStats>> => {
   try {
     const monthStart = startOfMonth(new Date(year, month - 1, 1))
     const monthEnd = endOfMonth(monthStart)
@@ -99,7 +100,7 @@ export const getMonthlyStats = async (year: number, month: number): Promise<Mont
       }
     }
 
-    return {
+    return ok({
       totalHours: totalMinutes / 60,
       previousMonthHours: prevMonthMinutes / 60,
       percentageChange: Math.round(percentageChange),
@@ -108,7 +109,7 @@ export const getMonthlyStats = async (year: number, month: number): Promise<Mont
       daysLogged,
       workdaysInMonth,
       mostTracked
-    }
+    })
   } catch (error) {
     return handleError(error, reportsPrismaCodesMap)
   }

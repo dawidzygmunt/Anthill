@@ -2,6 +2,8 @@
 import prisma from "@/lib/db"
 import { CustomError, handleError } from "@/utils/error-handler"
 import tracksPrismaCodesMap from "@/utils/prisma-codes/tracks-prisma-codes"
+import { Result, ok } from "@/utils/result"
+import { Track } from "@prisma/client"
 import { z } from "zod"
 
 const trackSchema = z.object({
@@ -18,11 +20,11 @@ const handleTrackChange = async (
   trackRowId: string,
   date: Date,
   minutes: number
-) => {
+): Promise<Result<Track>> => {
   try {
     const data = trackSchema.parse({ trackRowId, date, minutes })
 
-    return await prisma.$transaction(async (tx) => {
+    const track = await prisma.$transaction(async (tx) => {
       // Validate trackRow exists BEFORE modification
       const trackRow = await tx.trackRow.findUnique({
         where: { id: data.trackRowId },
@@ -44,6 +46,7 @@ const handleTrackChange = async (
         },
       })
     })
+    return ok(track)
   } catch (error) {
     return handleError(error, tracksPrismaCodesMap)
   }

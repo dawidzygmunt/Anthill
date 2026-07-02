@@ -47,10 +47,11 @@ export default function MobileActivityCard({
       Math.round(newHours * 60)
     )
 
-    if ("error" in result) {        DisplayError(result.error)
+    if (!result.ok) {
+      DisplayError(result.error)
       setOptimisticHours(currentHours)
     } else {
-      setOptimisticHours(result.minutes / 60)
+      setOptimisticHours(result.data.minutes / 60)
       revalidateTracks()
     }
     setIsUpdating(false)
@@ -69,10 +70,11 @@ export default function MobileActivityCard({
       Math.round(newHours * 60)
     )
 
-    if ("error" in result) {        DisplayError(result.error)
+    if (!result.ok) {
+      DisplayError(result.error)
       setOptimisticHours(currentHours)
     } else {
-      setOptimisticHours(result.minutes / 60)
+      setOptimisticHours(result.data.minutes / 60)
       revalidateTracks()
     }
     setIsUpdating(false)

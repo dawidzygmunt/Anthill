@@ -1,6 +1,7 @@
 "use server"
 import prisma from "@/lib/db"
 import { handleError } from "@/utils/error-handler"
+import { Result, ok } from "@/utils/result"
 import { startOfMonth, endOfMonth } from "date-fns"
 
 export interface ActivityDistribution {
@@ -16,7 +17,7 @@ const reportsPrismaCodesMap: Record<string, string> = {
   P2025: "5001",
 }
 
-export const getActivityDistribution = async (year: number, month: number): Promise<ActivityDistribution[] | { error: { code: string } | { message: string } }> => {
+export const getActivityDistribution = async (year: number, month: number): Promise<Result<ActivityDistribution[]>> => {
   try {
     const monthStart = startOfMonth(new Date(year, month - 1, 1))
     const monthEnd = endOfMonth(monthStart)
@@ -62,7 +63,7 @@ export const getActivityDistribution = async (year: number, month: number): Prom
       }))
       .sort((a, b) => b.hours - a.hours) // Sort by hours descending
 
-    return distribution
+    return ok(distribution)
   } catch (error) {
     return handleError(error, reportsPrismaCodesMap)
   }

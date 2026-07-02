@@ -3,8 +3,9 @@
 import prisma from "@/lib/db"
 import { handleError } from "@/utils/error-handler"
 import tracksPrismaCodesMap from "@/utils/prisma-codes/tracks-prisma-codes"
+import { Result, ok } from "@/utils/result"
 
-const getWeekTotalHours = async (from: Date) => {
+const getWeekTotalHours = async (from: Date): Promise<Result<{ totalMinutes: number }>> => {
   try {
     const week = await prisma.week.findFirst({
       where: { from },
@@ -13,7 +14,7 @@ const getWeekTotalHours = async (from: Date) => {
     })
 
     if (!week) {
-      return { totalMinutes: 0 }
+      return ok({ totalMinutes: 0 })
     }
 
     const totalMinutes = week.TrackRow.reduce((sum, trackRow) => {
@@ -23,7 +24,7 @@ const getWeekTotalHours = async (from: Date) => {
       return sum + rowTotal
     }, 0)
 
-    return { totalMinutes }
+    return ok({ totalMinutes })
   } catch (error) {
     return handleError(error, tracksPrismaCodesMap)
   }

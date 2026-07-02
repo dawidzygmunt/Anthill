@@ -24,17 +24,17 @@ export const WeekStrip = ({ from, to }: WeekStripProps) => {
     const fetchWeekData = async () => {
       setIsLoading(true)
       const response = await getSingleWeek(from)
-      if (!response) {
-        setIsClosed(false)
-      } else if ("error" in response) {
+      if (!response.ok) {
         DisplayError(response.error)
+      } else if (!response.data) {
+        setIsClosed(false)
       } else {
-        setIsClosed(response.isClosed)
+        setIsClosed(response.data.isClosed)
       }
 
       const hoursResponse = await getWeekTotalHours(from)
-      if (hoursResponse && "totalMinutes" in hoursResponse) {
-        setTotalHours(hoursResponse.totalMinutes / 60)
+      if (hoursResponse.ok) {
+        setTotalHours(hoursResponse.data.totalMinutes / 60)
       }
       setIsLoading(false)
     }
@@ -45,7 +45,7 @@ export const WeekStrip = ({ from, to }: WeekStripProps) => {
     const newState = !isClosed
     setIsClosed(newState)
     const result = await updateWeekStatus({ from, isClosed: newState })
-    if ("error" in result) {
+    if (!result.ok) {
       DisplayError(result.error)
       setIsClosed(!newState)
       return

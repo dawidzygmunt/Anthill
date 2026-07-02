@@ -8,7 +8,6 @@ import createTrackRow from "../../../actions/tracks/create-track-row"
 import Selector from "./selector"
 import DisplayError from "@/utils/display-error"
 import toast from "react-hot-toast"
-import { CustomError } from "@/utils/error-handler"
 
 interface Props {
   allActivities: Activity[]
@@ -49,7 +48,8 @@ function NewTracksRow({ allActivities, from, to, opened = false }: Props) {
           setActivityId(id)
           if (id) {
             const result = await createTrackRow(id, from)
-            if ("error" in result && result.error) {        DisplayError(result.error)
+            if (!result.ok) {
+              DisplayError(result.error)
               setActivityId("")
             }
           }

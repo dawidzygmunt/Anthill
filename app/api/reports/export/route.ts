@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       getDailyBreakdown(year, month)
     ])
 
-    if ("error" in monthlyStats || "error" in activityDistribution || "error" in dailyBreakdown) {
+    if (!monthlyStats.ok || !activityDistribution.ok || !dailyBreakdown.ok) {
       return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 })
     }
 
@@ -31,18 +31,18 @@ export async function GET(request: NextRequest) {
     // Monthly Summary
     csvLines.push('MONTHLY SUMMARY')
     csvLines.push('Metric,Value')
-    csvLines.push(`Total Hours,${monthlyStats.totalHours.toFixed(1)}h`)
-    csvLines.push(`Daily Average,${monthlyStats.dailyAverage}h`)
-    csvLines.push(`Days Logged,${monthlyStats.daysLogged}/${monthlyStats.workdaysInMonth}`)
-    if (monthlyStats.mostTracked) {
-      csvLines.push(`Most Tracked,${monthlyStats.mostTracked.name} (${monthlyStats.mostTracked.hours.toFixed(1)}h)`)
+    csvLines.push(`Total Hours,${monthlyStats.data.totalHours.toFixed(1)}h`)
+    csvLines.push(`Daily Average,${monthlyStats.data.dailyAverage}h`)
+    csvLines.push(`Days Logged,${monthlyStats.data.daysLogged}/${monthlyStats.data.workdaysInMonth}`)
+    if (monthlyStats.data.mostTracked) {
+      csvLines.push(`Most Tracked,${monthlyStats.data.mostTracked.name} (${monthlyStats.data.mostTracked.hours.toFixed(1)}h)`)
     }
     csvLines.push('')
 
     // Activity Distribution
     csvLines.push('ACTIVITY DISTRIBUTION')
     csvLines.push('Activity,Hours,Percentage')
-    activityDistribution.forEach(activity => {
+    activityDistribution.data.forEach(activity => {
       csvLines.push(`${activity.name},${activity.hours.toFixed(1)},${activity.percentage}%`)
     })
     csvLines.push('')
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
     // Daily Breakdown
     csvLines.push('DAILY BREAKDOWN')
     csvLines.push('Day,Total Hours,Activities')
-    dailyBreakdown.forEach(day => {
+    dailyBreakdown.data.forEach(day => {
       const activities = day.activities.map(a => `${a.name}: ${a.hours.toFixed(1)}h`).join('; ')
       csvLines.push(`${day.day},${day.total.toFixed(1)},${activities}`)
     })
