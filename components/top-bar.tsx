@@ -16,17 +16,17 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
   useEffect(() => {
     const fetchWeekData = async () => {
       const response = await getSingleWeek(from)
-      if (!response) {
-        setIsDone(false)
-      } else if ("error" in response) {
+      if (!response.ok) {
         DisplayError(response.error)
+      } else if (!response.data) {
+        setIsDone(false)
       } else {
-        setIsDone(response.isClosed)
+        setIsDone(response.data.isClosed)
       }
 
       const hoursResponse = await getWeekTotalHours(from)
-      if (hoursResponse && "totalMinutes" in hoursResponse) {
-        setTotalHours(hoursResponse.totalMinutes / 60)
+      if (hoursResponse.ok) {
+        setTotalHours(hoursResponse.data.totalMinutes / 60)
       }
     }
     fetchWeekData()
@@ -35,7 +35,7 @@ export const TopBar = ({ from, to }: { from: Date; to: Date }) => {
   const handleButtonClick = async () => {
     setIsDone(!isDone)
     const result = await updateWeekStatus({ from, isClosed: !isDone })
-    if ("error" in result) {
+    if (!result.ok) {
       DisplayError(result.error)
       return
     }

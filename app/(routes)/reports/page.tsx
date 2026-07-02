@@ -37,7 +37,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
   ])
 
   // Handle errors
-  if ("error" in monthlyStats) {
+  if (!monthlyStats.ok) {
     const errorMsg = 'code' in monthlyStats.error ? `Error code: ${monthlyStats.error.code}` : monthlyStats.error.message
     return (
       <div className="flex items-center justify-center h-full">
@@ -46,7 +46,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
     )
   }
 
-  if ("error" in dailyBreakdown) {
+  if (!dailyBreakdown.ok) {
     const errorMsg = 'code' in dailyBreakdown.error ? `Error code: ${dailyBreakdown.error.code}` : dailyBreakdown.error.message
     return (
       <div className="flex items-center justify-center h-full">
@@ -55,7 +55,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
     )
   }
 
-  if ("error" in activityDistribution) {
+  if (!activityDistribution.ok) {
     const errorMsg = 'code' in activityDistribution.error ? `Error code: ${activityDistribution.error.code}` : activityDistribution.error.message
     return (
       <div className="flex items-center justify-center h-full">
@@ -64,7 +64,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
     )
   }
 
-  if ("error" in weeklyData) {
+  if (!weeklyData.ok) {
     const errorMsg = 'code' in weeklyData.error ? `Error code: ${weeklyData.error.code}` : weeklyData.error.message
     return (
       <div className="flex items-center justify-center h-full">
@@ -77,18 +77,18 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
     <div className="w-full max-w-7xl mx-auto px-6 py-6">
       <ReportsHeader currentDate={currentDate} />
 
-      <StatCards stats={monthlyStats} />
+      <StatCards stats={monthlyStats.data} />
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-6">
         <div className="lg:col-span-3">
-          <HoursByDayChart data={dailyBreakdown} />
+          <HoursByDayChart data={dailyBreakdown.data} />
         </div>
         <div className="lg:col-span-2">
-          <ActivityDonutChart data={activityDistribution} />
+          <ActivityDonutChart data={activityDistribution.data} />
         </div>
       </div>
 
-      <WeeklyTotalsChart weeks={weeklyData.weeks} average={weeklyData.average} />
+      <WeeklyTotalsChart weeks={weeklyData.data.weeks} average={weeklyData.data.average} />
     </div>
   )
 }

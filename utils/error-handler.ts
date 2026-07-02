@@ -1,5 +1,7 @@
 import { Prisma } from "@prisma/client"
 import { ZodError } from "zod"
+import { Result, err } from "./result"
+import { logError } from "./logger"
 
 const errorDefaultCodeMap: Record<string, string> = {
   NOT_FOUND: "9001",
@@ -16,35 +18,25 @@ export class CustomError extends Error {
 }
 
 const UNKNOWN_ERROR = "9000"
-const NOT_FOUND_ERROR = "9001"
 
 export const handleError = (
   error: unknown,
   customPrismaMap: Record<string, string> = errorDefaultCodeMap
-): { error: { code: string } | { message: string } } => {
-  // To translate Prisma errors
-  console.log(error)
-
-  if (
-    error instanceof Prisma.PrismaClientKnownRequestError ||
-    (error instanceof CustomError && error.code in customPrismaMap)
-  ) {
-    return { error: { code: customPrismaMap[error.code] || UNKNOWN_ERROR } }
-  }
+): Result<never> => {
+  logError(error)
 
   if (error instanceof ZodError) {
-    return { error: { message: error.errors[0].message } }
+    return err({ message: error.errors[0].message })
   }
 
-  // To translate unknown errors
-  if (!(error instanceof CustomError)) {
-    return { error: { code: UNKNOWN_ERROR } }
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    return err({ code: customPrismaMap[error.code] || UNKNOWN_ERROR })
   }
 
-  // To translate custom errors
-  if (error.code in errorDefaultCodeMap) {
-    return { error: { code: errorDefaultCodeMap[error.code] } }
-  } else {
-    return { error: { code: UNKNOWN_ERROR } }
+  if (error instanceof CustomError) {
+    const code = customPrismaMap[error.code] || errorDefaultCodeMap[error.code] || UNKNOWN_ERROR
+    return err({ code })
   }
+
+  return err({ code: UNKNOWN_ERROR })
 }

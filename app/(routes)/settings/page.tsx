@@ -16,25 +16,19 @@ interface SettingsProps {
 }
 
 const Settings = async ({ searchParams }: SettingsProps) => {
-  let activitiesList
-  if (searchParams.showDeleted === "true") {
-    activitiesList = await getAllActivities()
-    if ("error" in activitiesList) {
-      const errorMessage = "code" in activitiesList.error
-        ? `Failed to load activities: ${activitiesList.error.code}`
-        : `Failed to load activities: ${activitiesList.error.message}`
-      throw new Error(errorMessage)
-    }
-  } else {
-    activitiesList = await getActivities()
-    if ("error" in activitiesList) {
-      const errorMessage = "code" in activitiesList.error
-        ? `Failed to load activities: ${activitiesList.error.code}`
-        : `Failed to load activities: ${activitiesList.error.message}`
-      throw new Error(errorMessage)
-    }
+  const result =
+    searchParams.showDeleted === "true"
+      ? await getAllActivities()
+      : await getActivities()
+
+  if (!result.ok) {
+    const errorMessage = "code" in result.error
+      ? `Failed to load activities: ${result.error.code}`
+      : `Failed to load activities: ${result.error.message}`
+    throw new Error(errorMessage)
   }
 
+  const activitiesList = result.data
   const activeCount = activitiesList.filter((a) => !a.deletedAt).length
 
   return (

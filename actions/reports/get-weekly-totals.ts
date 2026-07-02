@@ -1,6 +1,7 @@
 "use server"
 import prisma from "@/lib/db"
 import { handleError } from "@/utils/error-handler"
+import { Result, ok } from "@/utils/result"
 import { startOfMonth, endOfMonth, getWeek, startOfWeek } from "date-fns"
 
 export interface WeeklyTotal {
@@ -15,7 +16,7 @@ const reportsPrismaCodesMap: Record<string, string> = {
   P2025: "5001",
 }
 
-export const getWeeklyTotals = async (year: number, month: number): Promise<{ weeks: WeeklyTotal[], average: number } | { error: { code: string } | { message: string } }> => {
+export const getWeeklyTotals = async (year: number, month: number): Promise<Result<{ weeks: WeeklyTotal[], average: number }>> => {
   try {
     const monthStart = startOfMonth(new Date(year, month - 1, 1))
     const monthEnd = endOfMonth(monthStart)
@@ -56,7 +57,7 @@ export const getWeeklyTotals = async (year: number, month: number): Promise<{ we
     const totalHours = weeks.reduce((sum, week) => sum + week.hours, 0)
     const average = weeks.length > 0 ? Math.round(totalHours / weeks.length * 10) / 10 : 0
 
-    return { weeks, average }
+    return ok({ weeks, average })
   } catch (error) {
     return handleError(error, reportsPrismaCodesMap)
   }

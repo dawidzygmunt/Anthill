@@ -1,6 +1,7 @@
 "use server"
 import prisma from "@/lib/db"
 import { handleError } from "@/utils/error-handler"
+import { Result, ok } from "@/utils/result"
 import { startOfMonth, endOfMonth, getDay, format } from "date-fns"
 
 export interface DailyBreakdown {
@@ -22,7 +23,7 @@ const reportsPrismaCodesMap: Record<string, string> = {
 
 const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-export const getDailyBreakdown = async (year: number, month: number): Promise<DailyBreakdown[] | { error: { code: string } | { message: string } }> => {
+export const getDailyBreakdown = async (year: number, month: number): Promise<Result<DailyBreakdown[]>> => {
   try {
     const monthStart = startOfMonth(new Date(year, month - 1, 1))
     const monthEnd = endOfMonth(monthStart)
@@ -88,7 +89,7 @@ export const getDailyBreakdown = async (year: number, month: number): Promise<Da
       })
     })
 
-    return result
+    return ok(result)
   } catch (error) {
     return handleError(error, reportsPrismaCodesMap)
   }

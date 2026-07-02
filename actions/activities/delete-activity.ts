@@ -5,8 +5,10 @@ import prisma from "@/lib/db"
 import { idSchema } from "@/schemas/activities/id-schema"
 import revalidate from "../tracks/revalidate"
 import { CustomError, handleError } from "@/utils/error-handler"
+import { Result, ok } from "@/utils/result"
+import { Activity } from "@prisma/client"
 
-export const deleteActivity = async (id: string) => {
+export const deleteActivity = async (id: string): Promise<Result<Activity>> => {
   try {
     if (!id) throw new CustomError("activity ID is required", "ID_REQUIRED")
     const parsedData = idSchema.parse({ id: id })
@@ -20,13 +22,13 @@ export const deleteActivity = async (id: string) => {
       },
     })
     revalidate("/settings")
-    return activity
+    return ok(activity)
   } catch (error) {
     return handleError(error, activitiesPrismaCodesMap)
   }
 }
 
-export const hardDeleteActivity = async (id: string) => {
+export const hardDeleteActivity = async (id: string): Promise<Result<Activity>> => {
   try {
     const parsedData = idSchema.parse({ id: id })
 
@@ -36,7 +38,7 @@ export const hardDeleteActivity = async (id: string) => {
       },
     })
     revalidate("/settings")
-    return activity
+    return ok(activity)
   } catch (error) {
     return handleError(error, activitiesPrismaCodesMap)
   }

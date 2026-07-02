@@ -4,14 +4,16 @@ import prisma from "@/lib/db"
 import { editFormSchema } from "@/schemas/edit-form-schema"
 import revalidate from "../tracks/revalidate"
 import activitiesPrismaCodesMap from "@/utils/prisma-codes/activities-prisma-codes"
-import { CustomError, handleError } from "@/utils/error-handler"
+import { handleError } from "@/utils/error-handler"
+import { Result, ok } from "@/utils/result"
+import { Activity } from "@prisma/client"
 
 export const patchActivity = async (activity: {
   id: string
   color: string
   name: string
   deletedAt?: Date | null
-}) => {
+}): Promise<Result<Activity>> => {
   try {
     const data = editFormSchema.parse(activity)
 
@@ -22,7 +24,7 @@ export const patchActivity = async (activity: {
       data: activity,
     })
     revalidate("/settings")
-    return updatedActivity
+    return ok(updatedActivity)
   } catch (error) {
     return handleError(error, activitiesPrismaCodesMap)
   }

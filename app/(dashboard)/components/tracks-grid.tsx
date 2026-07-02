@@ -13,39 +13,41 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
 
   // Check if week is closed
   const weekData = await getSingleWeek(from)
-  const isWeekClosed = weekData && !("error" in weekData) ? weekData.isClosed : false
+  const isWeekClosed = weekData.ok && weekData.data ? weekData.data.isClosed : false
   const allActivities = await getActivities()
-  if ("error" in allActivities) {
+  if (!allActivities.ok) {
     const errorMessage = "code" in allActivities.error
       ? `Failed to load activities: ${allActivities.error.code}`
       : `Failed to load activities: ${allActivities.error.message}`
     throw new Error(errorMessage)
   }
 
-  if (!weeks)
-    return (
-      <NewTracksRow
-        opened={true}
-        key={from.toDateString()}
-        allActivities={allActivities}
-        from={from}
-        to={to}
-      />
-    )
-
-  if ("error" in weeks) {
+  if (!weeks.ok) {
     const errorMessage = "code" in weeks.error
       ? `Failed to load weeks: ${weeks.error.code}`
       : `Failed to load weeks: ${weeks.error.message}`
     throw new Error(errorMessage)
   }
 
+  if (!weeks.data)
+    return (
+      <NewTracksRow
+        opened={true}
+        key={from.toDateString()}
+        allActivities={allActivities.data}
+        from={from}
+        to={to}
+      />
+    )
+
+  const week = weeks.data
+
   // Calculate daily totals
   const dailyTotals = Array.from({ length: 7 }, (_, dayIndex) => {
     const dayDate = new Date(from)
     dayDate.setDate(dayDate.getDate() + dayIndex)
 
-    return weeks.TrackRow.reduce((total, trackRow) => {
+    return week.TrackRow.reduce((total, trackRow) => {
       const dayTrack = trackRow.Track.find((track) => {
         const trackDate = new Date(track.date)
         return trackDate.toDateString() === dayDate.toDateString()
@@ -59,14 +61,14 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
   return (
     <>
       <Suspense fallback={<SkeletonLoader />}>
-        {weeks.TrackRow.map((trackRow) => {
+        {week.TrackRow.map((trackRow) => {
           return (
             <>
               <Selector
                 key={trackRow.activityId}
                 trackRowId={trackRow.id}
                 activityId={trackRow.activityId}
-                activities={allActivities}
+                activities={allActivities.data}
               />
 
               <TracksRow
@@ -83,9 +85,9 @@ async function TracksGrid({ from, to }: { from: Date; to: Date }) {
           )
         })}
         <NewTracksRow
-          opened={weeks.TrackRow.length === 0}
-          key={weeks.TrackRow.length}
-          allActivities={allActivities}
+          opened={week.TrackRow.length === 0}
+          key={week.TrackRow.length}
+          allActivities={allActivities.data}
           from={from}
           to={to}
         />

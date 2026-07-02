@@ -12,7 +12,8 @@ const SideBar = async () => {
   const to = addDays(today, 180)
   const weeks = await getWeeks(from, to)
 
-  if ("error" in weeks) {        DisplayError(weeks.error)
+  if (!weeks.ok) {
+    DisplayError(weeks.error)
     return
   }
 
@@ -34,7 +35,7 @@ const SideBar = async () => {
 
       {/* Lista tygodni (scrollable) */}
       <div className="flex-1 overflow-auto">
-        <ListWeeks weeks={weeks} />
+        <ListWeeks weeks={weeks.data} />
       </div>
 
       {/* Sekcja użytkownika */}
