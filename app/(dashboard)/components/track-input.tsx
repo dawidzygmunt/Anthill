@@ -118,6 +118,11 @@ const TrackInput = ({ track, disabled = false }: Props) => {
                     placeholder=""
                     {...field}
                     key={track.date.toString()}
+                    data-testid={`track-input-${track.trackRowId}-${new Date(
+                      track.date
+                    )
+                      .toISOString()
+                      .slice(0, 10)}`}
                     disabled={disabled}
                     readOnly={disabled}
                   />

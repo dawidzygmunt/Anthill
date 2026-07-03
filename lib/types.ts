@@ -1,4 +1,4 @@
-import { Track, TrackRow, Week } from "@prisma/client"
+import { Activity, Track, TrackRow, Week } from "@prisma/client"
 
 export interface ActivitiesProps {
   name: string
@@ -11,6 +11,7 @@ export interface TracksProps {
 
 interface ExtendedTrackRow extends TrackRow {
   Track: Track[]
+  activity: Activity
 }
 
 export interface ExtendedWeek extends Week {

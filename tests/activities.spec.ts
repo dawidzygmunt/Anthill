@@ -19,14 +19,12 @@ test("Add activity", async ({ page }) => {
 
   await page.goto("/settings")
   for (const activity of activities) {
-    await page.getByRole("button", { name: "Add new" }).click()
+    await page.getByRole("button", { name: "New activity" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)
     await page.getByText("Submit").click()
-    await page.waitForTimeout(300)
-    const result = await page.locator("tr").filter({ hasText: activity })
-    await page.waitForTimeout(100)
-    expect(result).toContainText(activity)
+    const result = page.locator("tr").filter({ hasText: activity })
+    await expect(result).toContainText(activity)
   }
 })
 
@@ -35,17 +33,16 @@ test("Delete activity", async ({ page }) => {
 
   await page.goto("/settings")
   for (const activity of activities) {
-    await page.getByRole("button", { name: "Add new" }).click()
+    await page.getByRole("button", { name: "New activity" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)
     await page.getByText("Submit").click()
-    await page.waitForTimeout(100)
+    await expect(page.locator("tr").filter({ hasText: activity })).toBeVisible()
 
     await page.getByRole("row", { name: activity }).getByRole("button").click()
     await page.getByRole("menuitem", { name: "Delete" }).click()
-    await page.waitForTimeout(500)
-    const result = await page.locator("tr").filter({ hasText: activity })
-    expect(result).toHaveCount(0)
+    const result = page.locator("tr").filter({ hasText: activity })
+    await expect(result).toHaveCount(0)
   }
 })
 
@@ -53,21 +50,18 @@ test("Edit activity", async ({ page }) => {
   const activities = ["v4activity 1", "v4122 12", "v4 ac cc3"]
   for (let i = 0; i < activities.length; i++) {
     const activity = activities[i]
-    await page.waitForTimeout(100)
     await page.goto("/settings")
-    await page.getByRole("button", { name: "Add new" }).click()
+    await page.getByRole("button", { name: "New activity" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)
     await page.getByText("Submit").click()
-    await page.waitForTimeout(300)
+    await expect(page.locator("tr").filter({ hasText: activity })).toBeVisible()
 
     await page.getByRole("row", { name: activity }).getByRole("button").click()
-    await page.waitForTimeout(100)
     await page.getByRole("menuitem", { name: "Edit" }).click()
     await page.getByLabel("Activity Name").click()
     await page.getByLabel("Activity Name").fill("")
     await page.getByLabel("Activity Name").fill(activity + " edited")
-    await page.waitForTimeout(100)
     await page.getByLabel("Color").click()
     await page.getByLabel("Color").fill("#b8c4ab")
     await page
@@ -75,12 +69,11 @@ test("Edit activity", async ({ page }) => {
       .filter({ hasText: /^Color$/ })
       .click()
     await page.getByRole("button", { name: "Submit" }).click()
-    await page.waitForTimeout(100)
-    const result = await page.getByRole("cell", { name: activity + " edited" })
-    const resultColor = await page.getByRole("cell", { name: "#b8c4ab" }).nth(i)
-    expect(result).toContainText(activity + " edited")
-    await page.waitForTimeout(500)
-    expect(resultColor).toContainText("#b8c4ab", { timeout: 5000 })
+
+    const result = page.getByRole("cell", { name: activity + " edited" })
+    await expect(result).toContainText(activity + " edited")
+    const resultColor = page.getByRole("cell", { name: "#b8c4ab" }).nth(i)
+    await expect(resultColor).toContainText("#b8c4ab", { timeout: 5000 })
   }
 })
 
@@ -94,14 +87,13 @@ test("Table filter pers", async ({ page }) => {
   ]
   for (const activity of activities) {
     await page.goto("/settings?showDeleted=true")
-    await page.getByRole("button", { name: "Add new" }).click()
+    await page.getByRole("button", { name: "New activity" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)
     await page.getByText("Submit").click()
-    await page.waitForTimeout(200)
+    await expect(page.locator("tr").filter({ hasText: activity })).toBeVisible()
 
     await page.getByRole("row", { name: activity }).getByRole("button").click()
-    await page.waitForTimeout(100)
     await page.getByRole("menuitem", { name: "Edit" }).click()
     await page.getByLabel("Activity Name").click()
     await page.getByLabel("Activity Name").fill("")
@@ -113,9 +105,11 @@ test("Table filter pers", async ({ page }) => {
       .filter({ hasText: /^Color$/ })
       .click()
     await page.getByRole("button", { name: "Submit" }).click()
-    await page.waitForTimeout(100)
+    await expect(
+      page.getByRole("cell", { name: activity + " edited" })
+    ).toBeVisible()
 
-    const currentUrl = await page.url()
+    const currentUrl = page.url()
     const queryString = currentUrl.split("?")[1]
     const url = new URLSearchParams(queryString)
     const searchParamsKey = url.get("showDeleted")
@@ -131,13 +125,12 @@ test("Input validation", async ({ page }) => {
   ]
   for (const activity of activities) {
     await page.goto("/settings")
-    await page.getByRole("button", { name: "Add new" }).click()
+    await page.getByRole("button", { name: "New activity" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)
     await page.getByText("Submit").click()
-    await page.waitForTimeout(200)
 
-    const result = await page.getByRole("cell", { name: "No results." })
+    const result = page.getByRole("cell", { name: "No results." })
     await expect(result).toContainText("No results")
   }
 })
@@ -152,20 +145,21 @@ test("Show deleted activities", async ({ page }) => {
 
   for (const activity of activities) {
     await page.goto("/settings")
-    await page.getByRole("button", { name: "Add new" }).click()
+    await page.getByRole("button", { name: "New activity" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)
     await page.getByText("Submit").click()
-    await page.waitForTimeout(100)
+    await expect(page.locator("tr").filter({ hasText: activity })).toBeVisible()
 
     await page.getByRole("row", { name: activity }).getByRole("button").click()
     await page.getByRole("menuitem", { name: "Delete" }).click()
-    await page.waitForTimeout(100)
-    await page.getByRole("switch").click()
-    await page.waitForTimeout(500)
+    await expect(
+      page.locator("tr").filter({ hasText: activity })
+    ).toHaveCount(0)
+    await page.getByRole("link", { name: "Archived" }).click()
 
-    const result = await page.locator("tr").filter({ hasText: activity })
-    expect(result).toHaveCount(1)
+    const result = page.locator("tr").filter({ hasText: activity })
+    await expect(result).toHaveCount(1)
   }
 })
 
@@ -179,25 +173,26 @@ test("Restore deleted activities", async ({ page }) => {
 
   for (const activity of activities) {
     await page.goto("/settings")
-    await page.getByRole("button", { name: "Add new" }).click()
+    await page.getByRole("button", { name: "New activity" }).click()
     await page.getByPlaceholder("Add your activity...").click()
     await page.getByPlaceholder("Add your activity...").fill(activity)
     await page.getByText("Submit").click()
-    await page.waitForTimeout(100)
+    await expect(page.locator("tr").filter({ hasText: activity })).toBeVisible()
 
     await page.getByRole("row", { name: activity }).getByRole("button").click()
     await page.getByRole("menuitem", { name: "Delete" }).click()
-    await page.waitForTimeout(100)
-    await page.getByRole("switch").click()
-    await page.waitForTimeout(500)
+    await expect(
+      page.locator("tr").filter({ hasText: activity })
+    ).toHaveCount(0)
+    await page.getByRole("link", { name: "Archived" }).click()
 
-    const result = await page.locator("tr").filter({ hasText: activity })
+    const result = page.locator("tr").filter({ hasText: activity })
+    await expect(result).toHaveCount(1)
 
     await page.getByRole("row", { name: activity }).getByRole("button").click()
     await page.getByRole("menuitem", { name: "Restore" }).click()
 
-    await page.getByRole("switch").click()
-    await page.waitForTimeout(500)
-    expect(result).toHaveCount(1)
+    await page.getByRole("link", { name: "Active" }).click()
+    await expect(result).toHaveCount(1)
   }
 })

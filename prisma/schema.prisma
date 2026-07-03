@@ -28,6 +28,7 @@ model Track {
   trackRow   TrackRow  @relation(fields: [trackRowId], references: [id])
 
   @@unique([date, trackRowId], name: "rowDatePair")
+  @@index([date])
 }
 
 model TrackRow {
@@ -40,11 +41,14 @@ model TrackRow {
   Track      Track[]
   activity   Activity  @relation(fields: [activityId], references: [id])
   Week       Week?     @relation(fields: [weekId], references: [id])
+
+  @@index([activityId])
+  @@index([weekId])
 }
 
 model Week {
   id        String     @id @default(cuid())
-  from      DateTime
+  from      DateTime   @db.Date @unique
   isClosed  Boolean    @default(false)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt

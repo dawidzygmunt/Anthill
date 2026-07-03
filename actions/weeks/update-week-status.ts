@@ -5,6 +5,7 @@ import { CustomError, handleError } from "@/utils/error-handler"
 import weeksPrismaCodesMap from "@/utils/prisma-codes/weeks-prisma-codes"
 import { Result, ok } from "@/utils/result"
 import { Week } from "@prisma/client"
+import { toUtcMidnight } from "@/lib/utils"
 
 type UpdateWeekStatusParams =
   | { weekId: string; from?: never; isClosed: boolean }
@@ -24,8 +25,9 @@ export const updateWeekStatus = async (
     }
 
     if ("from" in params && params.from) {
+      const normalizedFrom = toUtcMidnight(params.from)
       const week = await prisma.week.findFirst({
-        where: { from: params.from },
+        where: { from: normalizedFrom },
       })
       if (!week) {
         throw new CustomError("Week not found", "NOT_FOUND")

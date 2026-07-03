@@ -47,3 +47,8 @@ export const getRandomHexColor = () => {
   }
   return color
 }
+
+/** Normalizuje datę do północy UTC — spójny klucz dla Week.from (@db.Date). */
+export const toUtcMidnight = (date: Date): Date => {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
+}

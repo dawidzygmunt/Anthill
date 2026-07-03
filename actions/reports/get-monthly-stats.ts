@@ -3,6 +3,7 @@ import prisma from "@/lib/db"
 import { handleError } from "@/utils/error-handler"
 import { Result, ok } from "@/utils/result"
 import { startOfMonth, endOfMonth, subMonths, eachDayOfInterval, isWeekend } from "date-fns"
+import { aggregateActivityMinutes, computePercentageChange } from "@/lib/aggregations"
 
 export interface MonthlyStats {
   totalHours: number
@@ -59,9 +60,7 @@ export const getMonthlyStats = async (year: number, month: number): Promise<Resu
     const prevMonthMinutes = prevTracks.reduce((sum, track) => sum + track.minutes, 0)
 
     // Calculate percentage change
-    const percentageChange = prevMonthMinutes > 0
-      ? ((totalMinutes - prevMonthMinutes) / prevMonthMinutes) * 100
-      : 0
+    const percentageChange = computePercentageChange(totalMinutes, prevMonthMinutes)
 
     // Calculate days logged (unique dates)
     const uniqueDates = new Set(tracks.map(track => track.date.toISOString().split('T')[0]))
@@ -75,18 +74,7 @@ export const getMonthlyStats = async (year: number, month: number): Promise<Resu
     const dailyAverage = daysLogged > 0 ? totalMinutes / daysLogged / 60 : 0
 
     // Find most tracked activity
-    const activityMinutes = new Map<string, { minutes: number, name: string, color: string }>()
-
-    tracks.forEach(track => {
-      const activity = track.trackRow.activity
-      if (activity) {
-        const current = activityMinutes.get(activity.id) || { minutes: 0, name: activity.name, color: activity.color }
-        activityMinutes.set(activity.id, {
-          ...current,
-          minutes: current.minutes + track.minutes
-        })
-      }
-    })
+    const activityMinutes = aggregateActivityMinutes(tracks)
 
     let mostTracked = null
     if (activityMinutes.size > 0) {

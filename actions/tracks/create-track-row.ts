@@ -7,25 +7,20 @@ import revalidateTracks from "./revalidate"
 import { CustomError, handleError } from "@/utils/error-handler"
 import { Result, ok } from "@/utils/result"
 import { Week, TrackRow } from "@prisma/client"
+import { toUtcMidnight } from "@/lib/utils"
 
 const createTrackRow = async (
   activityId: string,
   from: Date
 ): Promise<Result<{ week: Week; trackRow: TrackRow }>> => {
   try {
+    const normalizedFrom = toUtcMidnight(from)
     const result = await prisma.$transaction(async (prisma) => {
-      let week = await prisma.week.findFirst({
-        where: {
-          from,
-        },
+      const week = await prisma.week.upsert({
+        where: { from: normalizedFrom },
+        update: {},
+        create: { from: normalizedFrom },
       })
-      if (!week) {
-        week = await prisma.week.create({
-          data: {
-            from,
-          },
-        })
-      }
 
       const existingTrackRow = await prisma.trackRow.findFirst({
         where: {
