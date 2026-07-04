@@ -18,6 +18,14 @@ describe("computeTotalMinutes", () => {
     ]
     expect(computeTotalMinutes(trackRows)).toBe(105)
   })
+
+  it("treats a trackRow with an empty Track array as contributing 0", () => {
+    const trackRows = [
+      { activityId: "a1", Track: [] },
+      { activityId: "a2", Track: [{ minutes: 15 }] },
+    ]
+    expect(computeTotalMinutes(trackRows)).toBe(15)
+  })
 })
 
 describe("computeMostActiveActivityId", () => {
@@ -42,6 +50,32 @@ describe("computeMostActiveActivityId", () => {
     ]
     expect(computeMostActiveActivityId(trackRows)).toBe("a1")
   })
+
+  it("returns empty string when every track has 0 minutes", () => {
+    const trackRows = [
+      { activityId: "a1", Track: [{ minutes: 0 }] },
+      { activityId: "a2", Track: [{ minutes: 0 }] },
+    ]
+    expect(computeMostActiveActivityId(trackRows)).toBe("")
+  })
+
+  it("ignores trackRows with an empty Track array", () => {
+    const trackRows = [
+      { activityId: "a1", Track: [] },
+      { activityId: "a2", Track: [{ minutes: 10 }] },
+    ]
+    expect(computeMostActiveActivityId(trackRows)).toBe("a2")
+  })
+
+  it("sums minutes for the same activityId across multiple trackRows", () => {
+    const trackRows = [
+      { activityId: "a1", Track: [{ minutes: 10 }] },
+      { activityId: "a2", Track: [{ minutes: 15 }] },
+      { activityId: "a1", Track: [{ minutes: 10 }] },
+    ]
+    // a1 total = 20, a2 total = 15
+    expect(computeMostActiveActivityId(trackRows)).toBe("a1")
+  })
 })
 
 describe("aggregateActivityMinutes", () => {
@@ -62,6 +96,20 @@ describe("aggregateActivityMinutes", () => {
     const tracks = [{ minutes: 30, trackRow: { activity: null } }]
     const result = aggregateActivityMinutes(tracks)
     expect(result.size).toBe(0)
+  })
+
+  it("returns an empty map for an empty input", () => {
+    expect(aggregateActivityMinutes([]).size).toBe(0)
+  })
+
+  it("mixes tracks with and without an activity, only aggregating the valid ones", () => {
+    const tracks = [
+      { minutes: 30, trackRow: { activity: { id: "act1", name: "Work", color: "#fff" } } },
+      { minutes: 999, trackRow: { activity: null } },
+    ]
+    const result = aggregateActivityMinutes(tracks)
+    expect(result.size).toBe(1)
+    expect(result.get("act1")?.minutes).toBe(30)
   })
 })
 

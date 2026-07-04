@@ -2,24 +2,10 @@
 import prisma from "@/lib/db"
 import { handleError } from "@/utils/error-handler"
 import { Result, ok } from "@/utils/result"
-import { startOfMonth, endOfMonth, subMonths, eachDayOfInterval, isWeekend } from "date-fns"
-import { aggregateActivityMinutes, computePercentageChange } from "@/lib/aggregations"
+import { startOfMonth, endOfMonth, subMonths } from "date-fns"
+import { buildMonthlyStats, MonthlyStats } from "@/lib/reports"
 
-export interface MonthlyStats {
-  totalHours: number
-  previousMonthHours: number
-  percentageChange: number
-  dailyAverage: number
-  targetDaily: number
-  daysLogged: number
-  workdaysInMonth: number
-  mostTracked: {
-    name: string
-    color: string
-    hours: number
-    percentage: number
-  } | null
-}
+export type { MonthlyStats }
 
 const reportsPrismaCodesMap: Record<string, string> = {
   P2002: "5000",
@@ -34,70 +20,26 @@ export const getMonthlyStats = async (year: number, month: number): Promise<Resu
     const prevMonthStart = startOfMonth(subMonths(monthStart, 1))
     const prevMonthEnd = endOfMonth(prevMonthStart)
 
-    // Get all tracks for current month
     const tracks = await prisma.track.findMany({
       where: {
         date: { gte: monthStart, lte: monthEnd },
-        deletedAt: null
+        deletedAt: null,
       },
       include: {
         trackRow: {
-          include: { activity: true }
-        }
-      }
+          include: { activity: true },
+        },
+      },
     })
 
-    // Get previous month tracks
     const prevTracks = await prisma.track.findMany({
       where: {
         date: { gte: prevMonthStart, lte: prevMonthEnd },
-        deletedAt: null
-      }
+        deletedAt: null,
+      },
     })
 
-    // Calculate total minutes
-    const totalMinutes = tracks.reduce((sum, track) => sum + track.minutes, 0)
-    const prevMonthMinutes = prevTracks.reduce((sum, track) => sum + track.minutes, 0)
-
-    // Calculate percentage change
-    const percentageChange = computePercentageChange(totalMinutes, prevMonthMinutes)
-
-    // Calculate days logged (unique dates)
-    const uniqueDates = new Set(tracks.map(track => track.date.toISOString().split('T')[0]))
-    const daysLogged = uniqueDates.size
-
-    // Calculate workdays in month (excluding weekends)
-    const allDays = eachDayOfInterval({ start: monthStart, end: monthEnd })
-    const workdaysInMonth = allDays.filter(day => !isWeekend(day)).length
-
-    // Calculate daily average
-    const dailyAverage = daysLogged > 0 ? totalMinutes / daysLogged / 60 : 0
-
-    // Find most tracked activity
-    const activityMinutes = aggregateActivityMinutes(tracks)
-
-    let mostTracked = null
-    if (activityMinutes.size > 0) {
-      const sorted = Array.from(activityMinutes.values()).sort((a, b) => b.minutes - a.minutes)
-      const top = sorted[0]
-      mostTracked = {
-        name: top.name,
-        color: top.color,
-        hours: top.minutes / 60,
-        percentage: totalMinutes > 0 ? (top.minutes / totalMinutes) * 100 : 0
-      }
-    }
-
-    return ok({
-      totalHours: totalMinutes / 60,
-      previousMonthHours: prevMonthMinutes / 60,
-      percentageChange: Math.round(percentageChange),
-      dailyAverage: Math.round(dailyAverage * 10) / 10,
-      targetDaily: 8.0,
-      daysLogged,
-      workdaysInMonth,
-      mostTracked
-    })
+    return ok(buildMonthlyStats(tracks, prevTracks, monthStart, monthEnd))
   } catch (error) {
     return handleError(error, reportsPrismaCodesMap)
   }

@@ -44,6 +44,18 @@ describe("parseTime", () => {
   it("handles dot as decimal separator directly", () => {
     expect(parseTime("12.5")).toBe(12.5 * 60)
   })
+
+  it("returns 0 for the string \"0\"", () => {
+    expect(parseTime("0")).toBe(0)
+  })
+
+  it("handles very large values without throwing", () => {
+    expect(parseTime("100000")).toBe(100000 * 60)
+  })
+
+  it("trims leading and trailing whitespace around a valid number", () => {
+    expect(parseTime("  12  ")).toBe(12 * 60)
+  })
 })
 
 describe("timeFormatter", () => {
@@ -65,6 +77,15 @@ describe("timeFormatter", () => {
     expect(timeFormatter(90)).toBe("1:30")
     expect(timeFormatter(720)).toBe("12:00")
   })
+
+  it("rounds the boundary between two 30-minute buckets consistently", () => {
+    expect(timeFormatter(44)).toBe("0:30")
+    expect(timeFormatter(45)).toBe("1:00")
+  })
+
+  it("formats durations longer than 10 hours", () => {
+    expect(timeFormatter(660)).toBe("11:00")
+  })
 })
 
 describe("toUtcMidnight", () => {
@@ -79,5 +100,23 @@ describe("toUtcMidnight", () => {
     const once = toUtcMidnight(input)
     const twice = toUtcMidnight(once)
     expect(twice.toISOString()).toBe(once.toISOString())
+  })
+
+  it("normalizes based on UTC calendar fields, not the host's local timezone", () => {
+    // A Date built from local wall-clock fields is stored internally as an instant;
+    // toUtcMidnight must key off getUTC*, so it stays anchored to the UTC calendar day
+    // regardless of what timezone the process happens to run in.
+    const localMidnight = new Date(2026, 7, 3, 0, 0, 0)
+    const result = toUtcMidnight(localMidnight)
+    expect(result.getUTCFullYear()).toBe(localMidnight.getUTCFullYear())
+    expect(result.getUTCMonth()).toBe(localMidnight.getUTCMonth())
+    expect(result.getUTCDate()).toBe(localMidnight.getUTCDate())
+    expect(result.getUTCHours()).toBe(0)
+  })
+
+  it("handles the last instant of a year without rolling into the next one", () => {
+    const input = new Date(Date.UTC(2026, 11, 31, 23, 59, 59))
+    const result = toUtcMidnight(input)
+    expect(result.toISOString()).toBe("2026-12-31T00:00:00.000Z")
   })
 })
