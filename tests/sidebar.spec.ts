@@ -1,5 +1,6 @@
 import prisma from "@/lib/db"
-import { expect, test } from "@playwright/test"
+import { test, expect, Locator } from "@playwright/test"
+import { addDays, format, startOfWeek } from "date-fns"
 
 test.beforeEach(async ({}) => {
   await prisma.track.deleteMany()
@@ -8,165 +9,104 @@ test.beforeEach(async ({}) => {
   await prisma.week.deleteMany()
 })
 
-test("Adding week", async ({ page }) => {
-  await page.goto("/?from=2024-06-10")
+// The sidebar only lists weeks within +-180 days of the real current date
+// (see components/sidebar/sidebar.tsx), so a hardcoded historical date will
+// silently stop showing up as time passes. Anchor relative to "now" instead,
+// away from the current week so isCurrentWeek styling doesn't interfere.
+//
+// Note: the exact calendar day the app stores as Week.from can shift by one
+// day depending on the server's timezone (page.tsx mixes a UTC-parsed date
+// with a local-time startOfWeek), so tests must not assume a specific day
+// number — they locate the created week by its unique tracked-hours label
+// instead, since beforeEach guarantees it's the only week in the DB.
+const testFrom = startOfWeek(addDays(new Date(), 60), { weekStartsOn: 1 })
+const testFromParam = format(testFrom, "yyyy-MM-dd")
+
+const fillTrackInput = async (input: Locator, value: string, expectedValue: string) => {
+  await expect(async () => {
+    await input.click()
+    await input.fill(value)
+    await input.press("Tab")
+    await expect(input).toHaveValue(expectedValue, { timeout: 2000 })
+  }).toPass({ timeout: 15000 })
+}
+
+// WeekStrip fetches isClosed on mount and can overwrite an optimistic toggle
+// that landed in the same window; retry the click until the badge settles.
+const toggleWeekStatus = async (
+  page: import("@playwright/test").Page,
+  buttonName: "Close week" | "Reopen week",
+  expectedBadge: "Closed" | "Open"
+) => {
+  await expect(async () => {
+    await page.getByRole("button", { name: buttonName }).click()
+    await expect(page.locator(".ah-week-strip-badge")).toContainText(expectedBadge, {
+      timeout: 2000,
+    })
+  }).toPass({ timeout: 15000 })
+}
+
+const addActivityAndTrackTime = async (page: import("@playwright/test").Page) => {
+  await page.goto(`/?from=${testFromParam}`)
   await page.getByRole("link", { name: "Projects" }).click()
   await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 1")
+  await page.getByPlaceholder("Add your activity...").fill("sidebar activity")
   await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 2")
-  await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.goto("/?from=2024-06-10")
-  await page.getByRole("combobox").selectOption("activity 1")
+  await expect(page.locator("tr").filter({ hasText: "sidebar activity" })).toBeVisible()
+
+  await page.goto(`/?from=${testFromParam}`)
+  await page.getByRole("combobox").first().selectOption("sidebar activity")
 
   const trackInputs = page.locator('[data-testid^="track-input-"]')
-  await trackInputs.nth(0).click()
-  await trackInputs.nth(0).fill("2")
-  await trackInputs.nth(1).click()
-  await trackInputs.nth(1).fill("4")
-  await trackInputs.nth(2).click()
+  await fillTrackInput(trackInputs.nth(0), "2", "2.0h")
+  await fillTrackInput(trackInputs.nth(1), "4", "4.0h")
+}
 
-  const week = page.getByRole("link", {
-    name: "10 Jun - 16 Jun 2024 activity",
-  })
-  await expect(week).toContainText("10 Jun - 16 Jun 2024")
-  await expect(week).toContainText("In progress")
-  await expect(week).toContainText("6:00")
+test("A tracked week appears in the sidebar with its total hours", async ({ page }) => {
+  await addActivityAndTrackTime(page)
+  await page.reload()
+
+  const weekLink = page.locator(".ah-week", { hasText: "6:00h" })
+  await expect(weekLink).toBeVisible()
+  await expect(weekLink).toContainText("6:00")
 })
 
-test("In progress change", async ({ page }) => {
-  await page.goto("/?from=2024-06-10")
-  await page.getByRole("link", { name: "Projects" }).click()
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 1")
-  await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 2")
-  await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.goto("/?from=2024-06-10")
-  await page.getByRole("combobox").selectOption("activity 1")
+test("Closing a week via the WeekStrip disables track editing and persists after reload", async ({ page }) => {
+  await addActivityAndTrackTime(page)
+
+  await expect(page.locator(".ah-week-strip-badge")).toContainText("Open")
+  await toggleWeekStatus(page, "Close week", "Closed")
 
   const trackInputs = page.locator('[data-testid^="track-input-"]')
-  await trackInputs.nth(0).click()
-  await trackInputs.nth(0).fill("1")
-  await trackInputs.nth(1).click()
-  await trackInputs.nth(1).fill("2")
-  await trackInputs.nth(2).click()
-  await trackInputs.nth(2).fill("4")
-  await trackInputs.nth(1).click()
+  await expect(trackInputs.first()).toBeDisabled()
 
-  const week = page.getByRole("link", {
-    name: "10 Jun - 16 Jun 2024 activity",
-  })
-  const button = page.getByRole("button", { name: "in progress" })
-  await week.click()
-  await button.click()
-  await expect(week).toContainText("Done")
-
-  await page.getByRole("link", { name: "Projects" }).click()
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 3")
-  await page.getByText("Submit").click()
-  await expect(
-    page.getByRole("link", {
-      name: "10 Jun - 16 Jun 2024 activity",
-    })
-  ).toContainText("Done")
-
-  await page
-    .getByRole("link", { name: "10 Jun - 16 Jun 2024 activity" })
-    .click()
-  await page.getByRole("button", { name: ">" }).click()
-  await expect(
-    page.getByRole("link", {
-      name: "10 Jun - 16 Jun 2024 activity",
-    })
-  ).toContainText("Done")
-
-  await page.getByRole("button", { name: "in progress" }).click()
-
-  await page.getByRole("button", { name: "<" }).click()
-  await expect(
-    page.getByRole("link", {
-      name: "10 Jun - 16 Jun 2024 activity",
-    })
-  ).toContainText("Done")
-  await page
-    .getByRole("link", { name: "10 Jun - 16 Jun 2024 activity" })
-    .click()
-
-  await expect(
-    page.getByRole("link", {
-      name: "10 Jun - 16 Jun 2024 activity",
-    })
-  ).toContainText("Done")
+  await page.reload()
+  await expect(page.locator(".ah-week-strip-badge")).toContainText("Closed")
+  await expect(trackInputs.first()).toBeDisabled()
+  await expect(page.getByRole("button", { name: "Reopen week" })).toBeVisible()
 })
 
-test("Sync closing weeks", async ({ page }) => {
-  await page.goto("/?from=2024-06-10")
-  await page.getByRole("link", { name: "Projects" }).click()
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 1")
-  await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 2")
-  await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.goto("/?from=2024-06-10")
-  await page.getByRole("combobox").selectOption("activity 1")
+test("Reopening a closed week makes track editing available again", async ({ page }) => {
+  await addActivityAndTrackTime(page)
+
+  await toggleWeekStatus(page, "Close week", "Closed")
+  await toggleWeekStatus(page, "Reopen week", "Open")
 
   const trackInputs = page.locator('[data-testid^="track-input-"]')
-  await trackInputs.nth(0).click()
-  await trackInputs.nth(0).fill("1")
-  await trackInputs.nth(1).click()
-  await trackInputs.nth(1).fill("2")
-  await trackInputs.nth(2).click()
-  await trackInputs.nth(2).fill("3")
-  await trackInputs.nth(2).press("Tab")
+  await expect(trackInputs.first()).toBeEnabled()
+})
 
-  const week = page.getByRole("link", {
-    name: "10 Jun - 16 Jun 2024 activity",
-  })
-  const button = page.getByRole("button", { name: "in progress" })
-  await week.click()
-  await button.click()
-  await expect(week).toContainText("Done")
-  await page.goto("/?from=2024-06-10")
-  await expect(week).toContainText("Done")
-  await expect(page.getByRole("button", { name: "Done" })).toBeVisible()
+test("The sidebar lock toggle mirrors the WeekStrip close/reopen state", async ({ page }) => {
+  await addActivityAndTrackTime(page)
+  await page.reload()
 
-  await page.getByRole("link", { name: "Projects" }).click()
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 3")
-  await page.getByText("Submit").click()
-  await expect(
-    page.getByRole("link", {
-      name: "10 Jun - 16 Jun 2024 activity",
-    })
-  ).toContainText("Done")
+  const weekLink = page.locator(".ah-week", { hasText: "6:00h" })
+  await expect(weekLink.locator(".ah-week-dot")).toHaveClass(/progress/)
 
-  await page
-    .getByRole("link", { name: "10 Jun - 16 Jun 2024 activity" })
-    .click()
-  await page.getByRole("button", { name: ">" }).click()
-  await expect(
-    page.getByRole("link", {
-      name: "10 Jun - 16 Jun 2024 activity",
-    })
-  ).toContainText("Done")
-  await expect(
-    page.getByRole("button", { name: "in progress" })
-  ).toBeVisible()
+  await weekLink.hover()
+  await weekLink.getByRole("button", { name: "Lock week" }).click()
+  await expect(weekLink.locator(".ah-week-dot")).toHaveClass(/done/)
 
-  await page.getByRole("button", { name: "in progress" }).click()
-  await page.getByRole("button", { name: "<" }).click()
-  await expect(page.getByRole("button", { name: "Done" })).toBeVisible()
-  await page
-    .getByRole("link", { name: "10 Jun - 16 Jun 2024 activity" })
-    .click()
-  await expect(
-    page.getByRole("link", {
-      name: "10 Jun - 16 Jun 2024 activity",
-    })
-  ).toContainText("Done")
+  await page.reload()
+  await expect(page.locator(".ah-week-strip-badge")).toContainText("Closed")
 })

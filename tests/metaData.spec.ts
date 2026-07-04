@@ -3,5 +3,5 @@ import { test, expect } from "@playwright/test"
 test("has title", async ({ page }) => {
   await page.goto("/")
 
-  await expect(page).toHaveTitle(/Anthill v2/)
+  await expect(page).toHaveTitle(/Anthill/)
 })

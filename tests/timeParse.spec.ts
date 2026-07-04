@@ -12,10 +12,10 @@ test("typed time value is parsed, rounded, and displayed formatted in the UI", a
   page,
 }) => {
   await page.goto("/settings")
-  await page.getByRole("link", { name: "Projects" }).click()
   await page.getByRole("button", { name: "New activity" }).click()
   await page.getByPlaceholder("Add your activity...").fill("activity 1")
   await page.getByPlaceholder("Add your activity...").press("Enter")
+  await expect(page.locator("tr").filter({ hasText: "activity 1" })).toBeVisible()
 
   await page.goto("/")
   await page.getByRole("combobox").selectOption("activity 1")

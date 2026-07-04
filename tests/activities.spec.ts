@@ -191,8 +191,14 @@ test("Restore deleted activities", async ({ page }) => {
 
     await page.getByRole("row", { name: activity }).getByRole("button").click()
     await page.getByRole("menuitem", { name: "Restore" }).click()
+    await expect(page.getByText("Activity restored")).toBeVisible()
 
     await page.getByRole("link", { name: "Active" }).click()
+    // The App Router's client-side transition isn't observable via Playwright's
+    // network-idle heuristics; wait for the URL itself to settle on the Active
+    // view before the next iteration's hard page.goto, otherwise it can abort
+    // an in-flight client navigation with NS_BINDING_ABORTED.
+    await expect(page).toHaveURL(/showDeleted=false/)
     await expect(result).toHaveCount(1)
   }
 })

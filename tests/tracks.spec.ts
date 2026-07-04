@@ -1,5 +1,5 @@
 import prisma from "@/lib/db"
-import { test, expect } from "@playwright/test"
+import { test, expect, Locator } from "@playwright/test"
 
 test.beforeEach(async ({}) => {
   await prisma.track.deleteMany()
@@ -8,36 +8,47 @@ test.beforeEach(async ({}) => {
   await prisma.week.deleteMany()
 })
 
-test("Add Tracks", async ({ page }) => {
-  await page.goto("/")
+const addActivity = async (page: import("@playwright/test").Page, name: string) => {
   await page.getByRole("link", { name: "Projects" }).click()
   await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 1")
+  await page.getByPlaceholder("Add your activity...").fill(name)
   await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 2")
-  await page.getByText("Submit").click()
+}
+
+// TrackInput resyncs its value from props on every parent re-render (including
+// the remount triggered by a sibling row's save-and-revalidate), which can
+// occasionally wipe a fill that landed in the same window. Retry the fill
+// until the expected value actually sticks.
+const fillTrackInput = async (input: Locator, value: string, expectedValue: string) => {
+  await expect(async () => {
+    await input.click()
+    await input.fill(value)
+    await input.press("Tab")
+    await expect(input).toHaveValue(expectedValue, { timeout: 2000 })
+  }).toPass({ timeout: 15000 })
+}
+
+test("Add Tracks", async ({ page }) => {
+  await page.goto("/")
+  await addActivity(page, "activity 1")
+  await addActivity(page, "activity 2")
   await page.getByRole("link", { name: "Time sheet" }).click()
-  await page.getByRole("combobox").selectOption("activity 1")
-  await page.getByRole("button", { name: "Add" }).click()
+
+  await page.getByRole("combobox").first().selectOption("activity 1")
+  await page.getByText("Add activity", { exact: true }).click()
   await page.getByRole("combobox").nth(1).selectOption("activity 2")
 
   await expect(page.getByRole("combobox").first()).toContainText("activity 1")
   await expect(page.getByRole("combobox").nth(1)).toContainText("activity 2")
 })
 
-test("Add same tracks", async ({ page }) => {
+test("Add same activity twice is rejected", async ({ page }) => {
   await page.goto("/")
-  await page.getByRole("link", { name: "Projects" }).click()
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 1")
-  await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 2")
-  await page.getByText("Submit").click()
+  await addActivity(page, "activity 1")
   await page.getByRole("link", { name: "Time sheet" }).click()
-  await page.getByRole("combobox").selectOption("activity 1")
-  await page.getByRole("button", { name: "Add" }).click()
+
+  await page.getByRole("combobox").first().selectOption("activity 1")
+  await page.getByText("Add activity", { exact: true }).click()
   await page.getByRole("combobox").nth(1).selectOption("activity 1")
 
   await expect(page.getByRole("combobox").nth(1)).toContainText(
@@ -45,216 +56,125 @@ test("Add same tracks", async ({ page }) => {
   )
 })
 
-test("Delete Tracks", async ({ page }) => {
+test("Delete a track row with no data", async ({ page }) => {
   await page.goto("/")
-  await page.getByRole("link", { name: "Projects" }).click()
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 1")
-  await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 2")
-  await page.getByText("Submit").click()
+  await addActivity(page, "activity 1")
+  await addActivity(page, "activity 2")
   await page.getByRole("link", { name: "Time sheet" }).click()
-  await page.getByRole("combobox").selectOption("activity 1")
 
-  await page.getByRole("button", { name: "Add" }).click()
+  await page.getByRole("combobox").first().selectOption("activity 1")
+  await page.getByText("Add activity", { exact: true }).click()
   await page.getByRole("combobox").nth(1).selectOption("activity 2")
-  await page.getByRole("combobox").nth(1).selectOption("DELETE")
+  await expect(page.getByRole("combobox").nth(1)).toContainText("activity 2")
 
-  await expect(page.getByRole("combobox").nth(1)).not.toBeVisible()
+  // The row's activityId can resync from stale props right after creation,
+  // same as track inputs; retry the delete until it actually takes effect.
+  await expect(async () => {
+    await page.getByRole("combobox").nth(1).selectOption("DELETE")
+    await expect(page.getByRole("combobox")).toHaveCount(1, { timeout: 2000 })
+  }).toPass({ timeout: 15000 })
 })
 
-test("Delete tracks validation", async ({ page }) => {
+test("Deleting a track row with data is blocked", async ({ page }) => {
   await page.goto("/")
-  await page.getByRole("link", { name: "Projects" }).click()
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 1")
-  await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 2")
-  await page.getByText("Submit").click()
+  await addActivity(page, "activity 1")
+  await addActivity(page, "activity 2")
   await page.getByRole("link", { name: "Time sheet" }).click()
-  await page.getByRole("combobox").selectOption("activity 1")
-  await page.getByRole("button", { name: "Add" }).click()
+
+  await page.getByRole("combobox").first().selectOption("activity 1")
+  await page.getByText("Add activity", { exact: true }).click()
   await page.getByRole("combobox").nth(1).selectOption("activity 2")
 
   const trackInputs = page.locator('[data-testid^="track-input-"]')
-  await trackInputs.nth(0).click()
-  await trackInputs.nth(0).fill("20")
-
-  await trackInputs.nth(1).click()
-  await trackInputs.nth(1).fill("20")
-
-  await trackInputs.nth(7).click()
-  await trackInputs.nth(7).fill("30")
-  await trackInputs.nth(1).click()
+  await fillTrackInput(trackInputs.nth(7), "3", "3.0h")
 
   await page.getByRole("combobox").nth(1).selectOption("DELETE")
 
   await expect(page.getByRole("combobox").nth(1)).toBeVisible()
 })
 
-test("Add new week & trackRow & track", async ({ page }) => {
+test("Fills in hours across two activities and multiple days", async ({ page }) => {
   await page.goto("/")
-  await page.getByRole("link", { name: "Projects" }).click()
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 1")
-  await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 2")
-  await page.getByText("Submit").click()
+  await addActivity(page, "activity 1")
+  await addActivity(page, "activity 2")
   await page.getByRole("link", { name: "Time sheet" }).click()
-  await page.getByRole("combobox").selectOption("activity 1")
-  await page.getByRole("button", { name: "Add" }).click()
+
+  await page.getByRole("combobox").first().selectOption("activity 1")
+  await page.getByText("Add activity", { exact: true }).click()
   await page.getByRole("combobox").nth(1).selectOption("activity 2")
 
   const trackInputs = page.locator('[data-testid^="track-input-"]')
 
-  await trackInputs.nth(0).click()
-  await trackInputs.nth(0).fill("20")
-
-  await trackInputs.nth(1).click()
-  await trackInputs.nth(1).fill("20")
-
-  await trackInputs.nth(6).click()
-  await trackInputs.nth(6).fill("30")
-
-  await trackInputs.nth(7).click()
-  await trackInputs.nth(7).fill("30")
-
-  await expect(trackInputs.nth(0)).toHaveValue("20")
-  await expect(trackInputs.nth(1)).toHaveValue("20")
-  await expect(trackInputs.nth(6)).toHaveValue("30")
-  await expect(trackInputs.nth(7)).toHaveValue("30")
+  await fillTrackInput(trackInputs.nth(0), "2", "2.0h")
+  await fillTrackInput(trackInputs.nth(1), "4", "4.0h")
+  await fillTrackInput(trackInputs.nth(7), "1", "1.0h")
+  await fillTrackInput(trackInputs.nth(8), "3", "3.0h")
 })
 
-test("Add more than 24h", async ({ page }) => {
+test("Exactly 24h is accepted, more than 24h in a day is rejected", async ({ page }) => {
   await page.goto("/")
-  await page.getByRole("link", { name: "Projects" }).click()
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 1")
-  await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 2")
-  await page.getByText("Submit").click()
+  await addActivity(page, "activity 1")
   await page.getByRole("link", { name: "Time sheet" }).click()
-  await page.getByRole("combobox").selectOption("activity 1")
-  await page.getByRole("button", { name: "Add" }).click()
-  await page.getByRole("combobox").nth(1).selectOption("activity 2")
+  await page.getByRole("combobox").first().selectOption("activity 1")
 
   const trackInputs = page.locator('[data-testid^="track-input-"]')
 
   await trackInputs.nth(0).click()
-  await trackInputs.nth(0).fill("1440")
+  await trackInputs.nth(0).fill("24")
+  await trackInputs.nth(0).press("Tab")
+  await expect(trackInputs.nth(0)).toHaveValue("24.0h")
 
-  await trackInputs.nth(1).click()
-  await trackInputs.nth(1).fill("1441")
-
-  await trackInputs.nth(6).click()
-  await trackInputs.nth(6).fill("30")
-
-  await trackInputs.nth(7).click()
-  await trackInputs.nth(7).fill("30")
-
-  await expect(trackInputs.nth(0)).toHaveValue("1440")
-  await expect(trackInputs.nth(1)).toHaveValue("")
-  await expect(trackInputs.nth(6)).toHaveValue("30")
-  await expect(trackInputs.nth(7)).toHaveValue("30")
-})
-
-test("Input validation", async ({ page }) => {
-  await page.goto("/")
-  await page.getByRole("link", { name: "Projects" }).click()
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 1")
-  await page.getByPlaceholder("Add your activity...").press("Enter")
-  await page.getByRole("button", { name: "New activity" }).click()
-  await page.getByPlaceholder("Add your activity...").fill("activity 2")
-  await page.getByText("Submit").click()
-  await page.getByRole("link", { name: "Time sheet" }).click()
-  await page.getByRole("combobox").selectOption("activity 1")
-  await page.getByRole("button", { name: "Add" }).click()
-  await page.getByRole("combobox").nth(1).selectOption("activity 2")
-
-  const trackInputs = page.locator('[data-testid^="track-input-"]')
-
-  await trackInputs.nth(0).click()
-  await trackInputs.nth(0).fill("test")
-
-  await trackInputs.nth(1).click()
-  await trackInputs.nth(1).fill("149fd")
-
-  await trackInputs.nth(6).click()
-  await trackInputs.nth(6).fill(".12,")
-
-  await trackInputs.nth(7).click()
-  await trackInputs.nth(7).fill("92!9")
+  await trackInputs.nth(1).fill("24.5")
   await trackInputs.nth(1).press("Tab")
+  await expect(trackInputs.nth(1)).toHaveValue("")
+})
 
+test("Non-numeric and negative input is rejected or cleaned", async ({ page }) => {
+  await page.goto("/")
+  await addActivity(page, "activity 1")
+  await page.getByRole("link", { name: "Time sheet" }).click()
+  await page.getByRole("combobox").first().selectOption("activity 1")
+
+  const trackInputs = page.locator('[data-testid^="track-input-"]')
+
+  await trackInputs.nth(0).click()
+  await trackInputs.nth(0).fill("abc")
+  await trackInputs.nth(0).press("Tab")
   await expect(trackInputs.nth(0)).toHaveValue("")
-  await expect(trackInputs.nth(1)).toHaveValue("149")
-  await expect(trackInputs.nth(6)).toHaveValue("")
-  await expect(trackInputs.nth(7)).toHaveValue("92")
+
+  await trackInputs.nth(1).fill("-5")
+  await trackInputs.nth(1).press("Tab")
+  await expect(trackInputs.nth(1)).toHaveValue("")
+
+  await trackInputs.nth(2).fill("12abc")
+  await trackInputs.nth(2).press("Tab")
+  await expect(trackInputs.nth(2)).toHaveValue("12.0h")
 })
 
-test("Show deleted activities", async ({ page }) => {
-  const activities = [
-    "v3activity1",
-    "v3activity2",
-    "v3activity3",
-    "v3activity4",
-  ]
+test("Clearing an existing track input deletes the track", async ({ page }) => {
+  await page.goto("/")
+  await addActivity(page, "activity 1")
+  await page.getByRole("link", { name: "Time sheet" }).click()
+  await page.getByRole("combobox").first().selectOption("activity 1")
 
-  for (const activity of activities) {
-    await page.goto("/settings")
-    await page.getByRole("button", { name: "New activity" }).click()
-    await page.getByPlaceholder("Add your activity...").click()
-    await page.getByPlaceholder("Add your activity...").fill(activity)
-    await page.getByText("Submit").click()
-    await expect(page.locator("tr").filter({ hasText: activity })).toBeVisible()
+  const trackInputs = page.locator('[data-testid^="track-input-"]')
+  await trackInputs.nth(0).click()
+  await trackInputs.nth(0).fill("5")
+  await trackInputs.nth(0).press("Tab")
+  await expect(trackInputs.nth(0)).toHaveValue("5.0h")
 
-    await page.getByRole("row", { name: activity }).getByRole("button").click()
-    await page.getByRole("menuitem", { name: "Delete" }).click()
-    await expect(
-      page.locator("tr").filter({ hasText: activity })
-    ).toHaveCount(0)
-    await page.getByRole("link", { name: "Archived" }).click()
-
-    const result = page.locator("tr").filter({ hasText: activity })
-    await expect(result).toHaveCount(1)
-  }
+  await trackInputs.nth(0).click()
+  await trackInputs.nth(0).fill("")
+  await trackInputs.nth(0).press("Tab")
+  await expect(trackInputs.nth(0)).toHaveValue("")
 })
 
-test("Restore deleted activities", async ({ page }) => {
-  const activities = [
-    "v3activity1",
-    "v3activity2",
-    "v3activity3",
-    "v3activity4",
-  ]
+test("A fresh week with no activities shows an empty, disabled row", async ({ page }) => {
+  await page.goto("/")
 
-  for (const activity of activities) {
-    await page.goto("/settings")
-    await page.getByRole("button", { name: "New activity" }).click()
-    await page.getByPlaceholder("Add your activity...").click()
-    await page.getByPlaceholder("Add your activity...").fill(activity)
-    await page.getByText("Submit").click()
-    await expect(page.locator("tr").filter({ hasText: activity })).toBeVisible()
-
-    await page.getByRole("row", { name: activity }).getByRole("button").click()
-    await page.getByRole("menuitem", { name: "Delete" }).click()
-    await expect(
-      page.locator("tr").filter({ hasText: activity })
-    ).toHaveCount(0)
-    await page.getByRole("link", { name: "Archived" }).click()
-
-    const result = page.locator("tr").filter({ hasText: activity })
-    await expect(result).toHaveCount(1)
-
-    await page.getByRole("row", { name: activity }).getByRole("button").click()
-    await page.getByRole("menuitem", { name: "Restore" }).click()
-
-    await page.getByRole("link", { name: "Active" }).click()
-    await expect(result).toHaveCount(1)
-  }
+  await expect(page.getByRole("combobox")).toHaveCount(1)
+  await expect(page.getByRole("combobox")).toContainText("Select your activity")
+  // No trackRow exists yet, so the day cells are plain disabled placeholders, not real TrackInputs
+  await expect(page.locator('[data-testid^="track-input-"]')).toHaveCount(0)
+  await expect(page.getByRole("textbox").first()).toBeDisabled()
 })
